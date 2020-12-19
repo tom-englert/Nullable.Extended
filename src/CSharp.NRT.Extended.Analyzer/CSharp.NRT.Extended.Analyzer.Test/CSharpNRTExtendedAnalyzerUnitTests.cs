@@ -1,28 +1,29 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
-using VerifyCS = CSharp.NRT.Extended.Analyzer.Test.CSharpCodeFixVerifier<
-    CSharp.NRT.Extended.Analyzer.CSharpNRTExtendedAnalyzerAnalyzer,
-    CSharp.NRT.Extended.Analyzer.CSharpNRTExtendedAnalyzerCodeFixProvider>;
+
+using Microsoft.CodeAnalysis.Testing;
+
+using VerifyCS = CSharp.NRT.Extended.Analyzer.Test.CSharpAnalyzerVerifier<CSharp.NRT.Extended.Analyzer.CSharpNRTExtendedAnalyzerAnalyzer>;
 
 namespace CSharp.NRT.Extended.Analyzer.Test
 {
     [TestClass]
     public class CSharpNRTExtendedAnalyzerUnitTest
     {
-        //No diagnostics expected to show up
         [TestMethod]
-        public async Task TestMethod1()
+        public async Task NoDiagnosticsShowUpOnEmptySource()
         {
             var test = @"";
 
             await VerifyCS.VerifyAnalyzerAsync(test);
         }
 
-        //Diagnostic and CodeFix both triggered and checked for
         [TestMethod]
         public async Task TestMethod2()
         {
             var test = @"
+    #nullable enable
+
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -32,28 +33,31 @@ namespace CSharp.NRT.Extended.Analyzer.Test
 
     namespace ConsoleApplication1
     {
-        class {|#0:TypeName|}
+        class Test
         {   
+            private void Method(object? target1, object? target2)
+            {
+                var x = target1?.ToString();
+                if (x == null)
+                    return;
+
+                var y = {|#0:target1|}.ToString();
+                var z = {|#1:target2|}.ToString();
+            }
         }
     }";
 
-            var fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
+            var permanent = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(1)
+            };
 
-    namespace ConsoleApplication1
-    {
-        class TYPENAME
-        {   
-        }
-    }";
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(0)
+            };
 
-            var expected = VerifyCS.Diagnostic("CSharpNRTExtendedAnalyzer").WithLocation(0).WithArguments("TypeName");
-            await VerifyCS.VerifyCodeFixAsync(test, expected, fixtest);
+            await VerifyCS.VerifyAnalyzerAsync(test, suppressed, permanent);
         }
     }
 }

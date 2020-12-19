@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.NRT.Extended.Analyzer", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.csproj", "{4F1551EA-DF15-4E7E-9511-88146E869B70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp.NRT.Extended.Analyzer", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.csproj", "{4F1551EA-DF15-4E7E-9511-88146E869B70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.NRT.Extended.Analyzer.CodeFixes", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.CodeFixes\CSharp.NRT.Extended.Analyzer.CodeFixes.csproj", "{BABEB937-5F1D-4A8A-B446-FBC4C19E36F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp.NRT.Extended.Analyzer.Package", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.Package\CSharp.NRT.Extended.Analyzer.Package.csproj", "{6E9FB024-8538-4054-A771-D7C07B082DD5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.NRT.Extended.Analyzer.Package", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.Package\CSharp.NRT.Extended.Analyzer.Package.csproj", "{6E9FB024-8538-4054-A771-D7C07B082DD5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.NRT.Extended.Analyzer.Test", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.Test\CSharp.NRT.Extended.Analyzer.Test.csproj", "{C948FA6A-8290-41F2-AA63-BFAEA89DD911}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharp.NRT.Extended.Analyzer.Vsix", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.Vsix\CSharp.NRT.Extended.Analyzer.Vsix.csproj", "{320B7E4E-59D1-4A1E-ADEC-B17D8E62B3B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharp.NRT.Extended.Analyzer.Test", "CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.Test\CSharp.NRT.Extended.Analyzer.Test.csproj", "{C948FA6A-8290-41F2-AA63-BFAEA89DD911}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +19,6 @@ Global
 		{4F1551EA-DF15-4E7E-9511-88146E869B70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F1551EA-DF15-4E7E-9511-88146E869B70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4F1551EA-DF15-4E7E-9511-88146E869B70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BABEB937-5F1D-4A8A-B446-FBC4C19E36F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BABEB937-5F1D-4A8A-B446-FBC4C19E36F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BABEB937-5F1D-4A8A-B446-FBC4C19E36F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BABEB937-5F1D-4A8A-B446-FBC4C19E36F6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E9FB024-8538-4054-A771-D7C07B082DD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E9FB024-8538-4054-A771-D7C07B082DD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E9FB024-8538-4054-A771-D7C07B082DD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,10 +27,6 @@ Global
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Release|Any CPU.Build.0 = Release|Any CPU
-		{320B7E4E-59D1-4A1E-ADEC-B17D8E62B3B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{320B7E4E-59D1-4A1E-ADEC-B17D8E62B3B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{320B7E4E-59D1-4A1E-ADEC-B17D8E62B3B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{320B7E4E-59D1-4A1E-ADEC-B17D8E62B3B6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
