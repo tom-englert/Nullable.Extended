@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.Testing;
 
-using VerifyCS = CSharp.NRT.Extended.Analyzer.Test.CSharpAnalyzerVerifier<CSharp.NRT.Extended.Analyzer.CSharpNRTExtendedAnalyzerAnalyzer>;
+using VerifyCS = CSharp.NRT.Extended.AnalyzerTest.CSharpAnalyzerVerifier<CSharp.NRT.Extended.Analyzer.CSharpNrtExtendedAnalyzerAnalyzer>;
 
-namespace CSharp.NRT.Extended.Analyzer.Test
+namespace CSharp.NRT.Extended.AnalyzerTest
 {
     [TestClass]
     public class CSharpNRTExtendedAnalyzerUnitTest
@@ -25,11 +25,6 @@ namespace CSharp.NRT.Extended.Analyzer.Test
     #nullable enable
 
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
 
     namespace ConsoleApplication1
     {

@@ -1,0 +1,4 @@
+[submodule "sonar-dotnet"]
+	path = sonar-dotnet
+	url = https://github.com/tom-englert/sonar-dotnet.git
+	branch = NRT_Extensions
