@@ -2,3 +2,7 @@
 	path = sonar-dotnet
 	url = https://github.com/tom-englert/sonar-dotnet.git
 	branch = NRT_Extensions
+[submodule "roslyn"]
+	path = roslyn
+	url = https://github.com/tom-englert/roslyn.git
+	branch = NRT_Extensions

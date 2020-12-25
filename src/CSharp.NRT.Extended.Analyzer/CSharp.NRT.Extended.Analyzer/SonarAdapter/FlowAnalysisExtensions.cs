@@ -25,23 +25,23 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SonarAnalyzer.ControlFlowGraph.CSharp;
-using SonarAnalyzer.Helpers;
 using SonarAnalyzer.LiveVariableAnalysis.CSharp;
 using SonarAnalyzer.ShimLayer.CSharp;
+using SonarAnalyzer.SymbolicExecution;
 
-namespace SonarAnalyzer.SymbolicExecution
+namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
 {
     internal static class FlowAnalysisExtensions
     {
         public static void RegisterSyntaxNodeActionInNonGenerated(
-            this SonarAnalysisContext2 context,
+            this SonarAnalysisContext context,
             Action<SyntaxNodeAnalysisContext> action,
             params SyntaxKind[] syntaxKinds)
         {
             context.RegisterSyntaxNodeAction(action, syntaxKinds);
         }
 
-        public static void RegisterExplodedGraphBasedAnalysis2(this SonarAnalysisContext2 context,
+        public static void RegisterExplodedGraphBasedAnalysis(this SonarAnalysisContext context,
             Action<CSharpExplodedGraph, SyntaxNodeAnalysisContext> analyze)
         {
             context.RegisterSyntaxNodeActionInNonGenerated(
@@ -62,6 +62,20 @@ namespace SonarAnalyzer.SymbolicExecution
                 SyntaxKind.ConversionOperatorDeclaration,
                 SyntaxKind.OperatorDeclaration,
                 SyntaxKind.MethodDeclaration);
+
+            context.RegisterSyntaxNodeActionInNonGenerated(
+                c =>
+                {
+                    var declaration = (LocalFunctionStatementSyntax)c.Node;
+                    var symbol = c.SemanticModel.GetDeclaredSymbol(declaration);
+                    if (symbol == null)
+                    {
+                        return;
+                    }
+
+                    Analyze(declaration.Body, symbol, analyze, c);
+                },
+                SyntaxKind.LocalFunctionStatement);
 
             context.RegisterSyntaxNodeActionInNonGenerated(
                 c =>

@@ -1,15 +1,13 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-
+using CSharp.NRT.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-using SonarAnalyzer.Helpers;
 using SonarAnalyzer.Rules.CSharp;
-using SonarAnalyzer.Rules.SymbolicExecution;
 
 namespace CSharp.NRT.Extended.Analyzer
 {
@@ -18,7 +16,7 @@ namespace CSharp.NRT.Extended.Analyzer
     {
         private static readonly SuppressionDescriptor[] _supportedSuppressions =
         {
-            new SuppressionDescriptor("NRTX_CS8602", "CS8602", "Dummy")
+            new SuppressionDescriptor("NRTX_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access.")
         };
 
         public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = _supportedSuppressions.ToImmutableArray();
@@ -29,23 +27,37 @@ namespace CSharp.NRT.Extended.Analyzer
 
             foreach (var diagnostic in context.ReportedDiagnostics)
             {
-                var location = diagnostic.Location;
-                var sourceTree = location.SourceTree;
-                if (sourceTree == null)
-                    continue;
-
-                var sourceSpan = location.SourceSpan;
-                var elementNode = sourceTree.GetRoot(cancellationToken).FindNode(sourceSpan);
-
-                var analysisContext = new SonarAnalysisContext2();
-                var runner = new SymbolicExecutionRunner2(new NullPointerDereference());
-                runner.Initialize(analysisContext);
-
-                analysisContext.Analyze(elementNode, context, sourceTree);
-
-                if (analysisContext.DetecteDiagnostics.All(d => d.Location != location))
+                try
                 {
-                    context.ReportSuppression(Suppression.Create(SupportedSuppressions[0], diagnostic));
+                    var location = diagnostic.Location;
+                    var sourceTree = location.SourceTree;
+                    if (sourceTree == null)
+                        continue;
+
+                    var root = sourceTree.GetRoot(cancellationToken);
+
+                    var sourceSpan = location.SourceSpan;
+                    var elementNode = root.FindNode(sourceSpan);
+                    if (!(elementNode is IdentifierNameSyntax))
+                        continue;
+
+                    if (!(elementNode.Parent is MemberAccessExpressionSyntax))
+                        continue;
+
+                    var analysisContext = new SonarAnalysisContext();
+                    var runner = new SymbolicExecutionRunner(new NullPointerDereference());
+                    runner.Initialize(analysisContext);
+
+                    analysisContext.Analyze(elementNode, context, sourceTree);
+
+                    if (analysisContext.DetecteDiagnostics.All(d => !elementNode.Contains(root.FindNode(d.Location.SourceSpan))))
+                    {
+                        context.ReportSuppression(Suppression.Create(SupportedSuppressions[0], diagnostic));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // could not analyze the full graph, so just do not suppress anything.
                 }
             }
         }

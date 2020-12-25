@@ -24,28 +24,30 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
-using SonarAnalyzer.Helpers;
+using SonarAnalyzer.Rules.SymbolicExecution;
 using SonarAnalyzer.SymbolicExecution;
 
-namespace SonarAnalyzer.Rules.SymbolicExecution
+namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
 {
-    public sealed class SymbolicExecutionRunner2
+    public sealed class SymbolicExecutionRunner
     {
         private readonly SymbolicExecutionAnalyzerFactory symbolicExecutionAnalyzerFactory;
 
         public ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
 
-        internal SymbolicExecutionRunner2(ISymbolicExecutionAnalyzer analyzer)
+        internal SymbolicExecutionRunner(ISymbolicExecutionAnalyzer analyzer)
         {
             symbolicExecutionAnalyzerFactory = new SymbolicExecutionAnalyzerFactory(ImmutableArray.Create(analyzer));
             SupportedDiagnostics = symbolicExecutionAnalyzerFactory.SupportedDiagnostics;
         }
 
-        public void Initialize(SonarAnalysisContext2 context) =>
-            context.RegisterExplodedGraphBasedAnalysis2(Analyze);
+        public void Initialize(SonarAnalysisContext context) =>
+            context.RegisterExplodedGraphBasedAnalysis(Analyze);
 
         private void Analyze(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context)
         {
+            var finishedWithNoError = false;
+
             var analyzerContexts = InitializeAnalyzers(explodedGraph, context).ToList();
 
             try
@@ -70,7 +72,14 @@ namespace SonarAnalyzer.Rules.SymbolicExecution
 
             void ExplorationEndedHandler(object sender, EventArgs args)
             {
+                finishedWithNoError = true;
+
                 ReportDiagnostics(analyzerContexts, context, false);
+            }
+
+            if (!finishedWithNoError)
+            {
+                throw new NotSupportedException("Could not walk full graph.");
             }
         }
 

@@ -23,10 +23,9 @@ using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace SonarAnalyzer.Helpers
+namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
 {
     /// <summary>
     /// SonarC# and SonarVB specific context for initializing an analyzer. This type acts as a wrapper around Roslyn
@@ -36,7 +35,7 @@ namespace SonarAnalyzer.Helpers
     /// - Allow a specific kind of rule-set for SonarLint (enable/disable a rule).
     /// - Prevent reporting an issue when it was suppressed on SonarQube.
     /// </summary>
-    public class SonarAnalysisContext2
+    public class SonarAnalysisContext
     {
         private readonly Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>> _actions = new Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>>();
 
@@ -58,14 +57,13 @@ namespace SonarAnalyzer.Helpers
             {
                 parentNode = parentNode.Parent;
                 if (parentNode == null)
-                    return;
+                    throw new NotSupportedException("No supported node for analyzing found in tree. Aborted");
 
                 if (!_actions.TryGetValue(parentNode.Kind(), out var action))
                     continue;
 
                 var semanticModel = context.GetSemanticModel(sourceTree);
                 var declaration = parentNode;
-                // var symbol = semanticModel.GetDeclaredSymbol(declaration);
 
                 var syntaxNodeAnalysisContext = new SyntaxNodeAnalysisContext(
                     declaration,

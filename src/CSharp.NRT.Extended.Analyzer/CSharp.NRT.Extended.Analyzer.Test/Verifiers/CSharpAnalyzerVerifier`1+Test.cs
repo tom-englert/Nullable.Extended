@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
@@ -20,12 +21,13 @@ namespace CSharp.NRT.Extended.AnalyzerTest
 
                 SolutionTransforms.Add((solution, projectId) =>
                 {
-                    var compilationOptions = solution
+                    var compilationOptions = (CSharpCompilationOptions)solution
                         .GetProject(projectId)
                         .CompilationOptions;
 
                     compilationOptions = compilationOptions
-                        .WithGeneralDiagnosticOption(ReportDiagnostic.Error);
+                        .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
+                        .WithNullableContextOptions(NullableContextOptions.Enable);
 
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
 
