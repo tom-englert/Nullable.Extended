@@ -20,9 +20,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SonarAnalyzer.Rules.SymbolicExecution;
 using SonarAnalyzer.SymbolicExecution;
@@ -31,14 +29,11 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
 {
     public sealed class SymbolicExecutionRunner
     {
-        private readonly SymbolicExecutionAnalyzerFactory symbolicExecutionAnalyzerFactory;
-
-        public ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; }
+        private readonly ISymbolicExecutionAnalyzer analyzer;
 
         internal SymbolicExecutionRunner(ISymbolicExecutionAnalyzer analyzer)
         {
-            symbolicExecutionAnalyzerFactory = new SymbolicExecutionAnalyzerFactory(ImmutableArray.Create(analyzer));
-            SupportedDiagnostics = symbolicExecutionAnalyzerFactory.SupportedDiagnostics;
+            this.analyzer = analyzer;
         }
 
         public void Initialize(SonarAnalysisContext context) =>
@@ -97,8 +92,6 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
         }
 
         private IEnumerable<ISymbolicExecutionAnalysisContext> InitializeAnalyzers(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context) =>
-            symbolicExecutionAnalyzerFactory
-                .GetEnabledAnalyzers(context)
-                .Select(analyzer => analyzer.AddChecks(explodedGraph, context));
+                new ISymbolicExecutionAnalysisContext[] { analyzer.AddChecks(explodedGraph, context) };
     }
 }

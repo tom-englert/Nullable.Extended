@@ -48,9 +48,14 @@ namespace CSharp.NRT.Extended.Analyzer
                     var runner = new SymbolicExecutionRunner(new NullPointerDereference());
                     runner.Initialize(analysisContext);
 
-                    analysisContext.Analyze(elementNode, context, sourceTree);
+                    var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
 
-                    if (analysisContext.DetecteDiagnostics.All(d => !elementNode.Contains(root.FindNode(d.Location.SourceSpan))))
+                    var detected = detectedDiagnostics.FirstOrDefault(d => elementNode.Contains(root.FindNode(d.Location.SourceSpan)));
+
+                    if (detected == null)
+                        continue;
+
+                    if (detected.Id == NullPointerDereference.NotNullDiagnosticId)
                     {
                         context.ReportSuppression(Suppression.Create(SupportedSuppressions[0], diagnostic));
                     }

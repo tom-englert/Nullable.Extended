@@ -47,10 +47,10 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
             }
         }
 
-        public IList<Diagnostic> DetecteDiagnostics { get; } = new List<Diagnostic>();
-
-        public void Analyze(SyntaxNode elementNode, SuppressionAnalysisContext context, SyntaxTree sourceTree)
+        public IList<Diagnostic> Analyze(SyntaxNode elementNode, SuppressionAnalysisContext context, SyntaxTree sourceTree)
         {
+            IList<Diagnostic> detecteDiagnostics = new List<Diagnostic>();
+
             var parentNode = elementNode;
 
             while (true)
@@ -70,13 +70,14 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
                     null,
                     semanticModel,
                     null!,
-                    diagnostic => DetecteDiagnostics.Add(diagnostic),
+                    diagnostic => detecteDiagnostics.Add(diagnostic),
                     _ => true,
                     context.CancellationToken
                 );
 
                 action(syntaxNodeAnalysisContext);
-                return;
+                
+                return detecteDiagnostics;
             }
         }
     }
