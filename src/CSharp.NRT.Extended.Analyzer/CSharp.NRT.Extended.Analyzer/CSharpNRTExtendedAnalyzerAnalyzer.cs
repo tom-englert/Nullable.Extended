@@ -25,6 +25,10 @@ namespace CSharp.NRT.Extended.Analyzer
         {
             var cancellationToken = context.CancellationToken;
 
+            var analysisContext = new SonarAnalysisContext();
+            var runner = new SymbolicExecutionRunner(new NullPointerDereference());
+            runner.Initialize(analysisContext);
+
             foreach (var diagnostic in context.ReportedDiagnostics)
             {
                 try
@@ -43,10 +47,6 @@ namespace CSharp.NRT.Extended.Analyzer
 
                     if (!(elementNode.Parent is MemberAccessExpressionSyntax))
                         continue;
-
-                    var analysisContext = new SonarAnalysisContext();
-                    var runner = new SymbolicExecutionRunner(new NullPointerDereference());
-                    runner.Initialize(analysisContext);
 
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
 

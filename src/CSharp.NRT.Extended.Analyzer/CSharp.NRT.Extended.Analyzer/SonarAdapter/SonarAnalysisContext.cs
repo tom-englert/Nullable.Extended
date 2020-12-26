@@ -38,6 +38,7 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
     public class SonarAnalysisContext
     {
         private readonly Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>> _actions = new Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>>();
+        private readonly Dictionary<SyntaxNode, IList<Diagnostic>> _cachedDiagnostics = new Dictionary<SyntaxNode, IList<Diagnostic>>();
 
         internal void RegisterSyntaxNodeAction(Action<SyntaxNodeAnalysisContext> action, params SyntaxKind[] syntaxKinds)
         {
@@ -49,8 +50,6 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
 
         public IList<Diagnostic> Analyze(SyntaxNode elementNode, SuppressionAnalysisContext context, SyntaxTree sourceTree)
         {
-            IList<Diagnostic> detecteDiagnostics = new List<Diagnostic>();
-
             var parentNode = elementNode;
 
             while (true)
@@ -62,22 +61,32 @@ namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
                 if (!_actions.TryGetValue(parentNode.Kind(), out var action))
                     continue;
 
-                var semanticModel = context.GetSemanticModel(sourceTree);
                 var declaration = parentNode;
+
+                if (_cachedDiagnostics.TryGetValue(declaration, out var cachedDiagnostics))
+                {
+                    return cachedDiagnostics;
+                }
+
+                var semanticModel = context.GetSemanticModel(sourceTree);
+
+                IList<Diagnostic> detectedDiagnostics = new List<Diagnostic>();
 
                 var syntaxNodeAnalysisContext = new SyntaxNodeAnalysisContext(
                     declaration,
                     null,
                     semanticModel,
                     null!,
-                    diagnostic => detecteDiagnostics.Add(diagnostic),
+                    diagnostic => detectedDiagnostics.Add(diagnostic),
                     _ => true,
                     context.CancellationToken
                 );
 
                 action(syntaxNodeAnalysisContext);
+
+                _cachedDiagnostics.Add(declaration, detectedDiagnostics);
                 
-                return detecteDiagnostics;
+                return detectedDiagnostics;
             }
         }
     }
