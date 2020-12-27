@@ -29,7 +29,7 @@ using SonarAnalyzer.LiveVariableAnalysis.CSharp;
 using SonarAnalyzer.ShimLayer.CSharp;
 using SonarAnalyzer.SymbolicExecution;
 
-namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
+namespace Nullable.Extended.Analyzer.SonarAdapter
 {
     internal static class FlowAnalysisExtensions
     {

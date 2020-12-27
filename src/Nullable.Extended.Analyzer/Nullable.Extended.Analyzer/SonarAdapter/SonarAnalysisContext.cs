@@ -25,7 +25,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
+namespace Nullable.Extended.Analyzer.SonarAdapter
 {
     /// <summary>
     /// SonarC# and SonarVB specific context for initializing an analyzer. This type acts as a wrapper around Roslyn

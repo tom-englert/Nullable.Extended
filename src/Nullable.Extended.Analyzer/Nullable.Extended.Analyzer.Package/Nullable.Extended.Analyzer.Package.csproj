@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -8,35 +8,30 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>CSharp.NRT.Extended.Analyzer</PackageId>
+    <PackageId>Nullable.Extended.Analyzer</PackageId>
     <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>Thomas</Authors>
+    <Authors>tom-englert.de</Authors>
     <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
     <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
     <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
     <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>CSharp.NRT.Extended.Analyzer</Description>
+    <Description>Nullable.Extended.Analyzer</Description>
     <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
     <Copyright>Copyright</Copyright>
-    <PackageTags>CSharp.NRT.Extended.Analyzer, analyzers</PackageTags>
+    <PackageTags>Nullable.Extended.Analyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CSharp.NRT.Extended.Analyzer\CSharp.NRT.Extended.Analyzer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="tools\*.ps1" CopyToOutputDirectory="Always" Pack="true" PackagePath="" />
+    <ProjectReference Include="..\Nullable.Extended.Analyzer\Nullable.Extended.Analyzer.csproj" />
   </ItemGroup>
 
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
-      <TfmSpecificPackageFile Include="$(OutputPath)\CSharp.NRT.Extended.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
-      <TfmSpecificPackageFile Include="$(OutputPath)\CSharp.NRT.Extended.Analyzer.CodeFixes.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\Nullable.Extended.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
 

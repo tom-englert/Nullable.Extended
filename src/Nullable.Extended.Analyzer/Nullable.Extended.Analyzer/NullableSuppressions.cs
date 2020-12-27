@@ -2,14 +2,14 @@
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
-using CSharp.NRT.Extended.Analyzer.SonarAdapter;
+using Nullable.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 using SonarAnalyzer.Rules.CSharp;
 
-namespace CSharp.NRT.Extended.Analyzer
+namespace Nullable.Extended.Analyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class CSharpNrtExtendedAnalyzerAnalyzer : DiagnosticSuppressor

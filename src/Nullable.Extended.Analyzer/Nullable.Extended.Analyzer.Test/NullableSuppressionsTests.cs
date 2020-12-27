@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.Testing;
 
-using VerifyCS = CSharp.NRT.Extended.AnalyzerTest.CSharpAnalyzerVerifier<CSharp.NRT.Extended.Analyzer.CSharpNrtExtendedAnalyzerAnalyzer>;
+using VerifyCS = Nullable.Extended.AnalyzerTest.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.CSharpNrtExtendedAnalyzerAnalyzer>;
 
-namespace CSharp.NRT.Extended.AnalyzerTest
+namespace Nullable.Extended.AnalyzerTest
 {
     [TestClass]
     public class CSharpNRTExtendedAnalyzerUnitTest

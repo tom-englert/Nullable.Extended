@@ -25,7 +25,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 using SonarAnalyzer.Rules.SymbolicExecution;
 using SonarAnalyzer.SymbolicExecution;
 
-namespace CSharp.NRT.Extended.Analyzer.SonarAdapter
+namespace Nullable.Extended.Analyzer.SonarAdapter
 {
     public sealed class SymbolicExecutionRunner
     {
