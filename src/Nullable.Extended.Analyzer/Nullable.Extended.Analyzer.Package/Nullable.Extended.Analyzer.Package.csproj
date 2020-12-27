@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageIconFiles Include="$(SolutionDir)*icon*.png" />
-    <PackageLicenseFiles Include="$(SolutionDir)*license*" />
+    <PackageLicenseFiles Include="$(SolutionDir)..\*license*" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,20 +19,20 @@
   </ItemGroup>
 
   <PropertyGroup>
+    <PackageId>Nullable.Extended.Analyzer</PackageId>
+    <Authors>tom-englert.de</Authors>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
+    <Description>A Roslyn analyzer to improve the experience when working with nullable reference types.</Description>
+    <Copyright>(c) 2020, tom-englert.de</Copyright>
+    <PackageTags>nullable, analyzers, roslyn</PackageTags>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+
     <PackageIconFileName Condition="'$(PackageIconFileName)' == ''">@(PackageIconFiles->'%(Filename)%(Extension)')</PackageIconFileName>
     <PackageLicenseFileName Condition="'$(PackageLicenseFileName)' == ''">@(PackageLicenseFiles->'%(Filename)%(Extension)')</PackageLicenseFileName>
     <PackageProjectUrl>http://github.com/$(GitHubOrganization)/$(PackageId)</PackageProjectUrl>
     <PackageIcon>$(PackageIconFileName)</PackageIcon>
     <PackageLicenseFile>$(PackageLicenseFileName)</PackageLicenseFile>
-
-    <PackageId>Nullable.Extended.Analyzer</PackageId>
-    <Authors>tom-englert.de</Authors>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-
-    <Description>Nullable.Extended.Analyzer</Description>
-    <Copyright>(c) 2020, tom-englert.de</Copyright>
-    <PackageTags>nullable, analyzers, roslyn</PackageTags>
-    <NoPackageAnalysis>true</NoPackageAnalysis>
 
     <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
