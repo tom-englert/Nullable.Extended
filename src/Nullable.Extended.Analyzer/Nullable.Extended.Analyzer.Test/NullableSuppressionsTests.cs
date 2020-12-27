@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Testing;
 
 using VerifyCS = Nullable.Extended.AnalyzerTest.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullableDiagnosticSuppressor>;
 
-namespace Nullable.Extended.AnalyzerTest
+namespace Nullable.Extended.Analyzer.Test
 {
     [TestClass]
     public class NullableDiagnosticSuppressorTest
@@ -15,7 +15,7 @@ namespace Nullable.Extended.AnalyzerTest
         {
             var test = @"";
 
-            await VerifyCS.VerifyAnalyzerAsync(test);
+            await VerifyCS.VerifySuppressorAsync(test);
         }
 
         [TestMethod]
@@ -50,7 +50,7 @@ namespace ConsoleApplication1
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(test, suppressed, permanent);
+            await VerifyCS.VerifySuppressorAsync(test, suppressed, permanent);
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ static class C
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(test, suppressed);
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
         }
     }
 }

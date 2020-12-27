@@ -1,9 +1,11 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Collections.Generic;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
+using Nullable.Extended.Analyzer;
 
 namespace Nullable.Extended.AnalyzerTest
 {
@@ -14,10 +16,12 @@ namespace Nullable.Extended.AnalyzerTest
         {
             private readonly bool _ignoreSuppressedDiagnostics;
 
-            public Test(string testCode, bool ignoreSuppressedDiagnostics)
+            public Test(string testCode, bool ignoreSuppressedDiagnostics, IDictionary<string, ReportDiagnostic> diagnosticOptions = null)
             {
                 _ignoreSuppressedDiagnostics = ignoreSuppressedDiagnostics;
                 TestCode = testCode;
+                TestBehaviors = TestBehaviors.SkipGeneratedCodeCheck;
+                diagnosticOptions ??= new Dictionary<string, ReportDiagnostic>();
 
                 SolutionTransforms.Add((solution, projectId) =>
                 {
@@ -27,6 +31,7 @@ namespace Nullable.Extended.AnalyzerTest
 
                     compilationOptions = compilationOptions
                         .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
+                        .WithSpecificDiagnosticOptions(diagnosticOptions)
                         .WithNullableContextOptions(NullableContextOptions.Enable);
 
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
