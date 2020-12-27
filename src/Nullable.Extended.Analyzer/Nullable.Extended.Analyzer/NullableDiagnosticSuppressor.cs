@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using Nullable.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
@@ -12,11 +11,11 @@ using SonarAnalyzer.Rules.CSharp;
 namespace Nullable.Extended.Analyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
-    public class CSharpNrtExtendedAnalyzerAnalyzer : DiagnosticSuppressor
+    public class NullableDiagnosticSuppressor : DiagnosticSuppressor
     {
         private static readonly SuppressionDescriptor[] _supportedSuppressions =
         {
-            new SuppressionDescriptor("NRTX_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access.")
+            new SuppressionDescriptor("NXE_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access.")
         };
 
         public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = _supportedSuppressions.ToImmutableArray();
@@ -67,22 +66,4 @@ namespace Nullable.Extended.Analyzer
             }
         }
     }
-
-    public class Test
-    {
-        public object? Method(object? target1, object? target2)
-        {
-            var x = target1?.ToString();
-            //if (x == null)
-            //    return null;
-
-
-            var y = target1.ToString();
-            var z = target2.ToString();
-            // var a = x.ToString();
-
-            return y ?? z;
-        }
-    }
-
 }

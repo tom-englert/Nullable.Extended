@@ -3,12 +3,12 @@ using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis.Testing;
 
-using VerifyCS = Nullable.Extended.AnalyzerTest.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.CSharpNrtExtendedAnalyzerAnalyzer>;
+using VerifyCS = Nullable.Extended.AnalyzerTest.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullableDiagnosticSuppressor>;
 
 namespace Nullable.Extended.AnalyzerTest
 {
     [TestClass]
-    public class CSharpNRTExtendedAnalyzerUnitTest
+    public class NullableDiagnosticSuppressorTest
     {
         [TestMethod]
         public async Task NoDiagnosticsShowUpOnEmptySource()
