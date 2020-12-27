@@ -1,0 +1,49 @@
+Nullable.Extended.Analyzer
+Copyright (C) 2020 tom-englert.de
+mailto:github@tom-englert.de
+
+Nullable.Extended.Analyzer uses third-party libraries or other resources that may be distributed under licenses different than the Nullable.Extended.Analyzer softwares.
+
+In the event that we accidentally failed to list a required notice, please bring it to our attention by posting an issue.
+
+This project uses other open source projects, which are used under the terms of the following license(s).
+--------------------------------------------------
+
+Sonar DotNet Analyzer
+
+	Copyright (c) SonarSource (http://www.sonarsource.com/).
+	
+    Licensed under the GNU LESSER GENERAL PUBLIC LICENSE; you may not use
+    these files except in compliance with the License. A copy of the license 
+	is distributed with this project
+
+
+StyleCopAnalyzers - Lightup
+
+    ﻿Copyright (c) Tunnel Vision Laboratories, LLC. All rights reserved.
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    these files except in compliance with the License. You may obtain a copy of the
+    License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software distributed
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+    CONDITIONS OF ANY KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations under the License.
+
+.NET Compiler Platform ("Roslyn")
+
+    Copyright Microsoft.
+
+    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+    these files except in compliance with the License. You may obtain a copy of the
+    License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software distributed
+    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+    CONDITIONS OF ANY KIND, either express or implied. See the License for the
+    specific language governing permissions and limitations under the License.
