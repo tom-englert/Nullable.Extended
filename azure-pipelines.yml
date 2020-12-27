@@ -24,8 +24,8 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: 'src\**\$(buildConfiguration)'
-    Contents: '*.nupkg'
+    SourceFolder: 'src'
+    Contents: '**\$(buildConfiguration)\*.nupkg'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\Nuget'
 
 - task: PublishBuildArtifacts@1
