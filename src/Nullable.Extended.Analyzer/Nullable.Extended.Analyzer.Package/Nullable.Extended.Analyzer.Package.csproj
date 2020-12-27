@@ -5,17 +5,25 @@
     <IncludeBuildOutput>false</IncludeBuildOutput>
     <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GitHubOrganization>tom-englert</GitHubOrganization>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageIconFiles Include="$(SolutionDir)*icon*.png" />
+    <PackageLicenseFiles Include="$(SolutionDir)*license*" />
+  </ItemGroup>
+
   <PropertyGroup>
+    <PackageIconFileName Condition="'$(PackageIconFileName)' == ''">@(PackageIconFiles->'%(Filename)%(Extension)')</PackageIconFileName>
+    <PackageLicenseFileName Condition="'$(PackageLicenseFileName)' == ''">@(PackageLicenseFiles->'%(Filename)%(Extension)')</PackageLicenseFileName>
+    <PackageProjectUrl>http://github.com/$(GitHubOrganization)/$(PackageId)</PackageProjectUrl>
+    <PackageIcon>$(PackageIconFileName)</PackageIcon>
+    <PackageLicenseFile>$(PackageLicenseFileName)</PackageLicenseFile>
+
     <PackageId>Nullable.Extended.Analyzer</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
     <Authors>tom-englert.de</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
     <Description>Nullable.Extended.Analyzer</Description>
     <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
     <Copyright>Copyright</Copyright>
