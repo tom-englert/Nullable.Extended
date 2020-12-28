@@ -19,24 +19,19 @@ namespace Nullable.Extended.Analyzer.Test
         }
 
         [TestMethod]
-        public async Task TestMethod2()
+        public async Task Roslyn_Issue_49653()
         {
-            var test = 
-@"using System;
+            var test =
+@"class Test
+{   
+    private void Method(object? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return;
 
-namespace ConsoleApplication1
-{
-    class Test
-    {   
-        private void Method(object? target1, object? target2)
-        {
-            var x = target1?.ToString();
-            if (x == null)
-                return;
-
-            var y = {|#0:target1|}.ToString();
-            var z = {|#1:target2|}.ToString();
-        }
+        var y = {|#0:target1|}.ToString();
+        var z = {|#1:target2|}.ToString();
     }
 }";
 
@@ -54,7 +49,7 @@ namespace ConsoleApplication1
         }
 
         [TestMethod]
-        public async Task Roslyn_Issues_48354()
+        public async Task Roslyn_Issue_48354()
         {
             var test =
 @"class A
@@ -85,6 +80,69 @@ static class C
             };
 
             await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
+        [TestMethod]
+        public async Task Test_CS8604()
+        {
+            var test =
+@"class C
+{
+    public string M1(string x)
+    {
+        return x.ToString();
+    }
+    public void M2(string? x, string? y)
+    {
+        if (string.IsNullOrEmpty(x))
+            return;
+
+        M1({|#0:x|});
+        M1({|#1:y|});
+    }
+}";
+
+            var permanent = new[]
+            {
+                DiagnosticResult.CompilerError("CS8604").WithLocation(1) //.WithArguments("x", "string C.M1(string x)"),
+            };
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8604").WithLocation(0) // .WithArguments("x", "string C.M1(string x)"),
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed, permanent);
+        }
+    }
+
+#nullable enable
+
+    class Test
+    {
+        private void Method(object? target1, object? target2)
+        {
+            var x = target1?.ToString();
+            if (x == null)
+                return;
+
+            var y = target1.ToString();
+            var z = target2.ToString();
+        }
+    }
+
+    class C
+    {
+        public string M1(string x)
+        {
+            return x.ToString();
+        }
+        public void M2(string? x)
+        {
+            if (string.IsNullOrEmpty(x))
+                return;
+
+            M1(x);
         }
     }
 }

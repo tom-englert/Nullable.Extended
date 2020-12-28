@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using Nullable.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
@@ -15,7 +16,8 @@ namespace Nullable.Extended.Analyzer
     {
         private static readonly SuppressionDescriptor[] _supportedSuppressions =
         {
-            new SuppressionDescriptor("NXE_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access.")
+            new SuppressionDescriptor("NX_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access."),
+            new SuppressionDescriptor("NX_CS8604", "CS8604", "Suppress CS8604 when full graph walk proves safe access.")
         };
 
         public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = _supportedSuppressions.ToImmutableArray();
@@ -41,25 +43,25 @@ namespace Nullable.Extended.Analyzer
 
                     var sourceSpan = location.SourceSpan;
                     var elementNode = root.FindNode(sourceSpan);
-                    if (!(elementNode is IdentifierNameSyntax))
-                        continue;
 
-                    if (!(elementNode.Parent is MemberAccessExpressionSyntax))
+                    var elementNodeLocation = elementNode.GetLocation();
+
+                    if (!((elementNode is IdentifierNameSyntax && elementNode.Parent is MemberAccessExpressionSyntax)
+                        || (elementNode is ArgumentSyntax && elementNode.Parent is ArgumentListSyntax)))
                         continue;
 
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
-
-                    var detected = detectedDiagnostics.FirstOrDefault(d => elementNode.Contains(root.FindNode(d.Location.SourceSpan)));
-
+                    var detected = detectedDiagnostics.FirstOrDefault(d => elementNodeLocation == d.Location);
                     if (detected == null)
                         continue;
 
                     if (detected.Id == NullPointerDereference.NotNullDiagnosticId)
                     {
-                        context.ReportSuppression(Suppression.Create(SupportedSuppressions[0], diagnostic));
+                        var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
+                        context.ReportSuppression(Suppression.Create(suppression, diagnostic));
                     }
                 }
-                catch (Exception ex)
+                catch // (Exception ex)
                 {
                     // could not analyze the full graph, so just do not suppress anything.
                 }
