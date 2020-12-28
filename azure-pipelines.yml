@@ -27,6 +27,7 @@ steps:
     SourceFolder: 'src'
     Contents: '**\$(buildConfiguration)\*.nupkg'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\Nuget'
+    flattenFolders: true
 
 - task: PublishBuildArtifacts@1
   inputs:
