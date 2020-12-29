@@ -7,7 +7,15 @@
 [Nullable reference types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) 
 are a great feature introduced with C# 8.0. It really helps in writing better code.
 
-### Suppressing false positives
+This analyzer helps to even more improve the experience when leveraging nullable reference types.
+
+### Installation
+
+Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
+
+### Usage
+
+#### Suppressing False Positives
 
 However when working with it a while you'll may notice some false positive `CS8602` or `CS8604` warnings that may be not expected.
 E.g. when working with [ReSharper's](https://www.jetbrains.com/resharper/) static analysis, it will enforce to use some 
@@ -35,7 +43,7 @@ warning if flow analysis reports that access is safe.
 - This may not cover all cases, but the most ubiquitous.
 - You may need at least MSBuild 16.8 to get suppressions work correctly.
 
-### Managing Null Forgiving Operators
+#### Managing Null Forgiving Operators
 
 Sometimes it is necessary to use the [null forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving) to suppress a false warning.
 However if you have used too many of them, it renders the value of nullable checks almost useless.
