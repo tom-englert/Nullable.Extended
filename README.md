@@ -1,4 +1,6 @@
-# Nullable Extended Analyzer
+# Nullable Extended Analyzer 
+[![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended.Analyzer?branchName=master)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&branchName=master)
+[![NuGet Status](https://img.shields.io/nuget/v/Nullable.Extended.Analyzer.svg)](https://www.nuget.org/packages/Nullable.Extended.Analyzer/)
 
 ## A Roslyn analyzer to improve the experience when working with nullable reference types.
 
@@ -31,7 +33,7 @@ It leverages the flow analysis of the [Sonar Analyzer](https://github.com/SonarS
 warning if flow analysis reports that access is safe.
 
 - This may not cover all cases, but the most ubiquitous.
-- You may need at least MSBuild 16.8 so have suppressions work correctly.
+- You may need at least MSBuild 16.8 to get suppressions work correctly.
 
 ### Managing Null Forgiving Operators
 
