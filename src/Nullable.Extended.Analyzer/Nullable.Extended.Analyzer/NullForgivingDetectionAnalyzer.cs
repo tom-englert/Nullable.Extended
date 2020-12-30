@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Nullable.Extended.Analyzer
@@ -29,6 +30,25 @@ namespace Nullable.Extended.Analyzer
 
         private void OnSuppressNullableWarningExpression(SyntaxNodeAnalysisContext context)
         {
+            if (context.Node is PostfixUnaryExpressionSyntax e)
+            {
+                switch (e.Operand)
+                {
+                    case LiteralExpressionSyntax l:
+                        switch (l.Kind())
+                        {
+                            case SyntaxKind.DefaultLiteralExpression:
+                            case SyntaxKind.NullLiteralExpression:
+                                return;
+                        }
+
+                        break;
+
+                    case DefaultExpressionSyntax d:
+                        return;
+                }
+            }
+
             context.ReportDiagnostic(Diagnostic.Create(rule, context.Node.GetLocation()));
         }
     }

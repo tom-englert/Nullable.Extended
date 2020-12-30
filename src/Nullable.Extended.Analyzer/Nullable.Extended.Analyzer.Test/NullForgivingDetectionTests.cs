@@ -33,5 +33,42 @@ namespace Nullable.Extended.Analyzer.Test
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected, _diagnosticOptions);
         }
+
+        [TestMethod]
+        public async Task NullForgivingExcludeNullOrDefault()
+        {
+            string item = default(string)!;
+            item = null!;
+
+            const string source =
+@"class C {
+    string M()
+    {
+        string item = null!;
+        item = default!;
+        item = default(string)!;
+        return item;
+    }
+}";
+            var expected = new[]
+            {
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.DiagnosticId).WithLocation(0)
+            };
+
+            await VerifyCS.VerifyAnalyzerAsync(source, null, _diagnosticOptions);
+        }
+
+
+    }
+
+    class C1
+    {
+        string M()
+        {
+            string item = null!;
+            item = default!;
+            item = default(string)!;
+            return item;
+        }
     }
 }

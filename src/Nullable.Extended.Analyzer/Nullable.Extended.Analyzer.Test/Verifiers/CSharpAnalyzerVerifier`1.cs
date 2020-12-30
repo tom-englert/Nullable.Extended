@@ -30,6 +30,8 @@ namespace Nullable.Extended.AnalyzerTest
 
         public static async Task VerifyAnalyzerAsync(string source, ICollection<DiagnosticResult> diagnostics, IDictionary<string, ReportDiagnostic> diagnosticOptions = null)
         {
+            diagnostics ??= Array.Empty<DiagnosticResult>();
+
             var test1 = new Test(source, false, diagnosticOptions);
 
             test1.ExpectedDiagnostics.AddRange(diagnostics);
