@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Linq;
 using Nullable.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-
 using SonarAnalyzer.Rules.CSharp;
 
 namespace Nullable.Extended.Analyzer
@@ -20,10 +18,17 @@ namespace Nullable.Extended.Analyzer
             new SuppressionDescriptor("NX_CS8604", "CS8604", "Suppress CS8604 when full graph walk proves safe access.")
         };
 
+        public NullableDiagnosticSuppressor()
+        {
+            Logger.Log("NullableDiagnosticSuppressor.ctor");
+        }
+
         public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = _supportedSuppressions.ToImmutableArray();
 
         public override void ReportSuppressions(SuppressionAnalysisContext context)
         {
+            Logger.Log(() => $"ReportSuppressions: {context.ReportedDiagnostics.Length}={string.Join("|", context.ReportedDiagnostics)}");
+
             var cancellationToken = context.CancellationToken;
 
             var analysisContext = new SonarAnalysisContext();
@@ -58,12 +63,14 @@ namespace Nullable.Extended.Analyzer
                     if (detected.Id == NullPointerDereference.NotNullDiagnosticId)
                     {
                         var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
+                        Logger.Log(() => $"  ReportSuppression: {diagnostic}");
                         context.ReportSuppression(Suppression.Create(suppression, diagnostic));
                     }
                 }
-                catch // (Exception ex)
+                catch (Exception ex)
                 {
                     // could not analyze the full graph, so just do not suppress anything.
+                    Logger.Log($"  Error: {ex}");
                 }
             }
         }
