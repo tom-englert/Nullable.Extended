@@ -17,7 +17,7 @@ Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Exten
 
 #### Suppressing False Positives
 
-After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602` or `CS8604` warnings that may be not expected.
+After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602`, `CS8603` or `CS8604` warnings that may be not expected.
 E.g. when working with [ReSharper's](https://www.jetbrains.com/resharper/) static analysis, it will enforce to use some 
 patterns that are not covered by the built-ins flow analysis. (see e.g. issues [49653](https://github.com/dotnet/roslyn/issues/49653) 
 or [48354](https://github.com/dotnet/roslyn/issues/48354)). While [ReSharper's](https://www.jetbrains.com/resharper/) analyzer based on 
@@ -36,7 +36,7 @@ public void Method(object? a)
 }
 ``` 
 
-The **Nullable Extended Analyzer** addresses these issues by double checking `CS8602` and `CS8604` warnings.
+The **Nullable Extended Analyzer** addresses these issues by double checking `CS8602`, `CS8603` and `CS8604` warnings.
 It leverages the flow analysis of the [Sonar Analyzer](https://github.com/SonarSource/sonar-dotnet) and suppresses the 
 warning if flow analysis reports that access is safe.
 
