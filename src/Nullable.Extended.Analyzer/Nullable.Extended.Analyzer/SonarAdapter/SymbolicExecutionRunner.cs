@@ -56,20 +56,10 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
                 explodedGraph.ExplorationEnded -= ExplorationEndedHandler;
             }
 
-            // Some of the rules can return good results if the tree was only partially visited; others need to completely
-            // walk the tree in order to avoid false positives.
-            //
-            // Due to this we split the rules in two sets and report the diagnostics in steps:
-            // - When the tree is successfully visited and ExplorationEnded event is raised.
-            // - When the tree visit ends (explodedGraph.Walk() returns). This will happen even if the maximum number of steps was
-            // reached or if an exception was thrown during analysis.
-            ReportDiagnostics(analyzerContexts, context, true);
-
             void ExplorationEndedHandler(object sender, EventArgs args)
             {
                 finishedWithNoError = true;
-
-                ReportDiagnostics(analyzerContexts, context, false);
+                ReportDiagnostics(analyzerContexts, context);
             }
 
             if (!finishedWithNoError)
@@ -78,9 +68,9 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
             }
         }
 
-        private void ReportDiagnostics(IEnumerable<ISymbolicExecutionAnalysisContext> analyzerContexts, SyntaxNodeAnalysisContext context, bool supportsPartialResults)
+        private void ReportDiagnostics(IEnumerable<ISymbolicExecutionAnalysisContext> analyzerContexts, SyntaxNodeAnalysisContext context)
         {
-            foreach (var analyzerContext in analyzerContexts.Where(analyzerContext => analyzerContext.SupportsPartialResults == supportsPartialResults))
+            foreach (var analyzerContext in analyzerContexts)
             {
                 foreach (var diagnostic in analyzerContext.GetDiagnostics())
                 {
@@ -92,6 +82,6 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
         }
 
         private IEnumerable<ISymbolicExecutionAnalysisContext> InitializeAnalyzers(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context) =>
-                new ISymbolicExecutionAnalysisContext[] { analyzer.AddChecks(explodedGraph, context) };
+                new [] { analyzer.AddChecks(explodedGraph, context) };
     }
 }

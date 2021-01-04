@@ -3,9 +3,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Nullable.Extended.Analyzer.SonarAdapter;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
-using SonarAnalyzer.Rules.CSharp;
 
 namespace Nullable.Extended.Analyzer
 {
@@ -15,6 +13,7 @@ namespace Nullable.Extended.Analyzer
         private static readonly SuppressionDescriptor[] _supportedSuppressions =
         {
             new SuppressionDescriptor("NX_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access."),
+            new SuppressionDescriptor("NX_CS8603", "CS8603", "Suppress CS8603 when full graph walk proves safe access."),
             new SuppressionDescriptor("NX_CS8604", "CS8604", "Suppress CS8604 when full graph walk proves safe access.")
         };
 
@@ -48,12 +47,7 @@ namespace Nullable.Extended.Analyzer
 
                     var sourceSpan = location.SourceSpan;
                     var elementNode = root.FindNode(sourceSpan);
-
                     var elementNodeLocation = elementNode.GetLocation();
-
-                    if (!((elementNode is IdentifierNameSyntax && elementNode.Parent is MemberAccessExpressionSyntax)
-                        || (elementNode is ArgumentSyntax && elementNode.Parent is ArgumentListSyntax)))
-                        continue;
 
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
                     var detected = detectedDiagnostics.FirstOrDefault(d => elementNodeLocation == d.Location);

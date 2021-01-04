@@ -161,41 +161,5 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
                 throw new SymbolicExecutionException(sb.ToString().Replace(Environment.NewLine, " ## "), e);
             }
         }
-
-        public static bool HasConstraint(this ISymbol symbol, SymbolicValueConstraint constraint, ProgramState programState)
-        {
-            var symbolicValue = programState.GetSymbolValue(symbol);
-            if (symbolicValue == null)
-            {
-                return false;
-            }
-
-            return programState.HasConstraint(symbolicValue, constraint);
-        }
-
-        public static ProgramState SetConstraint(this ISymbol symbol, SymbolicValueConstraint constraint,
-            ProgramState programState)
-        {
-            var symbolicValue = programState.GetSymbolValue(symbol);
-            if (symbolicValue == null ||
-                programState.HasConstraint(symbolicValue, constraint))
-            {
-                return programState;
-            }
-
-            return programState.SetConstraint(symbolicValue, constraint);
-        }
-
-        public static ProgramState RemoveConstraint(this ISymbol symbol, SymbolicValueConstraint constraint, ProgramState programState)
-        {
-            var symbolicValue = programState.GetSymbolValue(symbol);
-            if (symbolicValue == null ||
-                !programState.HasConstraint(symbolicValue, constraint))
-            {
-                return programState;
-            }
-
-            return programState.RemoveConstraint(symbolicValue, constraint);
-        }
     }
 }

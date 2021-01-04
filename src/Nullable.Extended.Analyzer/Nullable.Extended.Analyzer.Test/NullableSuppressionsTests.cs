@@ -19,7 +19,7 @@ namespace Nullable.Extended.Analyzer.Test
         }
 
         [TestMethod]
-        public async Task Roslyn_Issue_49653()
+        public async Task Test_CS8602_Roslyn_Issue_49653()
         {
             var test =
 @"class Test
@@ -49,7 +49,7 @@ namespace Nullable.Extended.Analyzer.Test
         }
 
         [TestMethod]
-        public async Task Roslyn_Issue_48354()
+        public async Task Test_CS8602_Roslyn_Issue_48354()
         {
             var test =
 @"class A
@@ -83,6 +83,30 @@ static class C
         }
 
         [TestMethod]
+        public async Task Test_CS8602_expression()
+        {
+            var test =
+@"class Test
+{   
+    private void Method(object? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return;
+
+        var y = ({|#0:target2 ?? target1|}).ToString();
+    }
+}";
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(0)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
+        [TestMethod]
         public async Task Test_CS8604()
         {
             var test =
@@ -104,16 +128,158 @@ static class C
 
             var permanent = new[]
             {
-                DiagnosticResult.CompilerError("CS8604").WithLocation(1) //.WithArguments("x", "string C.M1(string x)"),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(1)
             };
 
             var suppressed = new[]
             {
-                DiagnosticResult.CompilerError("CS8604").WithLocation(0) // .WithArguments("x", "string C.M1(string x)"),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(0)
             };
 
             await VerifyCS.VerifySuppressorAsync(test, suppressed, permanent);
         }
+
+        [TestMethod]
+        public async Task Test_CS8604_multiple_args()
+        {
+            var test =
+@"class C
+{
+    public string M1(string x, string y, string z)
+    {
+        return x.ToString();
+    }
+    public void M2(string? x, string? y)
+    {
+        if (string.IsNullOrEmpty(x))
+            return;
+
+        var z = y ?? x;
+
+        M1({|#0:x|}, {|#1:y|}, {|#2:z|});
+    }
+}";
+
+            var permanent = new []
+            {
+                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
+            };
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8604").WithLocation(0),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(2)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed, permanent);
+        }
+
+        [TestMethod]
+        public async Task Test_CS8604_multiple_args_with_inline_expression()
+        {
+            var test =
+@"class C
+{
+    public string M1(string x, string y, string z)
+    {
+        return x.ToString();
+    }
+    public void M2(string? x, string? y)
+    {
+        if (string.IsNullOrEmpty(x))
+            return;
+
+        M1({|#0:x|}, {|#1:y|}, {|#2:y ?? x|});
+    }
+}";
+
+            var permanent = new []
+            {
+                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
+            };
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8604").WithLocation(0),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(2)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed, permanent);
+        }
+
+        [TestMethod]
+        public async Task Test_CS8603()
+        {
+            var test =
+                @"class Test
+{   
+    private object Method(object? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return new object();
+
+        return {|#0:target1|};
+    }
+}";
+
+            var suppressed = new []
+            {
+                DiagnosticResult.CompilerError("CS8603").WithLocation(0)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
+        [TestMethod]
+        public async Task Test_CS8603_return_expression()
+        {
+            var test =
+                @"class Test
+{   
+    private object Method(object? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return new object();
+
+        return {|#0:target2 ?? target1|};
+    }
+}";
+
+            var suppressed = new []
+            {
+                DiagnosticResult.CompilerError("CS8603").WithLocation(0)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
+        [TestMethod]
+        public async Task Test_CS8603_return_expression_in_parentheses()
+        {
+            var test =
+                @"class Test
+{   
+    private object Method(object? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return new object();
+
+        return ({|#0:target2 ?? target1|});
+    }
+}";
+
+            var suppressed = new []
+            {
+                DiagnosticResult.CompilerError("CS8603").WithLocation(0)
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
+
     }
 
 #nullable enable
