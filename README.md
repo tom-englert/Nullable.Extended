@@ -7,7 +7,7 @@
 [Nullable reference types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) 
 are a great feature introduced with C# 8.0. It really helps in writing better code.
 
-This analyzer helps to even more improve the experience when leveraging nullable reference types.
+This analyzer helps to even more improve the experience with nullable reference types.
 
 ### Installation
 
