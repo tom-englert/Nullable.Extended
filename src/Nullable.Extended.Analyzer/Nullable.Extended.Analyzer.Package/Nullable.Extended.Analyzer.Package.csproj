@@ -44,6 +44,7 @@
   <Target Name="_AddAnalyzersToOutput">
     <ItemGroup>
       <TfmSpecificPackageFile Include="$(OutputPath)\Nullable.Extended.Analyzer.dll" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(OutputPath)\Nullable.Extended.Analyzer.targets" PackagePath="build" />
     </ItemGroup>
   </Target>
 

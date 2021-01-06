@@ -1,27 +1,50 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Immutable;
 using System.IO;
 
 namespace Nullable.Extended.Analyzer
 {
-    internal static class Logger
+    internal class Logger
     {
-        public static string LogFile = @"c:\Temp\NullableExtendedAnalyzer.log";
+        private static ImmutableDictionary<string, Logger> _loggers = ImmutableDictionary<string, Logger>.Empty.WithComparers(StringComparer.OrdinalIgnoreCase);
 
-        [Conditional("DEBUG")]
-        public static void Log(Func<string> getMessage)
+        private readonly string? _logFile;
+        private readonly object _mutex = new object();
+
+
+        private Logger(string? logFile)
         {
-            Log(getMessage());
+            _logFile = logFile;
         }
 
-        [Conditional("DEBUG")]
-        public static void Log(string message)
+        public static Logger Get(string? logFile)
+        {
+            return ImmutableInterlocked.GetOrAdd(ref _loggers, logFile ?? string.Empty, file => new Logger(file));
+        }
+
+        public void Log(Func<string> getMessage)
+        {
+            if (string.IsNullOrEmpty(_logFile))
+                return;
+
+            Log(_logFile!, getMessage());
+        }
+
+        public void Log(string message)
+        {
+            if (string.IsNullOrEmpty(_logFile))
+                return;
+
+            Log(_logFile!, message);
+        }
+
+        private void Log(string logFile, string message)
         {
             try
             {
-                lock (typeof(Logger))
+                lock (_mutex)
                 {
-                    File.AppendAllText(LogFile, message + Environment.NewLine);
+                    File.AppendAllText(logFile, message + Environment.NewLine);
                 }
             }
             catch

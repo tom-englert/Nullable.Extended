@@ -6,6 +6,9 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <NullableExtendedAnalyzer>
+      <LogFile>c:\temp\NullableExtendedAnalyzer.$(MSBuildProjectName).log</LogFile>
+    </NullableExtendedAnalyzer>
   </PropertyGroup>
 
   <ItemGroup>

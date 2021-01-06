@@ -19,7 +19,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ILMerge.Fody" Version="1.15.0" PrivateAssets="All"/>
+    <PackageReference Include="ILMerge.Fody" Version="1.15.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -33,6 +33,12 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\sonar-dotnet\analyzers\src\SonarAnalyzer.CSharp\SonarAnalyzer.CSharp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Nullable.Extended.Analyzer.targets">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
