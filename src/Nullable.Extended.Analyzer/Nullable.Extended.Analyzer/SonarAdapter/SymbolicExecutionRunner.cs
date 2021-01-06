@@ -36,7 +36,7 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
             this.analyzer = analyzer;
         }
 
-        public void Initialize(SonarAnalysisContext context) =>
+        public void Initialize(AnalysisContext context) =>
             context.RegisterExplodedGraphBasedAnalysis(Analyze);
 
         private void Analyze(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context)

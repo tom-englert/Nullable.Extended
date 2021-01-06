@@ -4,20 +4,19 @@ using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Nullable.Extended.Analyzer.SonarAdapter;
+using AnalysisContext = Nullable.Extended.Analyzer.SonarAdapter.AnalysisContext;
 
 namespace Nullable.Extended.Analyzer
 {
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NullableDiagnosticSuppressor : DiagnosticSuppressor
     {
-        private static readonly SuppressionDescriptor[] _supportedSuppressions =
-        {
-            new SuppressionDescriptor("NX_CS8602", "CS8602", "Suppress CS8602 when full graph walk proves safe access."),
-            new SuppressionDescriptor("NX_CS8603", "CS8603", "Suppress CS8603 when full graph walk proves safe access."),
-            new SuppressionDescriptor("NX_CS8604", "CS8604", "Suppress CS8604 when full graph walk proves safe access.")
-        };
+        private static readonly string[] SupportedSuppressionIds = { "CS8602", "CS8603", "CS8604" };
 
-        public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = _supportedSuppressions.ToImmutableArray();
+        private static SuppressionDescriptor ToSuppressionDescriptor(string id) =>
+            new SuppressionDescriptor("NX_" + id, id, $"Suppress {id} when full graph walk proves safe access.");
+
+        public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = SupportedSuppressionIds.Select(ToSuppressionDescriptor).ToImmutableArray();
 
         public override void ReportSuppressions(SuppressionAnalysisContext context)
         {
@@ -28,7 +27,7 @@ namespace Nullable.Extended.Analyzer
 
             var cancellationToken = context.CancellationToken;
 
-            var analysisContext = new SonarAnalysisContext();
+            var analysisContext = new AnalysisContext();
             var runner = new SymbolicExecutionRunner(new NullPointerDereference());
             runner.Initialize(analysisContext);
 
@@ -49,15 +48,12 @@ namespace Nullable.Extended.Analyzer
 
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
                     var detected = detectedDiagnostics.FirstOrDefault(d => elementNodeLocation == d.Location);
-                    if (detected == null)
+                    if (detected?.Id != NullPointerDereference.NotNullDiagnosticId) 
                         continue;
 
-                    if (detected.Id == NullPointerDereference.NotNullDiagnosticId)
-                    {
-                        var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
-                        logger.Log(() => $"  ReportSuppression: {diagnostic}");
-                        context.ReportSuppression(Suppression.Create(suppression, diagnostic));
-                    }
+                    var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
+                    logger.Log(() => $"  ReportSuppression: {diagnostic}");
+                    context.ReportSuppression(Suppression.Create(suppression, diagnostic));
                 }
                 catch (Exception ex)
                 {

@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -59,13 +57,13 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
 
             private void CollectMemberAccesses(MemberAccessedEventArgs args, SemanticModel semanticModel)
             {
-                if (!semanticModel.IsExtensionMethod(args.Identifier.Parent))
+                if (semanticModel.IsExtensionMethod(args.Identifier.Parent))
+                    return;
+
+                var existing = identifiers.TryGetValue(args.Identifier, out var maybeNull);
+                if (!existing || !maybeNull)
                 {
-                    var existing = identifiers.TryGetValue(args.Identifier, out var maybeNull);
-                    if (!existing || !maybeNull)
-                    {
-                        identifiers[args.Identifier] = args.MaybeNull;
-                    }
+                    identifiers[args.Identifier] = args.MaybeNull;
                 }
             }
         }

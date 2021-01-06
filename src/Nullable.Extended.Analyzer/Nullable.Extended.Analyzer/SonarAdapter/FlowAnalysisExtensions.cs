@@ -34,14 +34,14 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
     internal static class FlowAnalysisExtensions
     {
         public static void RegisterSyntaxNodeActionInNonGenerated(
-            this SonarAnalysisContext context,
+            this AnalysisContext context,
             Action<SyntaxNodeAnalysisContext> action,
             params SyntaxKind[] syntaxKinds)
         {
             context.RegisterSyntaxNodeAction(action, syntaxKinds);
         }
 
-        public static void RegisterExplodedGraphBasedAnalysis(this SonarAnalysisContext context,
+        public static void RegisterExplodedGraphBasedAnalysis(this AnalysisContext context,
             Action<CSharpExplodedGraph, SyntaxNodeAnalysisContext> analyze)
         {
             context.RegisterSyntaxNodeActionInNonGenerated(
