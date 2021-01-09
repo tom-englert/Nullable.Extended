@@ -18,10 +18,9 @@ Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Exten
 #### Suppressing False Positives
 
 After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602`, `CS8603` or `CS8604` warnings that may be not expected.
-E.g. when working with [ReSharper's](https://www.jetbrains.com/resharper/) static analysis, it will enforce to use some 
-patterns that are not covered by the built-ins flow analysis. (see e.g. issues [49653](https://github.com/dotnet/roslyn/issues/49653) 
-or [48354](https://github.com/dotnet/roslyn/issues/48354)). While [ReSharper's](https://www.jetbrains.com/resharper/) analyzer based on 
-it's own nullability annotations correctly handled those patterns, the C# Roslyn analyzer will raise a `CS8602` warning:
+
+E.g. [IDE0031](https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0031) will enforce you to use null propagation, 
+but this pattern is not fully covered by the flow analysis of the Roslyn nullable analyzer, and you will see a `CS8602` warning:
 
 ```c#
 public void Method(object? a) 
@@ -46,10 +45,16 @@ warning if flow analysis reports that access is safe.
 #### Managing Null Forgiving Operators
 
 Sometimes it is necessary to use the [null forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving) to suppress a false warning.
-However if you have used too many of them, it renders the value of nullable checks almost useless.
-Also since this analyzer will suppress the most common false positives, many of them may be obsolete after installing the analyzer.
+However using too many of them will render the value of nullable checks almost useless.
+Also since this analyzer will suppress many common false positives, some of them may be obsolete after installing the analyzer.
 
-Since it's hard to find them in code, this analyzer comes with a check to locate all of them, so you can judge if they are still needed.
-Simply turn the severity, which is none by default, to e.g. Warning, to list all usages of the null forgiving operator.
+Since it's hard to find the null forgiving operators in code, this analyzer comes with a set of checks to locate all of them, so you can easily judge if they are still needed.
+
+Occurrences are grouped into three diagnostics, to reflect their different contexts - e.g. general usages can be mostly avoided, while inside lambda expressions they are often unavoidable.
+- NX_0001 Find general usages of the NullForgiving operator.
+- NX_0002 Find usages of the NullForgiving operator on the `null` or `default` literals.
+- NX_0003 Find usages of the NullForgiving operator inside lambda expressions.
+
+Simply turn the severity, which is `None` by default, to e.g. `Warning`, to list all usages of the null forgiving operator.
 
 ![image](assets/NX_0001.png)
