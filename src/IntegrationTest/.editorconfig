@@ -1,0 +1,7 @@
+﻿[*.cs]
+
+# NX0003: Find usages of the NullForgiving operator inside lambda expressions.
+dotnet_diagnostic.NX0003.severity = warning
+
+# NX0001: Find general usages of the NullForgiving operator.
+dotnet_diagnostic.NX0001.severity = warning

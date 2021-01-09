@@ -7,6 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTest", "Integrat
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4D928DA1-6A13-4E5F-9377-B0DFE4E76749}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		NuGet.config = NuGet.config
 	EndProjectSection
 EndProject

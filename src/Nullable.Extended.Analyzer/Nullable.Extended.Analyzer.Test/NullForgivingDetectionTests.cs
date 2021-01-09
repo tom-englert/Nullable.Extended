@@ -25,7 +25,7 @@ namespace Nullable.Extended.Analyzer.Test
 @"class C {
     void M(object? item)
     {
-        {|#0:item!|}.ToString();
+        item{|#0:!|}.ToString();
     }
 }";
             var expected = new[]
@@ -39,16 +39,13 @@ namespace Nullable.Extended.Analyzer.Test
         [TestMethod]
         public async Task NullForgivingDetectOnNullOrDefault()
         {
-            var item = default(string)!;
-            item = null!;
-
             const string source =
 @"class C {
     string M()
     {
-        string item = {|#0:null!|};
-        item = {|#1:default!|};
-        item = {|#2:default(string)!|};
+        string item = null{|#0:!|};
+        item = default{|#1:!|};
+        item = default(string){|#2:!|};
         return item;
     }
 }";
@@ -65,9 +62,6 @@ namespace Nullable.Extended.Analyzer.Test
         [TestMethod]
         public async Task NullForgivingDetectInLambda()
         {
-            var item = default(string)!;
-            item = null!;
-
             const string source = @"
 using System.Collections.Generic;
 using System.Linq;
@@ -77,10 +71,10 @@ class C {
     {
         var x = Enumerable.Range(0, 10)
             .Select(i => ((object?)i.ToString(), (object?)i.ToString()))
-            .Select(item => {|#0:item.Item1!|}.ToString() + {|#1:item.Item2!|}.ToString())
-            .FirstOrDefault();
+            .Select(item => item.Item1{|#0:!|}.ToString() + item.Item2{|#1:!|}.ToString())
+            .FirstOrDefault(){|#2:!|};
 
-        return {|#2:x!|};
+        return x{|#3:!|};
     }
 }";
             var expected = new[]
@@ -88,6 +82,7 @@ class C {
                 DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(0),
                 DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(1),
                 DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(2),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected, _diagnosticOptions);

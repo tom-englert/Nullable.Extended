@@ -12,6 +12,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.9" PrivateAssets="all" />
     <PackageReference Include="Nullable.Extended.Analyzer" Version="1.0.0-beta05" />
   </ItemGroup>

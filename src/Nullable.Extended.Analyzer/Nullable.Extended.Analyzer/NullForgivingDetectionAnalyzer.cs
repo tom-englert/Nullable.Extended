@@ -13,9 +13,9 @@ namespace Nullable.Extended.Analyzer
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NullForgivingDetectionAnalyzer : DiagnosticAnalyzer
     {
-        public const string GeneralDiagnosticId = "NX_0001";
-        public const string NullOrDefaultDiagnosticId = "NX_0002";
-        public const string LambdaDiagnosticId = "NX_0003";
+        public const string GeneralDiagnosticId = "NX0001";
+        public const string NullOrDefaultDiagnosticId = "NX0002";
+        public const string LambdaDiagnosticId = "NX0003";
 
         private const string GeneralTitle = "Find general usages of the NullForgiving operator.";
         private const string NullOrDefaultTitle = "Find usages of the NullForgiving operator on null or default expression.";
@@ -37,21 +37,21 @@ namespace Nullable.Extended.Analyzer
 
         private void OnSuppressNullableWarningExpression(SyntaxNodeAnalysisContext context)
         {
-            var node = context.Node;
+            var node = (PostfixUnaryExpressionSyntax)context.Node;
 
             if (IsNullOrDefaultExpression(node))
             {
-                context.ReportDiagnostic(Diagnostic.Create(NullOrDefaultRule, node.GetLocation()));
+                context.ReportDiagnostic(Diagnostic.Create(NullOrDefaultRule, node.GetDiagnosticLocation()));
                 return;
             }
 
             if (IsInsideLambdaExpression(node))
             {
-                context.ReportDiagnostic(Diagnostic.Create(LambdaRule, node.GetLocation()));
+                context.ReportDiagnostic(Diagnostic.Create(LambdaRule, node.GetDiagnosticLocation()));
                 return;
             }
 
-            context.ReportDiagnostic(Diagnostic.Create(GeneralRule, node.GetLocation()));
+            context.ReportDiagnostic(Diagnostic.Create(GeneralRule, node.GetDiagnosticLocation()));
         }
 
         private bool IsInsideLambdaExpression(SyntaxNode node)
@@ -86,6 +86,11 @@ namespace Nullable.Extended.Analyzer
 
     internal static class ExtensionMethods
     {
+        public static Location GetDiagnosticLocation(this PostfixUnaryExpressionSyntax node)
+        {
+            return node.OperatorToken.GetLocation();
+        }
+
         public static IEnumerable<SyntaxNode> SelfAndDescendants(this SyntaxNode? node)
         {
             while (node != null)

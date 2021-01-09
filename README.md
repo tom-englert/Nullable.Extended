@@ -52,9 +52,9 @@ Also since this analyzer will suppress many common false positives, some of them
 Since it's hard to find the null forgiving operators in code, this analyzer comes with a set of checks to locate all of them, so you can easily judge if they are still needed.
 
 Occurrences are grouped into three diagnostics, to reflect their different contexts - e.g. general usages can be mostly avoided, while inside lambda expressions they are often unavoidable.
-- NX_0001 Find general usages of the NullForgiving operator.
-- NX_0002 Find usages of the NullForgiving operator on the `null` or `default` literals.
-- NX_0003 Find usages of the NullForgiving operator inside lambda expressions.
+- NX0001 Find general usages of the NullForgiving operator.
+- NX0002 Find usages of the NullForgiving operator on the `null` or `default` literals.
+- NX0003 Find usages of the NullForgiving operator inside lambda expressions.
 
 Simply turn the severity, which is `None` by default, to e.g. `Warning`, to list all usages of the null forgiving operator.
 
