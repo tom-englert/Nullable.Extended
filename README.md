@@ -20,7 +20,8 @@ Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Exten
 After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602`, `CS8603` or `CS8604` warnings that may be not expected.
 
 E.g. [IDE0031](https://docs.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0031) will enforce you to use null propagation, 
-but this pattern is not fully covered by the flow analysis of the Roslyn nullable analyzer, and you will see a `CS8602` warning:
+but this pattern is not fully covered by the flow analysis of the Roslyn nullable analyzer (see e.g. issues [49653](https://github.com/dotnet/roslyn/issues/49653) 
+or [48354](https://github.com/dotnet/roslyn/issues/48354)), and you will see a `CS8602` warning:
 
 ```c#
 public void Method(object? a) 
