@@ -100,7 +100,6 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
                     {
                         return;
                     }
-
                     Analyze(declaration.Body, symbol, analyze, c);
                     Analyze(declaration.ExpressionBody(), symbol, analyze, c);
                 },
@@ -126,7 +125,7 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
                 SyntaxKind.ParenthesizedLambdaExpression);
         }
 
-        private static void Analyze(CSharpSyntaxNode declarationBody, ISymbol symbol,
+        private static void Analyze(CSharpSyntaxNode? declarationBody, ISymbol symbol,
             Action<CSharpExplodedGraph, SyntaxNodeAnalysisContext> analyze, SyntaxNodeAnalysisContext context)
         {
             if (declarationBody == null ||
@@ -156,7 +155,7 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
                 sb.AppendLine($"Error processing method: {symbol?.Name ?? "{unknown}"}");
                 sb.AppendLine($"Method file: {declarationBody.GetLocation()?.GetLineSpan().Path ?? "{unknown}"}");
                 sb.AppendLine($"Method line: {declarationBody.GetLocation()?.GetLineSpan().StartLinePosition.ToString() ?? "{unknown}"}");
-                sb.AppendLine($"Inner exception: {e.ToString()}");
+                sb.AppendLine($"Inner exception: {e}");
 
                 throw new SymbolicExecutionException(sb.ToString().Replace(Environment.NewLine, " ## "), e);
             }

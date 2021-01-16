@@ -281,34 +281,4 @@ static class C
 
 
     }
-
-#nullable enable
-
-    class Test
-    {
-        private void Method(object? target1, object? target2)
-        {
-            var x = target1?.ToString();
-            if (x == null)
-                return;
-
-            var y = target1.ToString();
-            var z = target2.ToString();
-        }
-    }
-
-    class C
-    {
-        public string M1(string x)
-        {
-            return x.ToString();
-        }
-        public void M2(string? x)
-        {
-            if (string.IsNullOrEmpty(x))
-                return;
-
-            M1(x);
-        }
-    }
 }
