@@ -17,10 +17,10 @@ namespace Nullable.Extended.Analyzer
         public const string NullOrDefaultDiagnosticId = "NX0002";
         public const string LambdaDiagnosticId = "NX0003";
 
-        private const string GeneralTitle = "Find general usages of the NullForgiving operator.";
-        private const string NullOrDefaultTitle = "Find usages of the NullForgiving operator on null or default expression.";
-        private const string LambdaTitle = "Find usages of the NullForgiving operator inside lambda expressions.";
-        private const string MessageFormat = "Instance of NullForgiving operator detected.";
+        private const string GeneralTitle = "Find general usages of the NullForgiving operator";
+        private const string NullOrDefaultTitle = "Find usages of the NullForgiving operator on null or default expression";
+        private const string LambdaTitle = "Find usages of the NullForgiving operator inside lambda expressions";
+        private const string MessageFormat = "Instance of NullForgiving operator detected";
         private const string Category = "nullable";
         private const string HelpLink = "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving";
 
@@ -33,6 +33,8 @@ namespace Nullable.Extended.Analyzer
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(OnSuppressNullableWarningExpression, SyntaxKind.SuppressNullableWarningExpression);
+            context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+            context.EnableConcurrentExecution();
         }
 
         private void OnSuppressNullableWarningExpression(SyntaxNodeAnalysisContext context)
