@@ -59,3 +59,21 @@ Occurrences are grouped into three diagnostics, to reflect their different conte
 Simply turn the severity, which is `None` by default, to e.g. `Warning`, to list all usages of the null forgiving operator.
 
 ![image](assets/NX_0001.png)
+
+#### Configuration
+
+You can configure the analyzer by specifying a property named `<NullableExtendedAnalyzer>` in your project file:
+
+```xml
+<PropertyGroup>
+  ...
+  <Nullable>enable</Nullable>
+  <WarningsAsErrors>nullable</WarningsAsErrors>
+  <NullableExtendedAnalyzer>
+    <LogFile>c:\temp\NullableExtendedAnalyzer.$(MSBuildProjectName).log</LogFile>
+  </NullableExtendedAnalyzer>
+</PropertyGroup>
+```
+
+##### Available configuration properties
+- `LogFile`: The full path to a file where diagnostic messages will be written to.
