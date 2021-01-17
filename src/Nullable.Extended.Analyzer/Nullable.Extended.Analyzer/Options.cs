@@ -14,6 +14,8 @@ namespace Nullable.Extended.Analyzer
 
         public string? LogFile { get; set; }
 
+        public int? MaxSteps { get; set; }
+
         public static Options Read(AnalyzerConfigOptions configOptions)
         {
             try

@@ -141,24 +141,24 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
 
             var lva = CSharpLiveVariableAnalysis.Analyze(cfg, symbol, context.SemanticModel);
 
-            try
+            // try
             {
                 var explodedGraph = new CSharpExplodedGraph(cfg, symbol, context.SemanticModel, lva);
                 analyze(explodedGraph, context);
             }
-            catch (Exception e)
-            {
-                // Roslyn/MSBuild is currently cutting exception message at the end of the line instead
-                // of displaying the full message. As a workaround, we replace the line ending with ' ## '.
-                // See https://github.com/dotnet/roslyn/issues/1455 and https://github.com/dotnet/roslyn/issues/24346
-                var sb = new StringBuilder();
-                sb.AppendLine($"Error processing method: {symbol?.Name ?? "{unknown}"}");
-                sb.AppendLine($"Method file: {declarationBody.GetLocation()?.GetLineSpan().Path ?? "{unknown}"}");
-                sb.AppendLine($"Method line: {declarationBody.GetLocation()?.GetLineSpan().StartLinePosition.ToString() ?? "{unknown}"}");
-                sb.AppendLine($"Inner exception: {e}");
+            //catch (Exception e)
+            //{
+            //    // Roslyn/MSBuild is currently cutting exception message at the end of the line instead
+            //    // of displaying the full message. As a workaround, we replace the line ending with ' ## '.
+            //    // See https://github.com/dotnet/roslyn/issues/1455 and https://github.com/dotnet/roslyn/issues/24346
+            //    var sb = new StringBuilder();
+            //    sb.AppendLine($"Error processing method: {symbol?.Name ?? "{unknown}"}");
+            //    sb.AppendLine($"Method file: {declarationBody.GetLocation()?.GetLineSpan().Path ?? "{unknown}"}");
+            //    sb.AppendLine($"Method line: {declarationBody.GetLocation()?.GetLineSpan().StartLinePosition.ToString() ?? "{unknown}"}");
+            //    sb.AppendLine($"Inner exception: {e}");
 
-                throw new SymbolicExecutionException(sb.ToString().Replace(Environment.NewLine, " ## "), e);
-            }
+            //    throw new SymbolicExecutionException(sb.ToString().Replace(Environment.NewLine, " ## "), e);
+            //}
         }
     }
 }

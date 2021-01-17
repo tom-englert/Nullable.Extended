@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -28,8 +29,8 @@ namespace Nullable.Extended.Analyzer
             var cancellationToken = context.CancellationToken;
 
             var analysisContext = new AnalysisContext();
-            var runner = new SymbolicExecutionRunner(new NullPointerDereference());
-            runner.Initialize(analysisContext);
+
+            var index = 0;
 
             foreach (var diagnostic in context.ReportedDiagnostics)
             {
@@ -46,13 +47,24 @@ namespace Nullable.Extended.Analyzer
                     var elementNode = root.FindNode(sourceSpan);
                     var elementNodeLocation = elementNode.GetLocation();
 
+                    var stopwatch = Stopwatch.StartNew();
+
+                    var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
+                    runner.Initialize(analysisContext);
+
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
+
+                    var elapsed = stopwatch.ElapsedMilliseconds;
+                    stopwatch.Stop();
+
+                    logger.Log(() => $"  Analyzing {++index}: {elapsed} ms, {runner.Steps} steps, {detectedDiagnostics.Count} diagnostics");
+
                     var detected = detectedDiagnostics.FirstOrDefault(d => elementNodeLocation == d.Location);
                     if (detected?.Id != NullPointerDereference.NotNullDiagnosticId) 
                         continue;
 
                     var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
-                    logger.Log(() => $"  ReportSuppression: {diagnostic}");
+                    logger.Log(() => $"    ReportSuppression: {diagnostic}");
                     context.ReportSuppression(Suppression.Create(suppression, diagnostic));
                 }
                 catch (Exception ex)

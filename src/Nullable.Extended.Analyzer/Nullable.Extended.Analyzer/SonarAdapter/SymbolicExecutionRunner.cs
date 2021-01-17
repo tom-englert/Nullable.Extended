@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis.Diagnostics;
 using SonarAnalyzer.Rules.SymbolicExecution;
 using SonarAnalyzer.SymbolicExecution;
@@ -30,42 +31,28 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
     public sealed class SymbolicExecutionRunner
     {
         private readonly ISymbolicExecutionAnalyzer analyzer;
+        private readonly CancellationToken _cancellationToken;
+        private readonly int _maxSteps;
 
-        internal SymbolicExecutionRunner(ISymbolicExecutionAnalyzer analyzer)
+        internal SymbolicExecutionRunner(ISymbolicExecutionAnalyzer analyzer, CancellationToken cancellationToken, int maxSteps)
         {
             this.analyzer = analyzer;
+            _cancellationToken = cancellationToken;
+            _maxSteps = maxSteps;
         }
 
         public void Initialize(AnalysisContext context) =>
             context.RegisterExplodedGraphBasedAnalysis(Analyze);
 
+        public int Steps { get; private set; }
+
         private void Analyze(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context)
         {
-            var finishedWithNoError = false;
-
             var analyzerContexts = InitializeAnalyzers(explodedGraph, context).ToList();
 
-            try
-            {
-                explodedGraph.ExplorationEnded += ExplorationEndedHandler;
+            Steps += explodedGraph.Walk(_maxSteps, _cancellationToken);
 
-                explodedGraph.Walk();
-            }
-            finally
-            {
-                explodedGraph.ExplorationEnded -= ExplorationEndedHandler;
-            }
-
-            void ExplorationEndedHandler(object sender, EventArgs args)
-            {
-                finishedWithNoError = true;
-                ReportDiagnostics(analyzerContexts, context);
-            }
-
-            if (!finishedWithNoError)
-            {
-                throw new NotSupportedException("Could not walk full graph.");
-            }
+            ReportDiagnostics(analyzerContexts, context);
         }
 
         private void ReportDiagnostics(IEnumerable<ISymbolicExecutionAnalysisContext> analyzerContexts, SyntaxNodeAnalysisContext context)
@@ -82,6 +69,6 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
         }
 
         private IEnumerable<ISymbolicExecutionAnalysisContext> InitializeAnalyzers(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context) =>
-                new [] { analyzer.AddChecks(explodedGraph, context) };
+                new[] { analyzer.AddChecks(explodedGraph, context) };
     }
 }

@@ -1,5 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Microsoft.CodeAnalysis.Testing;
 
@@ -22,7 +23,7 @@ namespace Nullable.Extended.Analyzer.Test
         public async Task Test_CS8602_Roslyn_Issue_49653()
         {
             var test =
-@"class Test
+                @"class Test
 {   
     private void Method(object? target1, object? target2)
     {
@@ -52,7 +53,7 @@ namespace Nullable.Extended.Analyzer.Test
         public async Task Test_CS8602_Roslyn_Issue_48354()
         {
             var test =
-@"class A
+                @"class A
 {
     public B? B { get; set; }
 }
@@ -86,7 +87,7 @@ static class C
         public async Task Test_CS8602_expression()
         {
             var test =
-@"class Test
+                @"class Test
 {   
     private void Method(object? target1, object? target2)
     {
@@ -110,7 +111,7 @@ static class C
         public async Task Test_CS8604()
         {
             var test =
-@"class C
+                @"class C
 {
     public string M1(string x)
     {
@@ -143,7 +144,7 @@ static class C
         public async Task Test_CS8604_multiple_args()
         {
             var test =
-@"class C
+                @"class C
 {
     public string M1(string x, string y, string z)
     {
@@ -160,9 +161,9 @@ static class C
     }
 }";
 
-            var permanent = new []
+            var permanent = new[]
             {
-                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(1),
             };
 
             var suppressed = new[]
@@ -178,7 +179,7 @@ static class C
         public async Task Test_CS8604_multiple_args_with_inline_expression()
         {
             var test =
-@"class C
+                @"class C
 {
     public string M1(string x, string y, string z)
     {
@@ -193,9 +194,9 @@ static class C
     }
 }";
 
-            var permanent = new []
+            var permanent = new[]
             {
-                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
+                DiagnosticResult.CompilerError("CS8604").WithLocation(1),
             };
 
             var suppressed = new[]
@@ -223,7 +224,7 @@ static class C
     }
 }";
 
-            var suppressed = new []
+            var suppressed = new[]
             {
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0)
             };
@@ -247,7 +248,7 @@ static class C
     }
 }";
 
-            var suppressed = new []
+            var suppressed = new[]
             {
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0)
             };
@@ -271,7 +272,7 @@ static class C
     }
 }";
 
-            var suppressed = new []
+            var suppressed = new[]
             {
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0)
             };
@@ -279,6 +280,152 @@ static class C
             await VerifyCS.VerifySuppressorAsync(test, suppressed);
         }
 
+        [TestMethod]
+        public async Task Test_ComplexMethod()
+        {
+            var test = @"
+    namespace N
+    {
+        using System.Collections.Generic;
+        using System.IO;
+        using System.Linq;
 
+        using System.Threading;
+        using System.Threading.Tasks;
+
+        class C
+        {
+            class ProjectFile
+            {
+                public string? ProjectName { get; set; }
+                public string? UniqueProjectName { get; set; }
+            }
+
+            private static FileInfo? FindProject(DirectoryInfo directory, string solutionFolder)
+            {
+                return null;
+            }
+
+
+            static void UpdateProjectNames(DirectoryInfo solutionFolder, IList<ProjectFile> allProjectFiles,
+                CancellationToken? cancellationToken)
+            {
+                var fileNamesByDirectory = allProjectFiles.GroupBy(file => file.ToString()).ToArray();
+
+                var solutionFolderLength = solutionFolder.FullName.Length + 1;
+
+                foreach (var directoryFiles in fileNamesByDirectory)
+                {
+                    cancellationToken?.ThrowIfCancellationRequested();
+
+                    var directoryPath = directoryFiles?.Key;
+
+                    if (string.IsNullOrEmpty(directoryPath))
+                        continue;
+
+                    var directory = new DirectoryInfo(directoryPath);
+                    var project = FindProject(directory, solutionFolder.FullName);
+
+                    var projectName = directory.Name;
+                    string? uniqueProjectName = null;
+
+                    if (project != null)
+                    {
+                        projectName = Path.ChangeExtension(project.Name, null);
+
+                        var fullProjectName = project.FullName;
+                        if (fullProjectName.Length >= solutionFolderLength) // project found is in solution tree
+                        {
+                            uniqueProjectName = fullProjectName.Substring(solutionFolderLength);
+                        }
+                    }
+
+                    foreach (var file in directoryFiles)
+                    {
+                        file.ProjectName = projectName;
+                        file.UniqueProjectName = uniqueProjectName;
+                    }
+                }
+            }
+        }
+    }
+";
+
+            var permanent = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithSpan(58, 42, 58, 56),
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, null, permanent);
+        }
+
+
+    }
+
+#nullable enable
+    namespace N
+    {
+        using System.Collections.Generic;
+        using System.IO;
+        using System.Linq;
+
+        using System.Threading;
+        using System.Threading.Tasks;
+
+        class C
+        {
+            class ProjectFile
+            {
+                public string? ProjectName { get; set; }
+                public string? UniqueProjectName { get; set; }
+            }
+
+            private static FileInfo? FindProject(DirectoryInfo directory, string solutionFolder)
+            {
+                return null;
+            }
+
+
+            static void UpdateProjectNames(DirectoryInfo solutionFolder, IList<ProjectFile> allProjectFiles,
+                CancellationToken? cancellationToken)
+            {
+                var fileNamesByDirectory = allProjectFiles.GroupBy(file => file.ToString()).ToArray();
+
+                var solutionFolderLength = solutionFolder.FullName.Length + 1;
+
+                foreach (var directoryFiles in fileNamesByDirectory)
+                {
+                    cancellationToken?.ThrowIfCancellationRequested();
+
+                    var directoryPath = directoryFiles?.Key;
+
+                    if (string.IsNullOrEmpty(directoryPath))
+                        continue;
+
+                    var directory = new DirectoryInfo(directoryPath);
+                    var project = FindProject(directory, solutionFolder.FullName);
+
+                    var projectName = directory.Name;
+                    string? uniqueProjectName = null;
+
+                    if (project != null)
+                    {
+                        projectName = Path.ChangeExtension(project.Name, null);
+
+                        var fullProjectName = project.FullName;
+                        if (fullProjectName.Length >= solutionFolderLength) // project found is in solution tree
+                        {
+                            uniqueProjectName = fullProjectName.Substring(solutionFolderLength);
+                        }
+                    }
+
+                    foreach (var file in directoryFiles)
+                    {
+                        file.ProjectName = projectName;
+                        file.UniqueProjectName = uniqueProjectName;
+                    }
+                }
+            }
+        }
     }
 }
