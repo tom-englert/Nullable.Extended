@@ -29,6 +29,8 @@ namespace Nullable.Extended.Analyzer
             var cancellationToken = context.CancellationToken;
 
             var analysisContext = new AnalysisContext();
+            var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
+            runner.Initialize(analysisContext);
 
             var index = 0;
 
@@ -47,11 +49,10 @@ namespace Nullable.Extended.Analyzer
                     var elementNode = root.FindNode(sourceSpan);
                     var elementNodeLocation = elementNode.GetLocation();
 
+                    runner.PrepareAnalysis();
+
                     var stopwatch = Stopwatch.StartNew();
-
-                    var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
-                    runner.Initialize(analysisContext);
-
+                    
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
 
                     var elapsed = stopwatch.ElapsedMilliseconds;
