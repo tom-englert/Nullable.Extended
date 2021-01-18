@@ -351,12 +351,46 @@ static class C
     }
 ";
 
-            var permanent = new[]
+            var supressed = new[]
             {
                 DiagnosticResult.CompilerError("CS8602").WithSpan(58, 42, 58, 56),
             };
 
-            await VerifyCS.VerifySuppressorAsync(test, null, permanent);
+            await VerifyCS.VerifySuppressorAsync(test, supressed);
+        }
+
+        [TestMethod]
+        public async Task Test_ForEach()
+        {
+            var test = @"
+    namespace N
+    {
+        using System.Collections.Generic;
+        using System.Linq;
+
+        class C
+        {
+            static void M(IEnumerable<string>? directoryFiles)
+            {
+                var y = directoryFiles?.FirstOrDefault();
+                if (y == null)
+                    return;
+
+                foreach (var file in {|#0:directoryFiles|})
+                {
+                    var x = file;
+                }
+            }
+        }
+    }
+";
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(0),
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
         }
 
 
