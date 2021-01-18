@@ -77,3 +77,6 @@ You can configure the analyzer by specifying a property named `<NullableExtended
 
 ##### Available configuration properties
 - `LogFile`: The full path to a file where diagnostic messages will be written to.
+- `MaxSteps`: The maximum number of recursive steps in the graph walk (default 5000). 
+  Decrease to give up analysis of large methods in favor of speed, increase to analyze even very large methods.
+- `DisableSuppressions`: Set to true to (temporarily) disable suppressions.

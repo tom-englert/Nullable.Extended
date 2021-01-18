@@ -22,6 +22,10 @@ namespace Nullable.Extended.Analyzer
         public override void ReportSuppressions(SuppressionAnalysisContext context)
         {
             var options = Options.Read(context.Options.AnalyzerConfigOptionsProvider.GlobalOptions);
+            
+            if (options.DisableSuppressions)
+                return;
+
             var logger = Logger.Get(options.LogFile);
 
             logger.Log(() => $"ReportSuppressions: {context.ReportedDiagnostics.Length}={string.Join("|", context.ReportedDiagnostics)}");

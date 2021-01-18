@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.IO;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -16,19 +16,50 @@ namespace Nullable.Extended.Analyzer
 
         public int? MaxSteps { get; set; }
 
+        public bool DisableSuppressions { get; set; }
+
         public static Options Read(AnalyzerConfigOptions configOptions)
         {
             try
             {
-                if (configOptions.TryGetValue("build_property.nullableextendedanalyzer", out var options) && !string.IsNullOrEmpty(options))
+                if (configOptions.TryGetValue("build_property.nullableextendedanalyzer", out var options) &&
+                    !string.IsNullOrEmpty(options))
                 {
-                    using var xmlReader = XElement.Parse($"<Options>{options}</Options>").CreateReader();
-                    return (Options)Serializer.Deserialize(xmlReader);
+                    return Deserialize(options);
                 }
             }
-            catch { }
+            catch
+            {
+                // just go with default options
+            }
 
             return new Options();
+        }
+
+        public static Options Deserialize(string options)
+        {
+            using var stringReader = new StringReader($"<Options>{options}</Options>");
+            using var xmlReader = new CaseInsensitiveXmlReader(stringReader);
+
+            return (Options)Serializer.Deserialize(xmlReader);
+        }
+
+        private class CaseInsensitiveXmlReader : XmlTextReader
+        {
+            public CaseInsensitiveXmlReader(TextReader reader) : base(reader) { }
+
+            public override string ReadElementString()
+            {
+                var text = base.ReadElementString();
+
+                // bool TryParse accepts case-insensitive 'true' and 'false'
+                if (bool.TryParse(text, out bool result))
+                {
+                    text = XmlConvert.ToString(result);
+                }
+
+                return text;
+            }
         }
     }
 }
