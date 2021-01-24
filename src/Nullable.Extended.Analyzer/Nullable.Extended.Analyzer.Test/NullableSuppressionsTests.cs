@@ -393,6 +393,40 @@ static class C
             await VerifyCS.VerifySuppressorAsync(test, suppressed);
         }
 
+        [TestMethod]
+        public async Task Test_ForEachWithExpression()
+        {
+            var test = @"
+    namespace N
+    {
+        using System.Collections.Generic;
+        using System.Linq;
+
+        class C
+        {
+            static void M(IEnumerable<string>? d1, IEnumerable<string>? directoryFiles)
+            {
+                var y = directoryFiles?.FirstOrDefault();
+                if (y == null)
+                    return;
+
+                foreach (var file in ({|#0:d1 ?? directoryFiles|}))
+                {
+                    var x = file;
+                }
+            }
+        }
+    }
+";
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(0),
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
 
     }
 
