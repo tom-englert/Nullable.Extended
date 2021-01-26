@@ -26,6 +26,8 @@
     <StartAction>Program</StartAction>
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -45,17 +47,26 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AnalyzerFramework\AnalysisResult.cs" />
+    <Compile Include="AnalyzerFramework\AnalyzerEngine.cs" />
+    <Compile Include="AnalyzerFramework\ExtensionMethods.cs" />
+    <Compile Include="AnalyzerFramework\IAnalyzerEngine.cs" />
+    <Compile Include="AnalyzerFramework\ISyntaxTreeAnalyzer.cs" />
+    <Compile Include="AnalyzerFramework\AnalysisContext.cs" />
+    <Compile Include="Analyzer\NullForgivingContext.cs" />
+    <Compile Include="Analyzer\NullForgivingDetectionAnalyzer.cs" />
     <Compile Include="OpenToolWindowCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Package.cs" />
+    <Compile Include="ExtensionPackage.cs" />
     <Compile Include="ProvideToolboxControlAttribute.cs" />
-    <Compile Include="ToolboxControl.xaml.cs">
-      <DependentUpon>ToolboxControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ToolWindow.cs" />
-    <Compile Include="ToolWindowControl.xaml.cs">
-      <DependentUpon>ToolWindowControl.xaml</DependentUpon>
+    <Compile Include="Views\ToolWindowShell.xaml.cs">
+      <DependentUpon>ToolWindowShell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\ToolWindowView.xaml.cs">
+      <DependentUpon>ToolWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ToolWindowViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="source.extension.vsixmanifest">
@@ -78,17 +89,40 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DataGridExtensions">
+      <Version>2.4.7</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices">
+      <Version>3.8.0</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.0.1" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.8.3038" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="3.8.0" />
+    <PackageReference Include="PropertyChanged.Fody">
+      <Version>3.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="TomsToolbox.Composition.Ninject">
+      <Version>2.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="TomsToolbox.Wpf.Composition">
+      <Version>2.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel">
+      <Version>2.3.2</Version>
+    </PackageReference>
+    <PackageReference Include="TomsToolbox.Wpf.Styles">
+      <Version>2.3.2</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="ToolboxControl.xaml">
+    <Page Include="Views\ToolWindowShell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ToolWindowControl.xaml">
+    <Page Include="Views\ToolWindowView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -100,6 +134,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Icons.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\refresh.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

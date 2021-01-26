@@ -1,6 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using Nullable.Extended.Extension.Views;
 
 namespace Nullable.Extended.Extension
 {
@@ -23,12 +24,14 @@ namespace Nullable.Extended.Extension
         /// </summary>
         public ToolWindow() : base(null)
         {
-            Caption = "ToolWindow";
+            Caption = "Nullable.Extended";
+        }
 
-            // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
-            // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
-            // the object returned by the Content property.
-            Content = new ToolWindowControl();
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+            Content = ((ExtensionPackage)Package).ExportProvider.GetExportedValue<ToolWindowShell>();
         }
     }
 }

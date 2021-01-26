@@ -1,0 +1,11 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
+
+namespace Nullable.Extended.Extension.AnalyzerFramework
+{
+    public interface IAnalyzerEngine
+    {
+        Task<IEnumerable<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documents);
+    }
+}
