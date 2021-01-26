@@ -55,11 +55,6 @@ namespace Nullable.Extended.Extension
         }
 
         /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider => _package;
-
-        /// <summary>
         /// Initializes the singleton instance of the command.
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
@@ -70,7 +65,7 @@ namespace Nullable.Extended.Extension
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
 
             var commandService = await package.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
-            Instance = new OpenToolWindowCommand(package, commandService);
+            Instance = new OpenToolWindowCommand(package, commandService!);
         }
 
         /// <summary>

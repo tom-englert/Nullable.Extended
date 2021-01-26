@@ -18,38 +18,39 @@
       </Style.Triggers>
     </Style>
   </UserControl.Resources>
-  <DockPanel>
-    <ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
-      <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Continue">
-        <ToolBar.Template>
-          <ControlTemplate TargetType="{x:Type ToolBar}">
-            <Grid Name="Grid" SnapsToDevicePixels="true">
-              <Border x:Name="MainPanelBorder" Background="{TemplateBinding Control.Background}"
+  <Grid>
+    <DockPanel>
+      <ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+        <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Continue">
+          <ToolBar.Template>
+            <ControlTemplate TargetType="{x:Type ToolBar}">
+              <Grid Name="Grid" SnapsToDevicePixels="true">
+                <Border x:Name="MainPanelBorder" Background="{TemplateBinding Control.Background}"
                           BorderBrush="{TemplateBinding Control.BorderBrush}" BorderThickness="{TemplateBinding Control.BorderThickness}"
                           Padding="{TemplateBinding Control.Padding}">
-                <DockPanel KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local">
-                  <ContentPresenter x:Name="ToolBarHeader" ContentSource="Header" HorizontalAlignment="Center"
+                  <DockPanel KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local">
+                    <ContentPresenter x:Name="ToolBarHeader" ContentSource="Header" HorizontalAlignment="Center"
                                         VerticalAlignment="Center" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                  <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-                </DockPanel>
-              </Border>
-            </Grid>
-            <ControlTemplate.Triggers>
-              <Trigger Property="UIElement.IsEnabled" Value="false">
-                <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Property="Control.Foreground" />
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </ToolBar.Template>
-        <Button ToolTip="Refresh"
+                    <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true" SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                  </DockPanel>
+                </Border>
+              </Grid>
+              <ControlTemplate.Triggers>
+                <Trigger Property="UIElement.IsEnabled" Value="false">
+                  <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Property="Control.Foreground" />
+                </Trigger>
+              </ControlTemplate.Triggers>
+            </ControlTemplate>
+          </ToolBar.Template>
+          <Button ToolTip="Refresh"
                 Style="{StaticResource ToolbarCommandButtonStyle}"
                 Command="{Binding ScanCommand }">
-          <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/refresh.png" />
-        </Button>
-      </ToolBar>
-    </ToolBarTray>
+            <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/refresh.png" />
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
 
-    <DataGrid ItemsSource="{Binding AnalysisResults}"
+      <DataGrid ItemsSource="{Binding AnalysisResults}"
               Style="{DynamicResource {x:Static styles:ResourceKeys.DataGridStyle}}"
               AutoGenerateColumns="False"
               HeadersVisibility="Column"
@@ -57,14 +58,16 @@
               dgx:Tools.ApplyInitialSorting="True"
               dgx:DataGridFilter.IsAutoFilterEnabled="True"
               toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenDocumentCommand}">
-      <DataGrid.Columns>
-        <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}"/>
-        <DataGridTextColumn Header="Context" Width="80" Binding="{Binding Context}"/>
+        <DataGrid.Columns>
+          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}"/>
+          <DataGridTextColumn Header="Context" Width="80" Binding="{Binding Context}"/>
 
-        <DataGridTextColumn Header="File" Width="*" Binding="{Binding FilePath}" SortDirection="Ascending"/>
-        <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending"/>
-        <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}"  SortDirection="Descending"/>
-      </DataGrid.Columns>
-    </DataGrid>
-  </DockPanel>
+          <DataGridTextColumn Header="File" Width="*" Binding="{Binding FilePath}" SortDirection="Ascending"/>
+          <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending"/>
+          <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}"  SortDirection="Descending"/>
+        </DataGrid.Columns>
+      </DataGrid>
+    </DockPanel>
+    <toms:LoadingIndicator IsActive="{Binding IsAnalyzing}" Header="Analyzing..." />
+  </Grid>
 </UserControl>
