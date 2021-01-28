@@ -6,4 +6,7 @@
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
              Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
              composition:VisualComposition.RegionId="Shell">
+  <UserControl.Resources>
+    <ResourceDictionary Source="/Nullable.Extended.Extension;component/Resources/VSColorScheme.xaml" />
+  </UserControl.Resources>
 </UserControl>

@@ -32,7 +32,6 @@ namespace Nullable.Extended.Extension
             _kernel.Bind<IExportProvider>().ToConstant(_exportProvider);
             _kernel.Bind<IServiceProvider>().ToConstant(this);
 
-            await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await OpenToolWindowCommand.InitializeAsync(this);
         }
 

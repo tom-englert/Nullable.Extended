@@ -7,9 +7,26 @@
              xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
              xmlns:views="clr-namespace:Nullable.Extended.Extension.Views"
              xmlns:styles="urn:TomsToolbox.Wpf.Styles"
+             xmlns:composition="urn:TomsToolbox.Composition"
              mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance views:ToolWindowViewModel}">
   <UserControl.Resources>
+
+    <styles:InvertGrayEffect x:Key="InvertGrayEffect" />
+
+    <Style TargetType="Image" x:Key="ImageStyle">
+      <Style.Triggers>
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+        <DataTrigger Binding="{Binding IsDarkTheme, Source={composition:Import views:IThemeManager}}" Value="True">
+          <Setter Property="Effect" Value="{StaticResource InvertGrayEffect}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}">
+      <Setter Property="Stretch" Value="None" />
+    </Style>
+
     <Style TargetType="{x:Type Control}" x:Key="ToolbarCommandButtonStyle">
       <Style.Triggers>
         <Trigger Property="IsEnabled" Value="False">

@@ -45,6 +45,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		directory.build.props = directory.build.props
+		..\LICENSE.txt = ..\LICENSE.txt
 		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
@@ -147,7 +148,7 @@ Global
 		{AAB9260C-5214-406E-BD92-7D744CE9C9E8} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ShowErrorsInErrorList = False
 		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
+		RESX_ShowErrorsInErrorList = False
 	EndGlobalSection
 EndGlobal

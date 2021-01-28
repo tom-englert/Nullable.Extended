@@ -16,13 +16,13 @@
         <Parent guid="guidPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Nullable.Extended</ButtonText>
+          <ButtonText>Null forgiving analyzer</ButtonText>
         </Strings>
       </Button>
     </Buttons>
 
     <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\Icons.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImages" href="Resources\Icons.png" usedList="bmpPic1" />
     </Bitmaps>
   </Commands>
 
@@ -38,11 +38,6 @@
 
     <GuidSymbol name="guidImages" value="{e0f051ec-6838-4ef4-a2f5-2eca3c95ca16}">
       <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
     </GuidSymbol>
   
   </Symbols>
