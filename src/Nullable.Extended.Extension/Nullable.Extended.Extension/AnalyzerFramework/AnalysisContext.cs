@@ -1,4 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
@@ -8,11 +9,20 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
     /// </summary>
     public class AnalysisContext
     {
-        public Document Document { get; }
-
-        public AnalysisContext(Document document)
+        public AnalysisContext(Document document, SyntaxTree syntaxTree, SyntaxNode syntaxRoot)
         {
             Document = document;
+            SyntaxTree = syntaxTree;
+            SyntaxRoot = syntaxRoot;
+            Text = syntaxRoot.GetText();
         }
+
+        public Document Document { get; }
+
+        public SyntaxTree SyntaxTree { get; }
+
+        public SyntaxNode SyntaxRoot { get; }
+
+        public SourceText Text { get; set; }
     }
 }

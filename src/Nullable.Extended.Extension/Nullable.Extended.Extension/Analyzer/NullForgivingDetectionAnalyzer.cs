@@ -16,25 +16,24 @@ namespace Nullable.Extended.Extension.Analyzer
     [Export(typeof(ISyntaxTreeAnalyzer))]
     class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer
     {
-        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(SyntaxTree syntaxTree, AnalysisContext analysisContext)
+        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext)
         {
-            var root = await syntaxTree.GetRootAsync().ConfigureAwait(false);
-
-            var text = root.ToFullString();
+            var root = analysisContext.SyntaxRoot;
 
             var items = root
                 .DescendantNodesAndSelf()
                 .OfType<PostfixUnaryExpressionSyntax>()
-                .Where(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression));
+                .Where(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression))
+                .ToImmutableList();
 
-            var results = items.Select(item => MapResult(syntaxTree, analysisContext, item, text));
+            var results = items.Select(item => MapResult(analysisContext, item));
 
             return results.ToImmutableArray();
         }
 
-        private static AnalysisResult MapResult(SyntaxTree syntaxTree, AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node, string text)
+        private static AnalysisResult MapResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node)
         {
-            return new AnalysisResult(analysisContext, syntaxTree.FilePath, node, GetContext(node), text.Substring(0, node.Span.End));
+            return new AnalysisResult(analysisContext, node, GetContext(node));
         }
 
         private static NullForgivingContext GetContext(PostfixUnaryExpressionSyntax node)

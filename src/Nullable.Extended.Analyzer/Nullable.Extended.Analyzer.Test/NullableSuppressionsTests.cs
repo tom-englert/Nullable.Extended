@@ -427,72 +427,45 @@ static class C
             await VerifyCS.VerifySuppressorAsync(test, suppressed);
         }
 
+        [TestMethod]
+        public async Task Test_ArrayAccess()
+        {
+            var test = @"
+class Test
+{
+    private void Method(object[,]? target1, object? target2)
+    {
+        var x = target1?.ToString();
+        if (x == null)
+            return;
+
+        var y = {|#0:target1|}[0,1].ToString();
+    }
+}";
+
+            var suppressed = new[]
+            {
+                DiagnosticResult.CompilerError("CS8602").WithLocation(0),
+            };
+
+            await VerifyCS.VerifySuppressorAsync(test, suppressed);
+        }
+
 
     }
 
 #nullable enable
     namespace N
     {
-        using System.Collections.Generic;
-        using System.IO;
-        using System.Linq;
-
-        using System.Threading;
-        using System.Threading.Tasks;
-
-        class C
+        class Test
         {
-            class ProjectFile
+            private void Method(object[]? target1, object? target2)
             {
-                public string? ProjectName { get; set; }
-                public string? UniqueProjectName { get; set; }
-            }
+                var x = target1?.ToString();
+                if (x == null)
+                    return;
 
-            private static FileInfo? FindProject(DirectoryInfo directory, string solutionFolder)
-            {
-                return null;
-            }
-
-
-            static void UpdateProjectNames(DirectoryInfo solutionFolder, IList<ProjectFile> allProjectFiles,
-                CancellationToken? cancellationToken)
-            {
-                var fileNamesByDirectory = allProjectFiles.GroupBy(file => file.ToString()).ToArray();
-
-                var solutionFolderLength = solutionFolder.FullName.Length + 1;
-
-                foreach (var directoryFiles in fileNamesByDirectory)
-                {
-                    cancellationToken?.ThrowIfCancellationRequested();
-
-                    var directoryPath = directoryFiles?.Key;
-
-                    if (string.IsNullOrEmpty(directoryPath))
-                        continue;
-
-                    var directory = new DirectoryInfo(directoryPath);
-                    var project = FindProject(directory, solutionFolder.FullName);
-
-                    var projectName = directory.Name;
-                    string? uniqueProjectName = null;
-
-                    if (project != null)
-                    {
-                        projectName = Path.ChangeExtension(project.Name, null);
-
-                        var fullProjectName = project.FullName;
-                        if (fullProjectName.Length >= solutionFolderLength) // project found is in solution tree
-                        {
-                            uniqueProjectName = fullProjectName.Substring(solutionFolderLength);
-                        }
-                    }
-
-                    foreach (var file in directoryFiles)
-                    {
-                        file.ProjectName = projectName;
-                        file.UniqueProjectName = uniqueProjectName;
-                    }
-                }
+                var y = target1[0].ToString();
             }
         }
     }

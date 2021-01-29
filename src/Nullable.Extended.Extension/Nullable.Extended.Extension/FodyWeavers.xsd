@@ -4,6 +4,7 @@
   <xs:element name="Weavers">
     <xs:complexType>
       <xs:all>
+        <xs:element name="Throttle" minOccurs="0" maxOccurs="1" type="xs:anyType" />
         <xs:element name="PropertyChanged" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:attribute name="InjectOnPropertyNameChanged" type="xs:boolean">
@@ -51,6 +52,11 @@
                 <xs:documentation>Used to turn off build warnings about mismatched On_PropertyName_Changed methods.</xs:documentation>
               </xs:annotation>
             </xs:attribute>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="ConfigureAwait" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:attribute name="ContinueOnCapturedContext" type="xs:boolean" />
           </xs:complexType>
         </xs:element>
       </xs:all>

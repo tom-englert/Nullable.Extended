@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
@@ -32,9 +33,7 @@ namespace Nullable.Extended.Analyzer
 
             var cancellationToken = context.CancellationToken;
 
-            var analysisContext = new AnalysisContext();
-            var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
-            runner.Initialize(analysisContext);
+            var cachedDiagnostics= new Dictionary<SyntaxNode, IList<Diagnostic>>();
 
             var index = 0;
 
@@ -53,7 +52,9 @@ namespace Nullable.Extended.Analyzer
                     var elementNode = root.FindNode(sourceSpan);
                     var elementNodeLocation = elementNode.GetLocation();
 
-                    runner.PrepareAnalysis();
+                    var analysisContext = new AnalysisContext(cachedDiagnostics);
+                    var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
+                    runner.Initialize(analysisContext);
 
                     var stopwatch = Stopwatch.StartNew();
                     

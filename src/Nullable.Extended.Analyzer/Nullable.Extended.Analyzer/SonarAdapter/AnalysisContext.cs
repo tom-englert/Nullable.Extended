@@ -10,7 +10,12 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
     public class AnalysisContext
     {
         private readonly Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>> _actions = new Dictionary<SyntaxKind, Action<SyntaxNodeAnalysisContext>>();
-        private readonly Dictionary<SyntaxNode, IList<Diagnostic>> _cachedDiagnostics = new Dictionary<SyntaxNode, IList<Diagnostic>>();
+        private readonly Dictionary<SyntaxNode, IList<Diagnostic>> _cachedDiagnostics;
+
+        public AnalysisContext(Dictionary<SyntaxNode, IList<Diagnostic>> cachedDiagnostics)
+        {
+            _cachedDiagnostics = cachedDiagnostics;
+        }
 
         internal void RegisterSyntaxNodeAction(Action<SyntaxNodeAnalysisContext> action, params SyntaxKind[] syntaxKinds)
         {

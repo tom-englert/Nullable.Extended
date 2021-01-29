@@ -5,14 +5,21 @@ using System.ComponentModel;
 using System.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using EnvDTE;
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 using Nullable.Extended.Extension.Analyzer;
 using Nullable.Extended.Extension.AnalyzerFramework;
+using Throttle;
+using TomsToolbox.Essentials;
 using TomsToolbox.Wpf;
 using TomsToolbox.Wpf.Composition.AttributedModel;
+using Document = Microsoft.CodeAnalysis.Document;
+using TextDocument = EnvDTE.TextDocument;
 
 namespace Nullable.Extended.Extension.Views
 {
@@ -23,6 +30,7 @@ namespace Nullable.Extended.Extension.Views
         private readonly IAnalyzerEngine _analyzerEngine;
         private readonly VisualStudioWorkspace _workspace;
         private readonly DTE _dte;
+        private HashSet<DocumentId> _changedDocuments = new HashSet<DocumentId>();
 
         public ToolWindowViewModel(IAnalyzerEngine analyzerEngine, IServiceProvider serviceProvider)
         {
@@ -33,6 +41,50 @@ namespace Nullable.Extended.Extension.Views
 
             var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
             _workspace = componentModel.GetService<VisualStudioWorkspace>();
+
+            _workspace.WorkspaceChanged += Workspace_WorkspaceChanged;
+        }
+
+        private void Workspace_WorkspaceChanged(object sender, Microsoft.CodeAnalysis.WorkspaceChangeEventArgs e)
+        {
+            var documentId = e.DocumentId;
+
+            if (e.Kind == WorkspaceChangeKind.DocumentChanged && documentId != null)
+            {
+                _changedDocuments.Add(documentId);
+                AnalyzeChanges();
+            }
+        }
+
+        [Throttled(typeof(TomsToolbox.Wpf.Throttle), 2000)]
+        private async void AnalyzeChanges()
+        {
+            if (IsAnalyzing)
+                return;
+
+            try
+            {
+                var changedDocuments = Interlocked.Exchange(ref _changedDocuments, new HashSet<DocumentId>());
+
+                var documents = changedDocuments
+                    .Select(documentId => _workspace.CurrentSolution.GetDocument(documentId))
+                    .ExceptNullItems()
+                    .ToList();
+
+                var projects = new HashSet<Microsoft.CodeAnalysis.Project>(documents.Select(document => document.Project));
+
+                var documentsToAnalyze = projects.SelectMany(project => project.GetDocumentsToAnalyze());
+                
+                var diff = await ScanAsync(documentsToAnalyze).ConfigureAwait(true);
+
+                AnalysisResults = AnalysisResults
+                    .RemoveAll(r => changedDocuments.Contains(r.AnalysisContext.Document.Id))
+                    .AddRange(diff.Where(d => changedDocuments.Contains(d.AnalysisContext.Document.Id)));
+            }
+            catch
+            {
+                // 
+            }
         }
 
         public bool IsAnalyzing { get; private set; }
@@ -51,7 +103,7 @@ namespace Nullable.Extended.Extension.Views
             var editPoint = document.CreateEditPoint();
             var resultPrefix = result.Prefix;
             var text = editPoint.GetText(resultPrefix.Length);
-            if (!text.StartsWith(resultPrefix))
+            if (!text.StartsWith(resultPrefix, StringComparison.Ordinal))
             {
                 result.Context = NullForgivingContext.Invalid;
                 return;
@@ -61,7 +113,7 @@ namespace Nullable.Extended.Extension.Views
             document.Selection.MoveTo(result.Line, result.Column + 1, true);
         }
 
-        public ICollection<AnalysisResult> AnalysisResults { get; private set; } = ImmutableArray<AnalysisResult>.Empty;
+        public ImmutableList<AnalysisResult> AnalysisResults { get; private set; } = ImmutableList<AnalysisResult>.Empty;
 
         private bool CanScan()
         {
@@ -73,21 +125,28 @@ namespace Nullable.Extended.Extension.Views
             if (IsAnalyzing)
                 return;
 
+            var documentsToAnalyze = _workspace.CurrentSolution.GetDocumentsToAnalyze().ToImmutableList();
+
+            try
+            {
+                AnalysisResults = await ScanAsync(documentsToAnalyze).ConfigureAwait(true);
+            }
+            catch
+            {
+                // just do nothing
+            }
+        }
+
+        private async Task<ImmutableList<AnalysisResult>> ScanAsync(IEnumerable<Document> documentsToAnalyze)
+        {
+            if (IsAnalyzing)
+                throw new InvalidOperationException("Already analyzing!");
+
             try
             {
                 IsAnalyzing = true;
 
-                var solution = _workspace.CurrentSolution;
-
-                var documentsToAnalyze = solution.GetDocumentsToAnalyze().ToImmutableArray();
-
-                var results = (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true)).ToImmutableArray();
-
-                AnalysisResults = results;
-            }
-            catch
-            {
-
+                return (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze)).ToImmutableList();
             }
             finally
             {

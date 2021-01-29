@@ -2,20 +2,19 @@
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 using Nullable.Extended.Extension.Analyzer;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     public class AnalysisResult : INotifyPropertyChanged
     {
-        internal AnalysisResult(AnalysisContext analysisContext, string filePath, PostfixUnaryExpressionSyntax startingToken, NullForgivingContext context, string prefix)
+        internal AnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax startingToken, NullForgivingContext context)
         {
             StartingToken = startingToken;
             AnalysisContext = analysisContext;
-            FilePath = filePath;
             Position = startingToken.OperatorToken.GetLocation().GetLineSpan();
             Context = context;
-            Prefix = prefix;
         }
 
         public NullForgivingContext Context { get; set; }
@@ -24,7 +23,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public AnalysisContext AnalysisContext { get; }
 
-        public string FilePath { get; }
+        public string FilePath => AnalysisContext.SyntaxTree.FilePath;
 
         public FileLinePositionSpan Position { get; }
 
@@ -34,7 +33,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public PostfixUnaryExpressionSyntax StartingToken { get; }
 
-        public string Prefix { get; }
+        public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, StartingToken.Span.End));
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
