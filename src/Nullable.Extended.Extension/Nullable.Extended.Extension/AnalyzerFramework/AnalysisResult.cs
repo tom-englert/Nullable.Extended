@@ -1,29 +1,43 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.IO;
 using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using Nullable.Extended.Extension.Analyzer;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     public class AnalysisResult : INotifyPropertyChanged
     {
-        internal AnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax startingToken, NullForgivingContext context)
+        internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, FileLinePositionSpan position)
         {
-            StartingToken = startingToken;
+            Node = node;
             AnalysisContext = analysisContext;
-            Position = startingToken.OperatorToken.GetLocation().GetLineSpan();
-            Context = context;
+            Position = position;
         }
-
-        public NullForgivingContext Context { get; set; }
-
-        public bool IsRequired { get; set; }
 
         public AnalysisContext AnalysisContext { get; }
 
+        public string ProjectName => AnalysisContext.Document.Project.Name;
+
         public string FilePath => AnalysisContext.SyntaxTree.FilePath;
+
+        public string RelativeFilePath
+        {
+            get
+            {
+                var solutionPath = Path.GetDirectoryName(AnalysisContext.Document.Project.Solution.FilePath);
+                var documentPath = FilePath;
+                var solutionPathLength = solutionPath?.Length ?? 0;
+
+                if (solutionPathLength > 0 && documentPath.StartsWith(solutionPath, StringComparison.OrdinalIgnoreCase))
+                {
+                    return documentPath.Substring(solutionPathLength);
+                }
+
+                return documentPath;
+            }
+        }
 
         public FileLinePositionSpan Position { get; }
 
@@ -31,9 +45,9 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public int Column => Position.StartLinePosition.Character + 1;
 
-        public PostfixUnaryExpressionSyntax StartingToken { get; }
+        public SyntaxNode Node { get; }
 
-        public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, StartingToken.Span.End));
+        public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

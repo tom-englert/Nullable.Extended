@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="Nullable.Extended.Extension.Views.NullForgivingToolWindowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:toms="urn:TomsToolbox"
+             xmlns:dgx="urn:tom-englert.de/DataGridExtensions"
+             xmlns:views="clr-namespace:Nullable.Extended.Extension.Views"
+             xmlns:styles="urn:TomsToolbox.Wpf.Styles"
+             xmlns:composition="urn:TomsToolbox.Composition"
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800"
+             d:DataContext="{d:DesignInstance views:NullForgivingToolWindowViewModel}">
+  <UserControl.Resources>
+
+    <styles:InvertGrayEffect x:Key="InvertGrayEffect" />
+
+    <Style TargetType="Image" x:Key="ImageStyle">
+      <Style.Triggers>
+        <!-- ReSharper disable once Xaml.BindingWithContextNotResolved -->
+        <DataTrigger Binding="{Binding IsDarkTheme, Source={composition:Import views:IThemeManager}}" Value="True">
+          <Setter Property="Effect" Value="{StaticResource InvertGrayEffect}" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="Image" BasedOn="{StaticResource ImageStyle}">
+      <Setter Property="Stretch" Value="None" />
+    </Style>
+
+    <Style TargetType="{x:Type Control}" x:Key="ToolbarCommandButtonStyle">
+      <Style.Triggers>
+        <Trigger Property="IsEnabled" Value="False">
+          <Setter Property="Opacity" Value="0.5" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <ControlTemplate TargetType="{x:Type ToolBar}" x:Key="ToolBarTemplate">
+      <Grid Name="Grid" SnapsToDevicePixels="true">
+        <Border x:Name="MainPanelBorder" Background="{TemplateBinding Control.Background}"
+                BorderBrush="{TemplateBinding Control.BorderBrush}"
+                BorderThickness="{TemplateBinding Control.BorderThickness}"
+                Padding="{TemplateBinding Control.Padding}">
+          <DockPanel KeyboardNavigation.TabIndex="1" KeyboardNavigation.TabNavigation="Local">
+            <ContentPresenter x:Name="ToolBarHeader" ContentSource="Header" HorizontalAlignment="Center"
+                              VerticalAlignment="Center"
+                              SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+            <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true"
+                          SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+          </DockPanel>
+        </Border>
+      </Grid>
+      <ControlTemplate.Triggers>
+        <Trigger Property="UIElement.IsEnabled" Value="false">
+          <Setter Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Property="Control.Foreground" />
+        </Trigger>
+      </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+  </UserControl.Resources>
+  <Grid>
+    <DockPanel>
+      <ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
+        <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Continue"
+                 Template="{StaticResource ToolBarTemplate}">
+          <Button ToolTip="Refresh" Style="{StaticResource ToolbarCommandButtonStyle}"
+                  Command="{Binding ScanCommand }">
+            <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/refresh.png" />
+          </Button>
+          <Button ToolTip="Remove all not required tokens" Style="{StaticResource ToolbarCommandButtonStyle}"
+                  Command="{Binding RemoveNotRequired }">
+            <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/delete.png" />
+          </Button>
+        </ToolBar>
+      </ToolBarTray>
+
+      <DataGrid ItemsSource="{Binding AnalysisResults}"
+                Style="{DynamicResource {x:Static styles:ResourceKeys.DataGridStyle}}"
+                AutoGenerateColumns="False"
+                HeadersVisibility="Column"
+                IsReadOnly="True"
+                dgx:Tools.ApplyInitialSorting="True"
+                dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenDocumentCommand}">
+        <DataGrid.Columns>
+          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" />
+          <DataGridTextColumn Header="Context" Width="80" Binding="{Binding Context}" />
+          <DataGridTextColumn Header="File" Width="3*" Binding="{Binding RelativeFilePath}" SortDirection="Ascending" />
+          <DataGridTextColumn Header="Project" Width="*" Binding="{Binding ProjectName}" />
+          <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending" />
+          <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}" SortDirection="Descending" />
+        </DataGrid.Columns>
+        <b:Interaction.Behaviors>
+          <dgx:ExtendedStarSizeBehavior />
+        </b:Interaction.Behaviors>
+      </DataGrid>
+    </DockPanel>
+    <toms:LoadingIndicator IsActive="{Binding IsAnalyzing}" Header="Analyzing..." />
+  </Grid>
+</UserControl>

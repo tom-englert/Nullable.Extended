@@ -5,12 +5,12 @@ using TomsToolbox.Wpf.Composition.AttributedModel;
 namespace Nullable.Extended.Extension.Views
 {
     /// <summary>
-    /// Interaction logic for ToolWindowView.xaml
+    /// Interaction logic for NullForgivingToolWindowView.xaml
     /// </summary>
-    [DataTemplate(typeof(ToolWindowViewModel))]
-    public partial class ToolWindowView
+    [DataTemplate(typeof(NullForgivingToolWindowViewModel))]
+    public partial class NullForgivingToolWindowView
     {
-        public ToolWindowView(IExportProvider exportProvider)
+        public NullForgivingToolWindowView(IExportProvider exportProvider)
         {
             this.SetExportProvider(exportProvider);
 

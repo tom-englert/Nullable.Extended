@@ -3,6 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Ninject;
+using Nullable.Extended.Extension.Views;
 using TomsToolbox.Composition;
 using TomsToolbox.Composition.Ninject;
 
@@ -13,7 +14,7 @@ namespace Nullable.Extended.Extension
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(ToolWindow))]
+    [ProvideToolWindow(typeof(NullForgivingToolWindow))]
     public sealed class ExtensionPackage : AsyncPackage
     {
         public const string PackageGuidString = "e8b6cb89-75cb-433f-a8d9-52719840e6fe";

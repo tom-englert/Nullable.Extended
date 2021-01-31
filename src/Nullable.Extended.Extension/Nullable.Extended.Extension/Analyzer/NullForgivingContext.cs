@@ -6,5 +6,6 @@
         General,
         NullOrDefault,
         Lambda,
+        Modified
     }
 }

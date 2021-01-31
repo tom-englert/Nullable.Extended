@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
@@ -24,8 +25,10 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         internal static bool IsGeneratedAssemblyInfo(this Document document)
         {
-            if (string.IsNullOrWhiteSpace(document.FilePath)) return false;
-            if (document.Project == null) return false;
+            var filePath = document.FilePath;
+
+            if (filePath.IsNullOrWhiteSpace()) 
+                return false;
 
             // Generated AssemblyInfo files have the name of the form:
             //  <ProjectName>.AssemblyInfo.cs
@@ -33,19 +36,20 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
             // but we will ignore that check at the moment.
             // It is enough to insist on the expected file name form.
 
-            if (!document.FilePath.EndsWith(".AssemblyInfo.cs")) return false;
+            if (!filePath.EndsWith(".AssemblyInfo.cs")) 
+                return false;
 
-            var directorySeparatorIndex = document.FilePath.LastIndexOfAny(Separators);
+            var directorySeparatorIndex = filePath.LastIndexOfAny(Separators);
 
-            return string.Compare(document.Project.Name, 0, document.FilePath, directorySeparatorIndex + 1,
+            return string.Compare(document.Project.Name, 0, filePath, directorySeparatorIndex + 1,
                 document.Project.Name.Length, StringComparison.OrdinalIgnoreCase) == 0;
         }
 
         // The implementation has been adapted from Josef Pihrt's Roslynator:
         // https://github.com/JosefPihrt/Roslynator/blob/a6ed824a390831fa67e0dbb3710418239654a88e/src/CSharp/GeneratedCodeUtility.cs#L1
-        public static bool IsGeneratedFile(string filePath)
+        public static bool IsGeneratedFile(string? filePath)
         {
-            if (string.IsNullOrWhiteSpace(filePath)) return false;
+            if (filePath.IsNullOrWhiteSpace()) return false;
 
             var directorySeparatorIndex = filePath.LastIndexOfAny(Separators);
 

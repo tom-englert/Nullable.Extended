@@ -21,18 +21,20 @@ using TomsToolbox.Wpf.Composition.AttributedModel;
 using Document = Microsoft.CodeAnalysis.Document;
 using TextDocument = EnvDTE.TextDocument;
 
+#pragma warning disable VSTHRD100 // Avoid async void methods
+
 namespace Nullable.Extended.Extension.Views
 {
     [VisualCompositionExport("Shell")]
     [Shared]
-    internal class ToolWindowViewModel : INotifyPropertyChanged
+    internal class NullForgivingToolWindowViewModel : INotifyPropertyChanged
     {
         private readonly IAnalyzerEngine _analyzerEngine;
         private readonly VisualStudioWorkspace _workspace;
         private readonly DTE _dte;
         private HashSet<DocumentId> _changedDocuments = new HashSet<DocumentId>();
 
-        public ToolWindowViewModel(IAnalyzerEngine analyzerEngine, IServiceProvider serviceProvider)
+        public NullForgivingToolWindowViewModel(IAnalyzerEngine analyzerEngine, IServiceProvider serviceProvider)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -45,7 +47,17 @@ namespace Nullable.Extended.Extension.Views
             _workspace.WorkspaceChanged += Workspace_WorkspaceChanged;
         }
 
-        private void Workspace_WorkspaceChanged(object sender, Microsoft.CodeAnalysis.WorkspaceChangeEventArgs e)
+        public bool IsAnalyzing { get; private set; }
+
+        public ImmutableList<NullForgivingAnalysisResult> AnalysisResults { get; private set; } = ImmutableList<NullForgivingAnalysisResult>.Empty;
+
+        public ICommand ScanCommand => new DelegateCommand(CanScan, Scan);
+
+        public ICommand OpenDocumentCommand => new DelegateCommand<NullForgivingAnalysisResult>(OpenDocument);
+
+        public ICommand RemoveNotRequired => new DelegateCommand(HasNotRequiredOperators, RemoveNotRequiredOperators);
+
+        private void Workspace_WorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
         {
             var documentId = e.DocumentId;
 
@@ -71,11 +83,9 @@ namespace Nullable.Extended.Extension.Views
                     .ExceptNullItems()
                     .ToList();
 
-                var projects = new HashSet<Microsoft.CodeAnalysis.Project>(documents.Select(document => document.Project));
+                var documentsToAnalyze = documents.Where(document => document.ShouldBeAnalyzed());
 
-                var documentsToAnalyze = projects.SelectMany(project => project.GetDocumentsToAnalyze());
-                
-                var diff = await ScanAsync(documentsToAnalyze).ConfigureAwait(true);
+                var diff = await ScanAsync(documentsToAnalyze);
 
                 AnalysisResults = AnalysisResults
                     .RemoveAll(r => changedDocuments.Contains(r.AnalysisContext.Document.Id))
@@ -87,33 +97,59 @@ namespace Nullable.Extended.Extension.Views
             }
         }
 
-        public bool IsAnalyzing { get; private set; }
+        private bool HasNotRequiredOperators()
+        {
+            return NotRequiredAnalysisResults.Any();
+        }
 
-        public ICommand ScanCommand => new DelegateCommand(CanScan, Scan);
+        private void RemoveNotRequiredOperators()
+        {
+            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-        public ICommand OpenDocumentCommand => new DelegateCommand<AnalysisResult>(OpenDocument);
+            var resultsToRemove = NotRequiredAnalysisResults;
 
-        private void OpenDocument(AnalysisResult result)
+            var resultsByDocument = resultsToRemove.GroupBy(result => result.AnalysisContext.Document);
+
+            foreach (var documentResults in resultsByDocument)
+            {
+                var document = documentResults.Key;
+                var window = _dte.ItemOperations.OpenFile(document.FilePath, Constants.vsext_vk_Code);
+                var textDocument = (TextDocument)window.Document.Object();
+                var selection = textDocument.Selection;
+
+                foreach (var result in documentResults.OrderByDescending(r => r.Line).ThenByDescending(r => r.Column))
+                {
+                    selection.MoveTo(result.Line, result.Column);
+                    selection.MoveTo(result.Line, result.Column + 1, true);
+                    if (selection.Text == "!")
+                    {
+                        selection.Text = "";
+                    }
+                }
+            }
+        }
+
+        private IEnumerable<NullForgivingAnalysisResult> NotRequiredAnalysisResults => AnalysisResults.Where(result => !result.IsRequired && result.Context.IsValid());
+
+        private void OpenDocument(NullForgivingAnalysisResult result)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
             var window = _dte.ItemOperations.OpenFile(result.FilePath, Constants.vsext_vk_Code);
-            var document = (TextDocument)window.Document.Object();
+            var textDocument = (TextDocument)window.Document.Object();
 
-            var editPoint = document.CreateEditPoint();
+            var editPoint = textDocument.CreateEditPoint();
             var resultPrefix = result.Prefix;
             var text = editPoint.GetText(resultPrefix.Length);
             if (!text.StartsWith(resultPrefix, StringComparison.Ordinal))
             {
-                result.Context = NullForgivingContext.Invalid;
+                result.Context = NullForgivingContext.Modified;
                 return;
             }
 
-            document.Selection.MoveTo(result.Line, result.Column);
-            document.Selection.MoveTo(result.Line, result.Column + 1, true);
+            textDocument.Selection.MoveTo(result.Line, result.Column);
+            textDocument.Selection.MoveTo(result.Line, result.Column + 1, true);
         }
-
-        public ImmutableList<AnalysisResult> AnalysisResults { get; private set; } = ImmutableList<AnalysisResult>.Empty;
 
         private bool CanScan()
         {
@@ -129,15 +165,15 @@ namespace Nullable.Extended.Extension.Views
 
             try
             {
-                AnalysisResults = await ScanAsync(documentsToAnalyze).ConfigureAwait(true);
+                AnalysisResults = (await ScanAsync(documentsToAnalyze));
             }
-            catch
+            catch (Exception ex)
             {
                 // just do nothing
             }
         }
 
-        private async Task<ImmutableList<AnalysisResult>> ScanAsync(IEnumerable<Document> documentsToAnalyze)
+        private async Task<ImmutableList<NullForgivingAnalysisResult>> ScanAsync(IEnumerable<Document> documentsToAnalyze)
         {
             if (IsAnalyzing)
                 throw new InvalidOperationException("Already analyzing!");
@@ -146,7 +182,9 @@ namespace Nullable.Extended.Extension.Views
             {
                 IsAnalyzing = true;
 
-                return (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze)).ToImmutableList();
+                return (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true))
+                    .OfType<NullForgivingAnalysisResult>()
+                    .ToImmutableList();
             }
             finally
             {

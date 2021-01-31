@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Composition;
+﻿using System.Composition;
 using System.Windows;
 using System.Windows.Media;
 using PropertyChanged;
@@ -9,16 +8,16 @@ using TomsToolbox.Wpf.Composition;
 namespace Nullable.Extended.Extension.Views
 {
     /// <summary>
-    /// Interaction logic for ToolWindowShell.
+    /// Interaction logic for NullForgivingToolWindowShell.
     /// </summary>
     [Export, Export(typeof(IThemeManager))]
     [AddINotifyPropertyChangedInterface]
-    public partial class ToolWindowShell : IThemeManager
+    public partial class NullForgivingToolWindowShell : IThemeManager
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ToolWindowShell"/> class.
+        /// Initializes a new instance of the <see cref="NullForgivingToolWindowShell"/> class.
         /// </summary>
-        public ToolWindowShell(IExportProvider exportProvider)
+        public NullForgivingToolWindowShell(IExportProvider exportProvider)
         {
             this.SetExportProvider(exportProvider);
 
