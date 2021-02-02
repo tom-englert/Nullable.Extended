@@ -90,5 +90,21 @@ while inside lambda expressions they are often unavoidable
 
 #### Installation
 
-Install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullForgiving) or from the 
+Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.Nullable.Extended) or from the [Releases](..\..\releases) page.
+
+#### Usage
+
+Start the tool window from the tools menu:
+
+![menu](assets/NullForgivingMenu.png)
+
+In the tool window you can see all occurrences of the null-forgiving operator in your solution:
+
+![menu](assets/NullForgivingToolWindow.png)
+
+- Click the refresh button to scan your solution.
+- Double click any entry to navigate to the corresponding source code.
+- Click the delete button to remove all null-forgiving operators that are not required.
+
+
 
