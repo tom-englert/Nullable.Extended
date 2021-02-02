@@ -38,7 +38,7 @@ namespace Nullable.Extended.Extension.Analyzer
                 .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
                 .ToImmutableArray();
 
-            var allDiagnostics = await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync();
+            var allDiagnostics = analyzers.Any() ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync() : compilation.GetDiagnostics();
             if (allDiagnostics.Any(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !IsNullableDiagnostic(diagnostic)))
             {
                 return WithAllAsInvalid(nullForgivingAnalysisResults);

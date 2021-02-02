@@ -11,14 +11,14 @@ namespace Nullable.Extended.Extension.Views
         /// </summary>
         public NullForgivingToolWindow() : base(null)
         {
-            Caption = "Null forgiving analyzer";
+            Caption = "Null Forgiving Operators";
         }
 
         protected override void Initialize()
         {
             base.Initialize();
 
-            Content = ((ExtensionPackage)Package).ExportProvider.GetExportedValue<NullForgivingToolWindowShell>();
+            Content = ((ExtensionPackage)Package).ExportProvider.GetToolWindowShell(nameof(NullForgivingToolWindow));
         }
     }
 }

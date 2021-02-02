@@ -1,101 +1,55 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
-using System.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using EnvDTE;
-using Microsoft.CodeAnalysis;
-using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.LanguageServices;
 using Nullable.Extended.Extension.Analyzer;
 using Nullable.Extended.Extension.AnalyzerFramework;
-using Throttle;
-using TomsToolbox.Essentials;
 using TomsToolbox.Wpf;
 using TomsToolbox.Wpf.Composition.AttributedModel;
-using Document = Microsoft.CodeAnalysis.Document;
-using TextDocument = EnvDTE.TextDocument;
-
-#pragma warning disable VSTHRD100 // Avoid async void methods
 
 namespace Nullable.Extended.Extension.Views
 {
-    [VisualCompositionExport("Shell")]
-    [Shared]
+    [VisualCompositionExport(nameof(NullForgivingToolWindow))]
     internal class NullForgivingToolWindowViewModel : INotifyPropertyChanged
     {
-        private readonly IAnalyzerEngine _analyzerEngine;
-        private readonly VisualStudioWorkspace _workspace;
         private readonly DTE _dte;
-        private HashSet<DocumentId> _changedDocuments = new HashSet<DocumentId>();
 
-        public NullForgivingToolWindowViewModel(IAnalyzerEngine analyzerEngine, IServiceProvider serviceProvider)
+        public NullForgivingToolWindowViewModel(IServiceProvider serviceProvider, AnalyzerViewModel analyzerViewModel)
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-            _analyzerEngine = analyzerEngine;
+            AnalyzerViewModel = analyzerViewModel;
+            SetResults(analyzerViewModel.AnalysisResults);
+            AnalyzerViewModel.AnalysisResultsChanged += AnalyzerViewModel_AnalysisResultsChanged;
+
             _dte = (DTE)serviceProvider.GetService(typeof(DTE)) ?? throw new InvalidOperationException("Can't retrieve DTE service.");
-
-            var componentModel = (IComponentModel)Microsoft.VisualStudio.Shell.Package.GetGlobalService(typeof(SComponentModel));
-            _workspace = componentModel.GetService<VisualStudioWorkspace>();
-
-            _workspace.WorkspaceChanged += Workspace_WorkspaceChanged;
         }
 
-        public bool IsAnalyzing { get; private set; }
+        private void AnalyzerViewModel_AnalysisResultsChanged(object sender, AnalysisResultsChangedArgs e)
+        {
+            SetResults(e.Results);
+        }
 
-        public ImmutableList<NullForgivingAnalysisResult> AnalysisResults { get; private set; } = ImmutableList<NullForgivingAnalysisResult>.Empty;
+        private void SetResults(IEnumerable<AnalysisResult> results)
+        {
+            AnalysisResults = results
+                .OfType<NullForgivingAnalysisResult>()
+                .ToList()
+                .AsReadOnly();
+        }
 
-        public ICommand ScanCommand => new DelegateCommand(CanScan, Scan);
+        public AnalyzerViewModel AnalyzerViewModel { get; }
+
+        public IReadOnlyList<NullForgivingAnalysisResult> AnalysisResults { get; private set; } = Array.Empty<NullForgivingAnalysisResult>();
+
+        public ICommand AnalyzeCommand => new DelegateCommand(CanAnalyze, Analyze);
 
         public ICommand OpenDocumentCommand => new DelegateCommand<NullForgivingAnalysisResult>(OpenDocument);
 
         public ICommand RemoveNotRequired => new DelegateCommand(HasNotRequiredOperators, RemoveNotRequiredOperators);
-
-        private void Workspace_WorkspaceChanged(object sender, WorkspaceChangeEventArgs e)
-        {
-            var documentId = e.DocumentId;
-
-            if (e.Kind == WorkspaceChangeKind.DocumentChanged && documentId != null)
-            {
-                _changedDocuments.Add(documentId);
-                AnalyzeChanges();
-            }
-        }
-
-        [Throttled(typeof(TomsToolbox.Wpf.Throttle), 2000)]
-        private async void AnalyzeChanges()
-        {
-            if (IsAnalyzing)
-                return;
-
-            try
-            {
-                var changedDocuments = Interlocked.Exchange(ref _changedDocuments, new HashSet<DocumentId>());
-
-                var documents = changedDocuments
-                    .Select(documentId => _workspace.CurrentSolution.GetDocument(documentId))
-                    .ExceptNullItems()
-                    .ToList();
-
-                var documentsToAnalyze = documents.Where(document => document.ShouldBeAnalyzed());
-
-                var diff = await ScanAsync(documentsToAnalyze);
-
-                AnalysisResults = AnalysisResults
-                    .RemoveAll(r => changedDocuments.Contains(r.AnalysisContext.Document.Id))
-                    .AddRange(diff.Where(d => changedDocuments.Contains(d.AnalysisContext.Document.Id)));
-            }
-            catch
-            {
-                // 
-            }
-        }
 
         private bool HasNotRequiredOperators()
         {
@@ -151,45 +105,14 @@ namespace Nullable.Extended.Extension.Views
             textDocument.Selection.MoveTo(result.Line, result.Column + 1, true);
         }
 
-        private bool CanScan()
+        private bool CanAnalyze()
         {
-            return !IsAnalyzing && _workspace.CurrentSolution.GetDocumentsToAnalyze().Any();
+            return AnalyzerViewModel.CanAnalyze;
         }
 
-        private async void Scan()
+        private void Analyze()
         {
-            if (IsAnalyzing)
-                return;
-
-            var documentsToAnalyze = _workspace.CurrentSolution.GetDocumentsToAnalyze().ToImmutableList();
-
-            try
-            {
-                AnalysisResults = (await ScanAsync(documentsToAnalyze));
-            }
-            catch (Exception ex)
-            {
-                // just do nothing
-            }
-        }
-
-        private async Task<ImmutableList<NullForgivingAnalysisResult>> ScanAsync(IEnumerable<Document> documentsToAnalyze)
-        {
-            if (IsAnalyzing)
-                throw new InvalidOperationException("Already analyzing!");
-
-            try
-            {
-                IsAnalyzing = true;
-
-                return (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true))
-                    .OfType<NullForgivingAnalysisResult>()
-                    .ToImmutableList();
-            }
-            finally
-            {
-                IsAnalyzing = false;
-            }
+            AnalyzerViewModel.AnalyzeSolution();
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

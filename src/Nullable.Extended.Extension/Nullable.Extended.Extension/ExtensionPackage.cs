@@ -1,12 +1,11 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using System.Threading;
+using Microsoft.VisualStudio.Shell;
 using Ninject;
 using Nullable.Extended.Extension.Views;
 using TomsToolbox.Composition;
 using TomsToolbox.Composition.Ninject;
-
 using Task = System.Threading.Tasks.Task;
 
 namespace Nullable.Extended.Extension

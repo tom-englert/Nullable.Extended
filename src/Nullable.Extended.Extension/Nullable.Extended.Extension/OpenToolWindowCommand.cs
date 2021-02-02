@@ -1,10 +1,7 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using System;
+﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
-using System.Threading;
-using System.Threading.Tasks;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Nullable.Extended.Extension.Views;
 using Task = System.Threading.Tasks.Task;
 
@@ -49,7 +46,7 @@ namespace Nullable.Extended.Extension
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static OpenToolWindowCommand Instance
+        public static OpenToolWindowCommand? Instance
         {
             get;
             private set;

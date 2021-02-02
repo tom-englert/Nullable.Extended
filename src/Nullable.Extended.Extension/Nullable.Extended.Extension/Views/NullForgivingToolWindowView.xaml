@@ -58,18 +58,42 @@
       </ControlTemplate.Triggers>
     </ControlTemplate>
 
+    <Style x:Key="{x:Static dgx:DataGridFilter.ColumnHeaderSearchCheckBoxStyleKey}" TargetType="CheckBox" BasedOn="{StaticResource {x:Static styles:ResourceKeys.CheckBoxStyle}}">
+      <Setter Property="IsThreeState" Value="True" />
+      <Setter Property="Margin" Value="4,0,2,0" />
+      <Style.Triggers>
+        <Trigger Property="CheckBox.IsChecked" Value="{x:Null}">
+          <Setter Property="Opacity" Value="0" />
+        </Trigger>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Opacity" Value="1" />
+        </Trigger>
+        <Trigger Property="IsFocused" Value="True">
+          <Setter Property="Opacity" Value="1" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Static styles:ResourceKeys.ToolTipStyle}}" />
+
   </UserControl.Resources>
   <Grid>
     <DockPanel>
       <ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
         <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Continue"
                  Template="{StaticResource ToolBarTemplate}">
-          <Button ToolTip="Refresh" Style="{StaticResource ToolbarCommandButtonStyle}"
-                  Command="{Binding ScanCommand }">
+          <Button Style="{StaticResource ToolbarCommandButtonStyle}"
+                  Command="{Binding AnalyzeCommand}">
+            <Button.ToolTip>
+              <ToolTip>Refresh</ToolTip>
+            </Button.ToolTip>
             <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/refresh.png" />
           </Button>
-          <Button ToolTip="Remove all not required tokens" Style="{StaticResource ToolbarCommandButtonStyle}"
-                  Command="{Binding RemoveNotRequired }">
+          <Button Style="{StaticResource ToolbarCommandButtonStyle}"
+                  Command="{Binding RemoveNotRequired}">
+            <Button.ToolTip>
+              <ToolTip>Remove all not required tokens</ToolTip>
+            </Button.ToolTip>
             <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/delete.png" />
           </Button>
         </ToolBar>
@@ -96,6 +120,6 @@
         </b:Interaction.Behaviors>
       </DataGrid>
     </DockPanel>
-    <toms:LoadingIndicator IsActive="{Binding IsAnalyzing}" Header="Analyzing..." />
+    <toms:LoadingIndicator IsActive="{Binding AnalyzerViewModel.IsAnalyzing}" Header="Analyzing..." />
   </Grid>
 </UserControl>

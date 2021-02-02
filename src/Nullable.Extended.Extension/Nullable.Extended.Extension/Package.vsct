@@ -16,7 +16,7 @@
         <Parent guid="guidPackageCmdSet" id="MyMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
-          <ButtonText>Null forgiving analyzer</ButtonText>
+          <ButtonText>Null Forgiving</ButtonText>
         </Strings>
       </Button>
     </Buttons>

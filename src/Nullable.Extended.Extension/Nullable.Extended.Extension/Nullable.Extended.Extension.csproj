@@ -63,10 +63,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ExtensionPackage.cs" />
     <Compile Include="ProvideToolboxControlAttribute.cs" />
+    <Compile Include="Views\AnalysisResultsChangedArgs.cs" />
+    <Compile Include="Views\AnalyzerViewModel.cs" />
     <Compile Include="Views\NullForgivingToolWindow.cs" />
     <Compile Include="Views\ThemeManager.cs" />
-    <Compile Include="Views\NullForgivingToolWindowShell.xaml.cs">
-      <DependentUpon>NullForgivingToolWindowShell.xaml</DependentUpon>
+    <Compile Include="Views\ToolWindowShell.xaml.cs">
+      <DependentUpon>ToolWindowShell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\NullForgivingToolWindowView.xaml.cs">
       <DependentUpon>NullForgivingToolWindowView.xaml</DependentUpon>
@@ -141,7 +143,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\NullForgivingToolWindowShell.xaml">
+    <Page Include="Views\ToolWindowShell.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

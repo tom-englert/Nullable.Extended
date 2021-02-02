@@ -1,11 +1,9 @@
-﻿<UserControl x:Class="Nullable.Extended.Extension.Views.NullForgivingToolWindowShell"
+﻿<UserControl x:Class="Nullable.Extended.Extension.Views.ToolWindowShell"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:composition="urn:TomsToolbox.Composition"
              Background="{DynamicResource {x:Static vsshell:VsBrushes.WindowKey}}"
-             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}"
-             composition:VisualComposition.RegionId="Shell">
+             Foreground="{DynamicResource {x:Static vsshell:VsBrushes.WindowTextKey}}">
   <UserControl.Resources>
     <ResourceDictionary Source="/Nullable.Extended.Extension;component/Resources/VSColorScheme.xaml" />
   </UserControl.Resources>

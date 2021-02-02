@@ -1,13 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
-    public class AnalysisResult : INotifyPropertyChanged
+    public class AnalysisResult
     {
         internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, FileLinePositionSpan position)
         {
@@ -48,12 +46,5 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public SyntaxNode Node { get; }
 
         public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

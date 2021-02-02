@@ -1,21 +1,17 @@
-# Nullable Extended Analyzer 
+# Nullable Extended
 [![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended.Analyzer?branchName=master)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&branchName=master)
 [![NuGet Status](https://img.shields.io/nuget/v/Nullable.Extended.Analyzer.svg)](https://www.nuget.org/packages/Nullable.Extended.Analyzer/)
 
-## A Roslyn analyzer to improve the experience when working with nullable reference types.
+## Roslyn Tools and Analyzers to Improve the Experience when Coding with Nullable Reference Types.
 
 [Nullable reference types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) 
 are a great feature introduced with C# 8.0. It really helps in writing better code.
 
-This analyzer helps to even more improve the experience with nullable reference types.
+This project helps to improve the experience when coding with nullable reference types.
 
-### Installation
+---
 
-Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
-
-### Usage
-
-#### Suppressing False Positives
+### Suppressing False Positives
 
 After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602`, `CS8603` or `CS8604` warnings that may be not expected.
 
@@ -40,25 +36,11 @@ The **Nullable Extended Analyzer** addresses these issues by double checking `CS
 It leverages the flow analysis of the [Sonar Analyzer](https://github.com/SonarSource/sonar-dotnet) and suppresses the 
 warning if flow analysis reports that access is safe.
 
-- This may not cover all cases, but the most ubiquitous.
-- You may need at least MSBuild 16.8 to get suppressions work correctly.
+> This may not cover all cases, but the most ubiquitous.
 
-#### Managing Null Forgiving Operators
+#### Installation
 
-Sometimes it is necessary to use the [null forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving) to suppress a false warning.
-However using too many of them will render the value of nullable checks almost useless.
-Also since this analyzer will suppress many common false positives, some of them may be obsolete after installing the analyzer.
-
-Since it's hard to find the null forgiving operators in code, this analyzer comes with a set of checks to locate all of them, so you can easily judge if they are still needed.
-
-Occurrences are grouped into three diagnostics, to reflect their different contexts - e.g. general usages can be mostly avoided, while inside lambda expressions they are often unavoidable.
-- NX0001 Find general usages of the NullForgiving operator.
-- NX0002 Find usages of the NullForgiving operator on the `null` or `default` literals.
-- NX0003 Find usages of the NullForgiving operator inside lambda expressions.
-
-Simply turn the severity, which is `None` by default, to e.g. `Warning`, to list all usages of the null forgiving operator.
-
-![image](assets/NX_0001.png)
+Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
 
 #### Configuration
 
@@ -78,5 +60,35 @@ You can configure the analyzer by specifying a property named `<NullableExtended
 ##### Available configuration properties
 - `LogFile`: The full path to a file where diagnostic messages will be written to.
 - `MaxSteps`: The maximum number of recursive steps in the graph walk (default 5000). 
-  Decrease to give up analysis of large methods in favor of speed, increase to analyze even very large methods.
+  Decrease to give up analysis of large methods in favor of speed, 
+  increase to analyze even very large methods.
 - `DisableSuppressions`: Set to true to (temporarily) disable suppressions.
+
+---
+
+### Managing Null-Forgiving Operators
+
+Sometimes it is necessary to use the
+[null-forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving)
+to suppress a false warning.
+However using too many of them will render the value of nullable checks almost useless.
+Also since the analyzer will suppress many common false positives, 
+plenty of the null forgiving operators may be obsolete after installing the analyzer.
+
+Since it's hard to find the null forgiving operators in code, 
+this Visual Studio Extension lists all occurrences, 
+categorizes them, and even detects those that are still present in code but no longer needed.
+
+Occurrences are grouped into three categories, to reflect their different 
+contexts:
+- General usages of the null-forgiving operator.
+- Null-forgiving operator on the `null` or `default` literals.
+- Null-forgiving operator inside lambda expressions.
+
+> e.g. general usages can be mostly avoided by cleaning up the code,
+while inside lambda expressions they are often unavoidable
+
+#### Installation
+
+Install from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullForgiving) or from the 
+
