@@ -90,7 +90,7 @@ while inside lambda expressions they are often unavoidable
 
 #### Installation
 
-Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.Nullable.Extended) or from the [Releases](..\..\releases) page.
+Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.Nullable.Extended) or from the [Releases](../../releases) page.
 
 #### Usage
 
