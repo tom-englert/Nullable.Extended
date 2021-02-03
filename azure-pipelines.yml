@@ -7,6 +7,18 @@ variables:
   buildConfiguration: 'Release'
 
 steps:
+- task: PowerShell@1
+  displayName: 'Set build version'
+  inputs:
+    scriptType: inlineScript
+    inlineScript: |
+     (new-object Net.WebClient).DownloadString("https://raw.github.com/tom-englert/BuildScripts/master/BuildScripts.ps1") | iex
+     $version = Project-SetBuildVersion "src\Directory.Build.props"
+     $version | Build-AppendVersionToBuildNumber
+     File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\source.extension.vsixmanifest" $version
+  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+
+
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
@@ -26,8 +38,21 @@ steps:
     TargetFolder: '$(Build.ArtifactStagingDirectory)\Nuget'
     flattenFolders: true
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'src'
+    Contents: '**\$(buildConfiguration)\*.vsix'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)\Vsix'
+    flattenFolders: true
+
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)\Nuget'
     ArtifactName: 'Package'
+    publishLocation: 'Container'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)\Vsix'
+    ArtifactName: 'Vsix'
     publishLocation: 'Container'
