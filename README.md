@@ -1,5 +1,5 @@
 # Nullable Extended
-[![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended.Analyzer?branchName=master)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&branchName=master)
+[![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended?repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)
 [![NuGet Status](https://img.shields.io/nuget/v/Nullable.Extended.Analyzer.svg)](https://www.nuget.org/packages/Nullable.Extended.Analyzer/)
 
 ## Roslyn Tools and Analyzers to Improve the Experience when Coding with Nullable Reference Types.
@@ -91,6 +91,7 @@ while inside lambda expressions they are often unavoidable
 #### Installation
 
 Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.Nullable.Extended) or from the [Releases](../../releases) page.
+The latest CI build is available from the [Open VSIX Gallery](https://www.vsixgallery.com/extension/Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf)
 
 #### Usage
 
