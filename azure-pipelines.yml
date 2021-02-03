@@ -57,3 +57,13 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)\Vsix'
     ArtifactName: 'Vsix'
     publishLocation: 'Container'
+
+- task: PowerShell@1
+  displayName: 'Publish to vsix-gallery'
+  enabled: false
+  inputs:
+    scriptType: inlineScript
+    inlineScript: |
+      (new-object Net.WebClient).DownloadString("https://raw.github.com/tom-englert/BuildScripts/master/BuildScripts.ps1") | iex
+      Vsix-PublishToGallery "$(Build.ArtifactStagingDirectory)\Vsix\Nullable.Extended.Extension.vsix"
+
