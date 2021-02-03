@@ -13,8 +13,9 @@ steps:
     scriptType: inlineScript
     inlineScript: |
      (new-object Net.WebClient).DownloadString("https://raw.github.com/tom-englert/BuildScripts/master/BuildScripts.ps1") | iex
-     $version = Project-SetBuildVersion "src\Directory.Build.props"
+     $version = Project-SetVersion "src\Directory.Build.props"
      $version | Build-AppendVersionToBuildNumber
+     $version = $version | Version-Sanitize
      File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\source.extension.vsixmanifest" $version
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
