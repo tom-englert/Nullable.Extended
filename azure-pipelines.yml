@@ -2,7 +2,7 @@ pool:
   vmImage: 'windows-latest'
 
 variables:
-  solution: 'src/Nullable.Extended.Analyzer.sln'
+  solution: 'src/Nullable.Extended.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
 
