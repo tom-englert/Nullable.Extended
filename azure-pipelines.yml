@@ -60,7 +60,7 @@ steps:
 
 - task: PowerShell@1
   displayName: 'Publish to vsix-gallery'
-  enabled: false
+  enabled: true
   inputs:
     scriptType: inlineScript
     inlineScript: |
