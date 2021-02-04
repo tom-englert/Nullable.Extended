@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf" Version="0.0.0.0" Language="en-US" Publisher="tom-englert" />
+        <Identity Id="Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf" Version="0.0.0.0" Language="en-US" Publisher="TomEnglert" />
         <DisplayName>Nullable.Extended</DisplayName>
         <Description xml:space="preserve">Tools to keep your nullability annotations lean and mean.</Description>
         <MoreInfo>https://github.com/tom-englert/Nullable.Extended</MoreInfo>
