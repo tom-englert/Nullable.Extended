@@ -47,4 +47,15 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
     }
+
+    public class AnalysisResult<T> : AnalysisResult
+        where T : SyntaxNode
+    {
+        internal AnalysisResult(AnalysisContext analysisContext, T node, FileLinePositionSpan position)
+            : base(analysisContext, node, position)
+        {
+        }
+
+        public new T Node => (T)base.Node;
+    }
 }

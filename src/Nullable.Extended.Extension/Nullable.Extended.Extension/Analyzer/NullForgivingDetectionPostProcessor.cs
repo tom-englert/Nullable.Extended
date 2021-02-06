@@ -69,7 +69,7 @@ namespace Nullable.Extended.Extension.Analyzer
                     continue;
 
                 var affectedResult = results.FirstOrDefault(result =>
-                    diagnostic.Location.GetLineSpan().EndLinePosition == result.Position.StartLinePosition);
+                    diagnostic.Location == result.Node.Operand.GetLocation());
 
                 if (affectedResult != null)
                 {

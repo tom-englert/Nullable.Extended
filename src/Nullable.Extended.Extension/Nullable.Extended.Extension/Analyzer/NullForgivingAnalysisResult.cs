@@ -5,7 +5,7 @@ using Nullable.Extended.Extension.AnalyzerFramework;
 
 namespace Nullable.Extended.Extension.Analyzer
 {
-    public class NullForgivingAnalysisResult : AnalysisResult, INotifyPropertyChanged
+    public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>, INotifyPropertyChanged
     {
         public NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax token, NullForgivingContext context)
             : base(analysisContext, token, token.OperatorToken.GetLocation().GetLineSpan())
