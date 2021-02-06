@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,7 +12,7 @@ namespace Nullable.Extended.Extension.Analyzer
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer
     {
-        public async Task<IEnumerable<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext)
+        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext)
         {
             var root = analysisContext.SyntaxRoot;
 
@@ -21,11 +20,10 @@ namespace Nullable.Extended.Extension.Analyzer
                 .DescendantNodesAndSelf()
                 .OfType<PostfixUnaryExpressionSyntax>()
                 .Where(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression))
-                .ToImmutableList();
+                .Select(item => MapResult(analysisContext, item))
+                .ToArray();
 
-            var results = items.Select(item => MapResult(analysisContext, item));
-
-            return await Task.FromResult(results.ToImmutableArray());
+            return await Task.FromResult(items);
         }
 
         private static AnalysisResult MapResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node)

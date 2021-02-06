@@ -16,7 +16,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public AnalysisContext AnalysisContext { get; }
 
-        public string ProjectName => AnalysisContext.Document.Project.Name;
+        public string ProjectName => AnalysisContext.Document.Project.AssemblyName;
 
         public string FilePath => AnalysisContext.SyntaxTree.FilePath;
 

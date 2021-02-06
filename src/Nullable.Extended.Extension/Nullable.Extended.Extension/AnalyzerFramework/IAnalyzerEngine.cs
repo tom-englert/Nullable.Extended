@@ -6,6 +6,6 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     public interface IAnalyzerEngine
     {
-        Task<IEnumerable<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documents);
+        Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documents);
     }
 }

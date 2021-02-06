@@ -8,7 +8,7 @@ namespace Nullable.Extended.Extension.Analyzer
     public class NullForgivingAnalysisResult : AnalysisResult, INotifyPropertyChanged
     {
         public NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax token, NullForgivingContext context)
-        : base(analysisContext, token, token.OperatorToken.GetLocation().GetLineSpan())
+            : base(analysisContext, token, token.OperatorToken.GetLocation().GetLineSpan())
         {
             Context = context;
         }

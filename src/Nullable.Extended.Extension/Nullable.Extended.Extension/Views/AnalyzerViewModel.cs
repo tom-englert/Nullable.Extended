@@ -52,7 +52,7 @@ namespace Nullable.Extended.Extension.Views
 
             try
             {
-                AnalysisResults = await AnalyzeAsync(documentsToAnalyze);
+                AnalysisResults = (await AnalyzeAsync(documentsToAnalyze)).ToImmutableList();
             }
             catch
             {
@@ -84,15 +84,17 @@ namespace Nullable.Extended.Extension.Views
                 var documents = changedDocuments
                     .Select(documentId => _workspace.CurrentSolution.GetDocument(documentId))
                     .ExceptNullItems()
-                    .ToList();
+                    .ToArray();
+
+                var documentFiles = new HashSet<string?>(documents.Select(d => d.FilePath), StringComparer.OrdinalIgnoreCase);
 
                 var documentsToAnalyze = documents.Where(document => document.ShouldBeAnalyzed());
 
-                var diff = await AnalyzeAsync(documentsToAnalyze);
+                var updated = await AnalyzeAsync(documentsToAnalyze);
 
                 AnalysisResults = AnalysisResults
-                    .RemoveAll(r => changedDocuments.Contains(r.AnalysisContext.Document.Id))
-                    .AddRange(diff.Where(d => changedDocuments.Contains(d.AnalysisContext.Document.Id)));
+                    .RemoveAll(existing => documentFiles.Contains(existing.AnalysisContext.Document.FilePath))
+                    .AddRange(updated.Where(d => documentFiles.Contains(d.AnalysisContext.Document.FilePath)));
             }
             catch
             {
@@ -100,7 +102,7 @@ namespace Nullable.Extended.Extension.Views
             }
         }
 
-        private async Task<ImmutableList<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documentsToAnalyze)
+        private async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documentsToAnalyze)
         {
             if (IsAnalyzing)
                 throw new InvalidOperationException("Already analyzing!");
@@ -109,8 +111,7 @@ namespace Nullable.Extended.Extension.Views
             {
                 IsAnalyzing = true;
 
-                return (await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true))
-                    .ToImmutableList();
+                return await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true);
             }
             finally
             {

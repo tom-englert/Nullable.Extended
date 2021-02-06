@@ -19,11 +19,15 @@ namespace Nullable.Extended.Extension.Analyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8700";
 
-        public async Task<IEnumerable<AnalysisResult>> PostProcessAsync(Project project, IEnumerable<AnalysisResult> analysisResults)
-        {
-            var nullForgivingAnalysisResults = analysisResults.OfType<NullForgivingAnalysisResult>().ToImmutableArray();
+        private static readonly IEqualityComparer<SyntaxNode> SyntaxNodeEqualityComparer = new DelegateEqualityComparer<SyntaxNode>(a => a.FullSpan);
 
-            var resultsBySyntaxRoot = new Dictionary<SyntaxNode, NullForgivingAnalysisResult[]>(new DelegateEqualityComparer<SyntaxNode>(a => a.FullSpan));
+        public async Task<IReadOnlyCollection<AnalysisResult>> PostProcessAsync(Project project, IEnumerable<AnalysisResult> analysisResults)
+        {
+            var nullForgivingAnalysisResults = analysisResults
+                .OfType<NullForgivingAnalysisResult>()
+                .ToArray();
+
+            var resultsBySyntaxRoot = new Dictionary<SyntaxNode, NullForgivingAnalysisResult[]>(SyntaxNodeEqualityComparer);
 
             project = await RewriteSyntaxTreesAsync(project, nullForgivingAnalysisResults, resultsBySyntaxRoot);
 
@@ -36,9 +40,14 @@ namespace Nullable.Extended.Extension.Analyzer
 
             var analyzers = project.AnalyzerReferences
                 .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
+                .OfType<DiagnosticSuppressor>()
+                .Cast<DiagnosticAnalyzer>()
                 .ToImmutableArray();
 
-            var allDiagnostics = analyzers.Any() ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync() : compilation.GetDiagnostics();
+            var allDiagnostics = analyzers.Any()
+                ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
+                : compilation.GetDiagnostics();
+
             if (allDiagnostics.Any(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !IsNullableDiagnostic(diagnostic)))
             {
                 return WithAllAsInvalid(nullForgivingAnalysisResults);
@@ -82,7 +91,7 @@ namespace Nullable.Extended.Extension.Analyzer
                 && string.Compare(id, LastNullableDiagnostic, StringComparison.OrdinalIgnoreCase) <= 0;
         }
 
-        private static IEnumerable<AnalysisResult> WithAllAsInvalid(IReadOnlyCollection<NullForgivingAnalysisResult> items)
+        private static IReadOnlyCollection<AnalysisResult> WithAllAsInvalid(IReadOnlyCollection<NullForgivingAnalysisResult> items)
         {
             foreach (var item in items)
             {
