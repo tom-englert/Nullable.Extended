@@ -47,6 +47,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		directory.build.props = directory.build.props
 		..\LICENSE.txt = ..\LICENSE.txt
 		..\README.md = ..\README.md
+		..\RelaseNotes.md = ..\RelaseNotes.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nullable.Extended.Extension", "Nullable.Extended.Extension\Nullable.Extended.Extension\Nullable.Extended.Extension.csproj", "{46A78692-0A62-4894-BD3F-84D8493C4093}"
@@ -148,7 +149,7 @@ Global
 		{AAB9260C-5214-406E-BD92-7D744CE9C9E8} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 		RESX_ShowErrorsInErrorList = False
+		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 	EndGlobalSection
 EndGlobal
