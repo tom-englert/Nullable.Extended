@@ -59,10 +59,10 @@
     <Compile Include="Analyzer\NullForgivingContext.cs" />
     <Compile Include="Analyzer\NullForgivingDetectionAnalyzer.cs" />
     <Compile Include="Analyzer\NullForgivingDetectionPostProcessor.cs" />
-    <Compile Include="OpenToolWindowCommand.cs" />
+    <Compile Include="Extension\OpenToolWindowCommand.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ExtensionPackage.cs" />
-    <Compile Include="ProvideToolboxControlAttribute.cs" />
+    <Compile Include="Extension\ExtensionPackage.cs" />
+    <Compile Include="Extension\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Views\AnalysisResultsChangedArgs.cs" />
     <Compile Include="Views\AnalyzerViewModel.cs" />
     <Compile Include="Views\NullForgivingToolWindow.cs" />

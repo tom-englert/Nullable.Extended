@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Nullable.Extended.Extension.Views;
 using Task = System.Threading.Tasks.Task;
 
-namespace Nullable.Extended.Extension
+namespace Nullable.Extended.Extension.Extension
 {
     /// <summary>
     /// Command handler

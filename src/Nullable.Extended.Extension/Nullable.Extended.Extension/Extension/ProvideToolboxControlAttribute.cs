@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
 
-namespace Nullable.Extended.Extension
+namespace Nullable.Extended.Extension.Extension
 {
     /// <summary>
     /// This attribute adds a ToolboxControlsInstaller key for the assembly to install toolbox controls from the assembly.

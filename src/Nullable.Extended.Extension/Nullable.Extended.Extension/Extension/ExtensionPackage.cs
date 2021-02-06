@@ -8,7 +8,7 @@ using TomsToolbox.Composition;
 using TomsToolbox.Composition.Ninject;
 using Task = System.Threading.Tasks.Task;
 
-namespace Nullable.Extended.Extension
+namespace Nullable.Extended.Extension.Extension
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]

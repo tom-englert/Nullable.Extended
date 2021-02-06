@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
+using Nullable.Extended.Extension.Extension;
 
 namespace Nullable.Extended.Extension.Views
 {
