@@ -17,6 +17,7 @@ steps:
      $version | Build-AppendVersionToBuildNumber
      $version = $version | Version-Sanitize
      File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\source.extension.vsixmanifest" $version
+     File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\Properties\AssemblyInfo.cs" $version
   condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
 
 
