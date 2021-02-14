@@ -17,9 +17,7 @@ steps:
      $version | Build-AppendVersionToBuildNumber
      $version = $version | Version-Sanitize
      File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\source.extension.vsixmanifest" $version
-     File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\Properties\AssemblyInfo.cs" $version
-  condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
 
 - task: VSBuild@1
   inputs:
@@ -62,6 +60,7 @@ steps:
 - task: PowerShell@1
   displayName: 'Publish to vsix-gallery'
   enabled: true
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   inputs:
     scriptType: inlineScript
     inlineScript: |
