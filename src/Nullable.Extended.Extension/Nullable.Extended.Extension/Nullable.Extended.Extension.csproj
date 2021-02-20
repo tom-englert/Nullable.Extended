@@ -1,21 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
+    <UseWPF>true</UseWPF>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <ProjectGuid>{46A78692-0A62-4894-BD3F-84D8493C4093}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Nullable.Extended.Extension</RootNamespace>
-    <AssemblyName>Nullable.Extended.Extension</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFramework>net472</TargetFramework>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
@@ -28,72 +16,17 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AnalyzerFramework\AnalysisResult.cs" />
-    <Compile Include="AnalyzerFramework\AnalyzerEngine.cs" />
-    <Compile Include="AnalyzerFramework\ExtensionMethods.cs" />
-    <Compile Include="AnalyzerFramework\IAnalyzerEngine.cs" />
-    <Compile Include="AnalyzerFramework\ISyntaxAnalysisPostProcessor.cs" />
-    <Compile Include="AnalyzerFramework\ISyntaxTreeAnalyzer.cs" />
-    <Compile Include="AnalyzerFramework\AnalysisContext.cs" />
-    <Compile Include="Analyzer\ExtensionMethods.cs" />
-    <Compile Include="Analyzer\NullForgivingAnalysisResult.cs" />
-    <Compile Include="Analyzer\NullForgivingContext.cs" />
-    <Compile Include="Analyzer\NullForgivingDetectionAnalyzer.cs" />
-    <Compile Include="Analyzer\NullForgivingDetectionPostProcessor.cs" />
-    <Compile Include="Extension\OpenToolWindowCommand.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Extension\ExtensionPackage.cs" />
-    <Compile Include="Extension\ProvideToolboxControlAttribute.cs" />
-    <Compile Include="Views\AnalysisResultsChangedArgs.cs" />
-    <Compile Include="Views\AnalyzerViewModel.cs" />
-    <Compile Include="Views\NullForgivingToolWindow.cs" />
-    <Compile Include="Views\ThemeManager.cs" />
-    <Compile Include="Views\ToolWindowShell.xaml.cs">
-      <DependentUpon>ToolWindowShell.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NullForgivingToolWindowView.xaml.cs">
-      <DependentUpon>NullForgivingToolWindowView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\NullForgivingToolWindowViewModel.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="source.extension.vsixmanifest">
+    <None Update="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ConfigureAwait.Fody">
@@ -137,31 +70,20 @@
     <PackageReference Include="TomsToolbox.Wpf.Styles">
       <Version>2.3.2</Version>
     </PackageReference>
+    <PackageReference Include="VSIX-SdkProjectAdapter" Version="1.0.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Resources\VSColorScheme.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ToolWindowShell.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\NullForgivingToolWindowView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
+    <None Remove="Package.vsct" />
     <VSCTCompile Include="Package.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Icons.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Resources\refresh.png" />
+    <None Remove="Resources\*.png" />
+    <Resource Include="Resources\*.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\..\LICENSE.txt">
@@ -174,16 +96,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Resource Include="Resources\delete.png" />
-    <None Include="FodyWeavers.xml" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

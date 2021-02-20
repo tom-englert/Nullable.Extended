@@ -13,10 +13,7 @@ steps:
     scriptType: inlineScript
     inlineScript: |
      (new-object Net.WebClient).DownloadString("https://raw.github.com/tom-englert/BuildScripts/master/BuildScripts.ps1") | iex
-     $version = Project-SetVersion "src\Directory.Build.props"
-     $version | Build-AppendVersionToBuildNumber
-     $version = $version | Version-Sanitize
-     File-PatchVersion "src\Nullable.Extended.Extension\Nullable.Extended.Extension\source.extension.vsixmanifest" $version
+     Project-SetVersion "src\Directory.Build.props" | Build-AppendVersionToBuildNumber
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
 
 - task: VSBuild@1
@@ -41,7 +38,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'src'
-    Contents: '**\$(buildConfiguration)\*.vsix'
+    Contents: '**\$(buildConfiguration)\**\*.vsix'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\Vsix'
     flattenFolders: true
 
