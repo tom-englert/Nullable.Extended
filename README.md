@@ -2,12 +2,61 @@
 [![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended?repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)
 [![NuGet Status](https://img.shields.io/nuget/v/Nullable.Extended.Analyzer.svg)](https://www.nuget.org/packages/Nullable.Extended.Analyzer/)
 
-## Roslyn Tools and Analyzers to Improve the Experience when Coding with Nullable Reference Types.
+## Roslyn Tools and Analyzers to improve the experience when coding with Nullable Reference Types.
 
 [Nullable reference types](https://docs.microsoft.com/en-us/dotnet/csharp/nullable-references) 
 are a great feature introduced with C# 8.0. It really helps in writing better code.
 
 This project helps to improve the experience when coding with nullable reference types.
+
+### There are two tools available:
+- A Visual Studio Extension that analyzes your sources and tracks usage of null forgiving operators: 
+  [Managing Null-Forgiving Operators](#managing-null-forgiving-operators)
+- A Roslyn analyzer that double-checks nullability warnings and suppresses some false positives:
+  [Suppressing False Positives](#suppressing-false-positives)  
+
+---
+
+### Managing Null-Forgiving Operators
+
+Sometimes it is necessary to use the
+[null-forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving)
+to suppress a false warning.
+However using too many of them will render the value of nullable checks almost useless. 
+Also if you have installed the [analyzer](#suppressing-false-positives) to suppress some common false positives, 
+some of the null forgiving operators may be obsolete and can be removed.
+
+Since it's hard to find the null forgiving operators in code, 
+this Visual Studio Extension lists all occurrences, 
+categorizes them, and even detects those that are still present in code but no longer needed.
+
+Occurrences are grouped into three categories, to reflect their different 
+contexts:
+- General usages of the null-forgiving operator.
+- Null-forgiving operator on the `null` or `default` literals.
+- Null-forgiving operator inside lambda expressions.
+
+> e.g. general usages can be mostly avoided by cleaning up the code,
+while inside lambda expressions they are often unavoidable
+
+#### Installation
+
+Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullableExtended) or from the [Releases](../../releases) page.
+The latest CI build is available from the [Open VSIX Gallery](https://www.vsixgallery.com/extension/Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf)
+
+#### Usage
+
+Start the tool window from the tools menu:
+
+![menu](assets/NullForgivingMenu.png)
+
+In the tool window you can see all occurrences of the null-forgiving operator in your solution:
+
+![menu](assets/NullForgivingToolWindow.png)
+
+- Click the refresh button to scan your solution.
+- Double click any entry to navigate to the corresponding source code.
+- Click the delete button to remove all null-forgiving operators that are not required.
 
 ---
 
@@ -65,47 +114,6 @@ You can configure the analyzer by specifying a property named `<NullableExtended
 - `DisableSuppressions`: Set to true to (temporarily) disable suppressions.
 
 ---
-
-### Managing Null-Forgiving Operators
-
-Sometimes it is necessary to use the
-[null-forgiving operator "!"](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving)
-to suppress a false warning.
-However using too many of them will render the value of nullable checks almost useless.
-Also since the analyzer will suppress many common false positives, 
-plenty of the null forgiving operators may be obsolete after installing the analyzer.
-
-Since it's hard to find the null forgiving operators in code, 
-this Visual Studio Extension lists all occurrences, 
-categorizes them, and even detects those that are still present in code but no longer needed.
-
-Occurrences are grouped into three categories, to reflect their different 
-contexts:
-- General usages of the null-forgiving operator.
-- Null-forgiving operator on the `null` or `default` literals.
-- Null-forgiving operator inside lambda expressions.
-
-> e.g. general usages can be mostly avoided by cleaning up the code,
-while inside lambda expressions they are often unavoidable
-
-#### Installation
-
-Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullableExtended) or from the [Releases](../../releases) page.
-The latest CI build is available from the [Open VSIX Gallery](https://www.vsixgallery.com/extension/Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf)
-
-#### Usage
-
-Start the tool window from the tools menu:
-
-![menu](assets/NullForgivingMenu.png)
-
-In the tool window you can see all occurrences of the null-forgiving operator in your solution:
-
-![menu](assets/NullForgivingToolWindow.png)
-
-- Click the refresh button to scan your solution.
-- Double click any entry to navigate to the corresponding source code.
-- Click the delete button to remove all null-forgiving operators that are not required.
 
 
 

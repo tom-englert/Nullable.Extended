@@ -14,7 +14,7 @@ steps:
     inlineScript: |
      (new-object Net.WebClient).DownloadString("https://raw.github.com/tom-englert/BuildScripts/master/BuildScripts.ps1") | iex
      Project-SetVersion "src\Directory.Build.props" | Build-AppendVersionToBuildNumber
-  condition: eq(variables['Build.SourceBranch'], 'refs/heads/main')
+  condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
 
 - task: VSBuild@1
   inputs:
@@ -57,7 +57,7 @@ steps:
 - task: PowerShell@1
   displayName: 'Publish to vsix-gallery'
   enabled: true
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
     scriptType: inlineScript
     inlineScript: |
