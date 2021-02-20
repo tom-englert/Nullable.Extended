@@ -38,7 +38,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     SourceFolder: 'src'
-    Contents: '**\$(buildConfiguration)\*.vsix'
+    Contents: '**\$(buildConfiguration)\**\*.vsix'
     TargetFolder: '$(Build.ArtifactStagingDirectory)\Vsix'
     flattenFolders: true
 
