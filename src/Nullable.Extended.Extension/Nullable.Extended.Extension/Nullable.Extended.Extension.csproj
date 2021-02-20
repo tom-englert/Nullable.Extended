@@ -3,6 +3,7 @@
     <UseWPF>true</UseWPF>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <TargetFramework>net472</TargetFramework>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
     <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
