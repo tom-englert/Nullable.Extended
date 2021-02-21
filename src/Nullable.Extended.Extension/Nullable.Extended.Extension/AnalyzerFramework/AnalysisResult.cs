@@ -16,7 +16,9 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public AnalysisContext AnalysisContext { get; }
 
-        public string ProjectName => AnalysisContext.Document.Project.AssemblyName;
+        // Project.Name may have target framework as suffix, Project.AssemblyName may contain full path and/or target framework
+        // => use file name
+        public string ProjectName => Path.GetFileNameWithoutExtension(AnalysisContext.Document.Project.FilePath);
 
         public string FilePath => AnalysisContext.SyntaxTree.FilePath;
 
