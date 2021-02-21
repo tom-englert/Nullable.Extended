@@ -4,27 +4,13 @@
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <TargetFramework>net472</TargetFramework>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
-    <GeneratePkgDefFile>true</GeneratePkgDefFile>
-    <UseCodebase>true</UseCodebase>
-    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
-    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
-    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
-    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <StartAction>Program</StartAction>
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
     <LangVersion>8.0</LangVersion>
     <Nullable>enable</Nullable>
-    <OutputPath>bin\$(Configuration)\</OutputPath>
-    <IntermediateOutputPath>obj\$(Configuration)\</IntermediateOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
   </PropertyGroup>
-  <ItemGroup>
-    <None Update="source.extension.vsixmanifest">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="System.Design" />
   </ItemGroup>
@@ -67,15 +53,9 @@
     <PackageReference Include="TomsToolbox.Wpf.Styles">
       <Version>2.3.2</Version>
     </PackageReference>
-    <PackageReference Include="VSIX-SdkProjectAdapter" Version="1.0.1">
+    <PackageReference Include="VSIX-SdkProjectAdapter" Version="1.1.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Remove="Package.vsct" />
-    <VSCTCompile Include="Package.vsct">
-      <ResourceName>Menus.ctmenu</ResourceName>
-    </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\*.png" />
