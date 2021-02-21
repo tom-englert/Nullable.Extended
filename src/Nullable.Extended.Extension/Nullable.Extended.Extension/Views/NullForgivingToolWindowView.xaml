@@ -76,6 +76,10 @@
 
     <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Static styles:ResourceKeys.ToolTipStyle}}" />
 
+    <ControlTemplate x:Key="MultipleChoiceFilterTemplate">
+      <dgx:MultipleChoiceFilter />
+    </ControlTemplate>
+
   </UserControl.Resources>
   <Grid>
     <DockPanel>
@@ -109,9 +113,12 @@
                 toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenDocumentCommand}">
         <DataGrid.Columns>
           <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" />
-          <DataGridTextColumn Header="Context" Width="80" Binding="{Binding Context}" />
-          <DataGridTextColumn Header="File" Width="3*" Binding="{Binding RelativeFilePath}" SortDirection="Ascending" />
-          <DataGridTextColumn Header="Project" Width="*" Binding="{Binding ProjectName}" />
+          <DataGridTextColumn Header="Context" Width="90" Binding="{Binding Context}"
+                              dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
+          <DataGridTextColumn Header="File" Width="3*" Binding="{Binding RelativeFilePath}" SortDirection="Ascending"
+                              dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
+          <DataGridTextColumn Header="Project" Width="*" Binding="{Binding ProjectName}"
+                              dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
           <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending" />
           <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}" SortDirection="Descending" />
         </DataGrid.Columns>

@@ -5,6 +5,7 @@ using System.Windows.Media;
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
 using TomsToolbox.Wpf.Composition.XamlExtensions;
+using TomsToolbox.Wpf.Styles;
 
 namespace Nullable.Extended.Extension.Views
 {
@@ -24,6 +25,7 @@ namespace Nullable.Extended.Extension.Views
             InitializeComponent();
 
             Resources.MergedDictionaries.Add(DataTemplateManager.CreateDynamicDataTemplates(exportProvider));
+            Resources.MergedDictionaries.Insert(0, WpfStyles.GetDefaultStyles());
         }
 
         public static readonly DependencyProperty IsDarkThemeProperty = DependencyProperty.Register(
