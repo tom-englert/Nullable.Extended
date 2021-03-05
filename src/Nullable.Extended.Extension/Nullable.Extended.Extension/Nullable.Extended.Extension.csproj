@@ -73,4 +73,11 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Package.resx">
+      <MergeWithCTO>true</MergeWithCTO>
+      <ManifestResourceName>Package</ManifestResourceName>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
