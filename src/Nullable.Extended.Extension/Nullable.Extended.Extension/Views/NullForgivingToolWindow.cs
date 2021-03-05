@@ -13,8 +13,8 @@ namespace Nullable.Extended.Extension.Views
         public NullForgivingToolWindow() : base(null)
         {
             Caption = "Null Forgiving Operators";
-            //BitmapResourceID = 301;
-            //BitmapIndex = 0;
+            BitmapResourceID = 301;
+            BitmapIndex = 0;
         }
 
         protected override void Initialize()
