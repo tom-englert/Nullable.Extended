@@ -12,7 +12,8 @@ namespace Nullable.Extended.Extension.Extension
 {
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [Guid(PackageGuidString)]
-    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [InstalledProductRegistration(@"Nullable Extended Extension", @"Tools to keep your nullability annotations lean and mean.", "Nullable.Extended")]
+    [ProvideMenuResource("Menus.ctmenu", 1)] 
     [ProvideToolWindow(typeof(NullForgivingToolWindow))]
     public sealed class ExtensionPackage : AsyncPackage
     {
