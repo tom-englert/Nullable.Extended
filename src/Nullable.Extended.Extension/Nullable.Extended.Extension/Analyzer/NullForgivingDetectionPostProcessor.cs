@@ -68,10 +68,18 @@ namespace Nullable.Extended.Extension.Analyzer
                 if (!resultsBySyntaxRoot.TryGetValue(syntaxRoot, out var results))
                     continue;
 
-                var affectedResult = results.FirstOrDefault(result =>
-                    diagnostic.Location.SourceSpan == result.Node.Operand.GetLocation().SourceSpan);
+                bool IsAffectedResult(NullForgivingAnalysisResult result)
+                {
+                    var resultLocation = result.Node.Operand.GetLocation();
+                    var diagnosticLocation = diagnostic.Location;
+                    var intersection = diagnosticLocation.SourceSpan.Intersection(resultLocation.SourceSpan);
 
-                if (affectedResult != null)
+                    return intersection == resultLocation.SourceSpan;
+                }
+
+                var affectedResults = results.Where(IsAffectedResult);
+
+                foreach (var affectedResult in affectedResults)
                 {
                     affectedResult.IsRequired = true;
                 }
