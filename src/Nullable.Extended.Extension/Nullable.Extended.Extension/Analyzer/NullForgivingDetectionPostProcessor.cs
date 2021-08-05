@@ -17,7 +17,7 @@ namespace Nullable.Extended.Extension.Analyzer
     internal class NullForgivingDetectionPostProcessor : ISyntaxAnalysisPostProcessor
     {
         private const string FirstNullableDiagnostic = "CS8600";
-        private const string LastNullableDiagnostic = "CS8700";
+        private const string LastNullableDiagnostic = "CS8900";
 
         private static readonly IEqualityComparer<SyntaxNode> SyntaxNodeEqualityComparer = new DelegateEqualityComparer<SyntaxNode>(a => a.FullSpan);
 
