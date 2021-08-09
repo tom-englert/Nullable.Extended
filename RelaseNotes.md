@@ -1,3 +1,6 @@
+1.5
+- Analysis results may depend on framework version: use the most relevant result.
+
 1.4
 - Support VS2022
 - Fix #5: Add an icon to the tool window
