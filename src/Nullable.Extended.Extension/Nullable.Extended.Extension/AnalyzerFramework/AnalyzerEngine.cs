@@ -5,15 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using TomsToolbox.Composition;
-using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     [Export(typeof(IAnalyzerEngine))]
     class AnalyzerEngine : IAnalyzerEngine
     {
-        private static readonly IEqualityComparer<AnalysisResult> ResultEqualityComparer = new DelegateEqualityComparer<AnalysisResult>(item => item.Position);
-
         private readonly ICollection<ISyntaxTreeAnalyzer> _syntaxTreeAnalyzers;
         private readonly ICollection<ISyntaxAnalysisPostProcessor> _postProcessors;
 
@@ -28,8 +25,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
             var documentTasks = documents.Select(AnalyzeDocumentAsync);
 
             IEnumerable<AnalysisResult> analysisResults = (await Task.WhenAll(documentTasks))
-                .SelectMany(r => r)
-                .Distinct(ResultEqualityComparer);
+                .SelectMany(r => r);
 
             var resultsByProject = analysisResults.GroupBy(result => result.AnalysisContext.Document.Project);
 
@@ -37,9 +33,10 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
             analysisResults = (await Task.WhenAll(projectTasks))
                 .SelectMany(r => r)
-                .Distinct(ResultEqualityComparer);
+                .GroupBy(r => r.Position)
+                .Select(g => g.OrderBy(r => r).First());
 
-            return analysisResults.ToArray();
+            return analysisResults.ToList().AsReadOnly();
         }
 
         private async Task<IReadOnlyCollection<AnalysisResult>> PostProcessProjectAsync(IGrouping<Project, AnalysisResult> analysisResults)

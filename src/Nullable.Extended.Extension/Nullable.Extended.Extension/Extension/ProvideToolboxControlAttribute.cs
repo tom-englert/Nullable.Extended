@@ -14,7 +14,7 @@ namespace Nullable.Extended.Extension.Extension
     ///         "Codebase"="$path$"
     ///         "WpfControls"="1"
     /// </remarks>
-    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    [AttributeUsage(AttributeTargets.Class)]
     [ComVisible(false)]
     public sealed class ProvideToolboxControlAttribute : RegistrationAttribute
     {
@@ -43,14 +43,10 @@ namespace Nullable.Extended.Extension.Extension
                 throw new ArgumentNullException(nameof(context));
             }
 
-            using (var key = context.CreateKey(string.Format(CultureInfo.InvariantCulture, "{0}\\{1}",
-                                                             ToolboxControlsInstallerPath,
-                                                             context.ComponentType.Assembly.FullName)))
-            {
-                key.SetValue(string.Empty, name);
-                key.SetValue("Codebase", context.CodeBase);
-                key.SetValue("WPFControls", "1");
-            }
+            using var key = context.CreateKey(string.Format(CultureInfo.InvariantCulture, "{0}\\{1}", ToolboxControlsInstallerPath, context.ComponentType.Assembly.FullName));
+            key.SetValue(string.Empty, name);
+            key.SetValue("Codebase", context.CodeBase);
+            key.SetValue("WPFControls", "1");
         }
 
         /// <summary>
@@ -59,7 +55,7 @@ namespace Nullable.Extended.Extension.Extension
         /// <param name="context">A registration context provided by an external registration tool. 
         /// The context can be used to remove registry keys, log registration activity, and obtain information
         /// about the component being registered.</param>
-        public override void Unregister(RegistrationContext context)
+        public override void Unregister(RegistrationContext? context)
         {
             context?.RemoveKey(string.Format(CultureInfo.InvariantCulture, "{0}\\{1}",
                 ToolboxControlsInstallerPath,

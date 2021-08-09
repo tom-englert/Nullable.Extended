@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
-    public class AnalysisResult
+    public abstract class AnalysisResult : IComparable
     {
         internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, FileLinePositionSpan position)
         {
@@ -48,9 +48,11 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public SyntaxNode Node { get; }
 
         public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
+
+        public abstract int CompareTo(object? obj);
     }
 
-    public class AnalysisResult<T> : AnalysisResult
+    public abstract class AnalysisResult<T> : AnalysisResult
         where T : SyntaxNode
     {
         internal AnalysisResult(AnalysisContext analysisContext, T node, FileLinePositionSpan position)
@@ -59,5 +61,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         }
 
         public new T Node => (T)base.Node;
+
+        public abstract override int CompareTo(object? obj);
     }
 }
