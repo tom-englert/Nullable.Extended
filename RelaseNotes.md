@@ -1,3 +1,6 @@
+1.6
+- Fix #7: XAML assembly resolving fails for DGX
+
 1.5
 - Analysis results may depend on framework version: use the most relevant result.
 
