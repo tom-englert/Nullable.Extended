@@ -50,13 +50,15 @@ Start the tool window from the tools menu:
 
 ![menu](assets/NullForgivingMenu.png)
 
-In the tool window you can see all occurrences of the null-forgiving operator in your solution:
+In the tool window you can see all occurrences of the null-forgiving operator in your solution.
+It also shows if the null-forgiving operator is required to suppress nullable warnings. 
+If the "Required" column is not checked, it is a hint that the null-forgiving operator might be obsolete and can probably be removed.
 
 ![menu](assets/NullForgivingToolWindow.png)
 
 - Click the refresh button to scan your solution.
 - Double click any entry to navigate to the corresponding source code.
-- Click the delete button to remove all null-forgiving operators that are not required.
+- Click the delete button to remove all null-forgiving operators that are not shown as required.
 
 ---
 
