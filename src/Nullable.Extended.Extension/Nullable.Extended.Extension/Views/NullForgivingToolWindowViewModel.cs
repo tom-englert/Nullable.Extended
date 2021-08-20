@@ -89,20 +89,27 @@ namespace Nullable.Extended.Extension.Views
         {
             Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
 
-            var window = _dte.ItemOperations.OpenFile(result.FilePath, Constants.vsext_vk_Code);
-            var textDocument = (TextDocument)window.Document.Object();
-
-            var editPoint = textDocument.CreateEditPoint();
-            var resultPrefix = result.Prefix;
-            var text = editPoint.GetText(resultPrefix.Length);
-            if (!text.StartsWith(resultPrefix, StringComparison.Ordinal))
+            try
             {
-                result.Context = NullForgivingContext.Modified;
-                return;
-            }
+                var window = _dte.ItemOperations.OpenFile(result.FilePath, Constants.vsext_vk_Code);
+                var textDocument = (TextDocument)window.Document.Object();
 
-            textDocument.Selection.MoveTo(result.Line, result.Column);
-            textDocument.Selection.MoveTo(result.Line, result.Column + 1, true);
+                var editPoint = textDocument.CreateEditPoint();
+                var resultPrefix = result.Prefix;
+                var text = editPoint.GetText(resultPrefix.Length);
+                if (!text.StartsWith(resultPrefix, StringComparison.Ordinal))
+                {
+                    result.Context = NullForgivingContext.Modified;
+                    return;
+                }
+
+                textDocument.Selection.MoveTo(result.Line, result.Column);
+                textDocument.Selection.MoveTo(result.Line, result.Column + 1, true);
+            }
+            catch
+            {
+                // TODO: Dte.ItemOperations crash VS2022!!! => use different method.
+            }
         }
 
         private bool CanAnalyze()

@@ -46,7 +46,7 @@
             <ContentPresenter x:Name="ToolBarHeader" ContentSource="Header" HorizontalAlignment="Center"
                               VerticalAlignment="Center"
                               SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
-            <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true"
+            <ToolBarPanel x:Name="PART_ToolBarPanel" IsItemsHost="true" KeyboardNavigation.TabNavigation="Once"
                           SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
           </DockPanel>
         </Border>
@@ -84,7 +84,7 @@
   <Grid>
     <DockPanel>
       <ToolBarTray DockPanel.Dock="Top" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}">
-        <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Continue"
+        <ToolBar x:Name="ToolBar" Background="Transparent" KeyboardNavigation.TabNavigation="Once"
                  Template="{StaticResource ToolBarTemplate}">
           <Button Style="{StaticResource ToolbarCommandButtonStyle}"
                   Command="{Binding AnalyzeCommand}">
@@ -105,6 +105,7 @@
 
       <DataGrid ItemsSource="{Binding AnalysisResults}"
                 Style="{DynamicResource {x:Static styles:ResourceKeys.DataGridStyle}}"
+                KeyboardNavigation.TabNavigation="Once"
                 AutoGenerateColumns="False"
                 HeadersVisibility="Column"
                 IsReadOnly="True"
@@ -122,6 +123,11 @@
           <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending" />
           <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}" SortDirection="Descending" />
         </DataGrid.Columns>
+        <DataGrid.RowStyle>
+          <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+            <EventSetter Event="KeyDown" Handler="DataGridRow_OnKeyDown" />
+          </Style>
+        </DataGrid.RowStyle>
         <b:Interaction.Behaviors>
           <dgx:ExtendedStarSizeBehavior />
         </b:Interaction.Behaviors>
