@@ -44,7 +44,7 @@ namespace Nullable.Extended.Extension.Views
         {
             if (true.Equals(e.NewValue) && _lastFocusedCell != null)
             {
-                _lastFocusedCell.Focus();
+                _ = _lastFocusedCell.Focus();
             }
         }
     }
