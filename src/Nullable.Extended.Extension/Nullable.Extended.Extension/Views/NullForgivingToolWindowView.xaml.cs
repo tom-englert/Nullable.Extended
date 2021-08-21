@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
@@ -12,6 +13,8 @@ namespace Nullable.Extended.Extension.Views
     [DataTemplate(typeof(NullForgivingToolWindowViewModel))]
     public partial class NullForgivingToolWindowView
     {
+        private DataGridCell? _lastFocusedCell;
+
         public NullForgivingToolWindowView(IExportProvider exportProvider)
         {
             this.SetExportProvider(exportProvider);
@@ -29,6 +32,19 @@ namespace Nullable.Extended.Extension.Views
                     (DataContext as NullForgivingToolWindowViewModel)?.OpenDocumentCommand.Execute(item);
                 }
                 e.Handled = true;
+            }
+        }
+
+        private void Cell_GotFocus(object sender, RoutedEventArgs e)
+        {
+            _lastFocusedCell = sender as DataGridCell;
+        }
+
+        private void DataGrid_IsKeyboardFocusWithinChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (true.Equals(e.NewValue) && _lastFocusedCell != null)
+            {
+                _lastFocusedCell.Focus();
             }
         }
     }
