@@ -7,11 +7,12 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     public abstract class AnalysisResult : IComparable
     {
-        internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, FileLinePositionSpan position)
+        internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, Location location)
         {
             Node = node;
+            Location = location;
             AnalysisContext = analysisContext;
-            Position = position;
+            Position = location.GetLineSpan();
         }
 
         public AnalysisContext AnalysisContext { get; }
@@ -47,6 +48,8 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public SyntaxNode Node { get; }
 
+        public Location Location { get; }
+
         public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
 
         public abstract int CompareTo(object? obj);
@@ -55,8 +58,8 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
     public abstract class AnalysisResult<T> : AnalysisResult
         where T : SyntaxNode
     {
-        internal AnalysisResult(AnalysisContext analysisContext, T node, FileLinePositionSpan position)
-            : base(analysisContext, node, position)
+        internal AnalysisResult(AnalysisContext analysisContext, T node, Location location)
+            : base(analysisContext, node, location)
         {
         }
 

@@ -4,7 +4,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Community.VisualStudio.Toolkit;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
 using Nullable.Extended.Extension.Analyzer;
 using Nullable.Extended.Extension.AnalyzerFramework;
 using TomsToolbox.Wpf;
@@ -19,7 +22,7 @@ namespace Nullable.Extended.Extension.Views
 
         public NullForgivingToolWindowViewModel(IServiceProvider serviceProvider, AnalyzerViewModel analyzerViewModel)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             AnalyzerViewModel = analyzerViewModel;
             SetResults(analyzerViewModel.AnalysisResults);
@@ -58,7 +61,7 @@ namespace Nullable.Extended.Extension.Views
 
         private void RemoveNotRequiredOperators()
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             var resultsToRemove = NotRequiredAnalysisResults;
 
@@ -85,30 +88,25 @@ namespace Nullable.Extended.Extension.Views
 
         private IEnumerable<NullForgivingAnalysisResult> NotRequiredAnalysisResults => AnalysisResults.Where(result => !result.IsRequired && result.Context.IsValid());
 
-        private void OpenDocument(NullForgivingAnalysisResult result)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<Pending>")]
+        private static async void OpenDocument(NullForgivingAnalysisResult result)
         {
-            Microsoft.VisualStudio.Shell.ThreadHelper.ThrowIfNotOnUIThread();
-
             try
             {
-                var window = _dte.ItemOperations.OpenFile(result.FilePath, Constants.vsext_vk_Code);
-                var textDocument = (TextDocument)window.Document.Object();
-
-                var editPoint = textDocument.CreateEditPoint();
-                var resultPrefix = result.Prefix;
-                var text = editPoint.GetText(resultPrefix.Length);
-                if (!text.StartsWith(resultPrefix, StringComparison.Ordinal))
-                {
-                    result.Context = NullForgivingContext.Modified;
+                var textView = (await VS.Documents.OpenAsync(result.FilePath).ConfigureAwait(true))?.TextView;
+                if (textView == null)
                     return;
-                }
 
-                textDocument.Selection.MoveTo(result.Line, result.Column);
-                textDocument.Selection.MoveTo(result.Line, result.Column + 1, true);
+                var snapshot = textView.FormattedLineSource.SourceTextSnapshot;
+                var line = snapshot.Lines.Skip(result.Line - 1).FirstOrDefault();
+                var span = new SnapshotSpan(new VirtualSnapshotPoint(line, result.Column - 1).Position, new VirtualSnapshotPoint(line, result.Column).Position);
+
+                textView.Selection.Select(span, false);
+                textView.ViewScroller.EnsureSpanVisible(span);
             }
             catch
             {
-                // TODO: Dte.ItemOperations crash VS2022!!! => use different method.
+                // Probably the document has already changed and the span is no longer valid. User can simply retry.
             }
         }
 
