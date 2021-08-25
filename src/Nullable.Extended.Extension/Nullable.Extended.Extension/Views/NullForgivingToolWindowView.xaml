@@ -130,6 +130,8 @@
                               dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
           <DataGridTextColumn Header="Line" Width="80" Binding="{Binding Line}" SortDirection="Descending" />
           <DataGridTextColumn Header="Column" Width="80" Binding="{Binding Column}" SortDirection="Descending" />
+          <DataGridCheckBoxColumn Header="Justified" Width="80" Binding="{Binding IsJustified, Mode=OneWay}" />
+          <DataGridTextColumn Header="Justification" Width="120" Binding="{Binding Justification}" />
         </DataGrid.Columns>
         <DataGrid.RowStyle>
           <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Static styles:ResourceKeys.DataGridRowStyle}}">
