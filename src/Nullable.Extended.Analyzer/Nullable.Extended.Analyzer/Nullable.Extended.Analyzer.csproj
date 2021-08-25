@@ -45,4 +45,6 @@
     </None>
   </ItemGroup>
 
+  <Import Project="..\..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
+
 </Project>

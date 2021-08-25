@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.30907.101
+VisualStudioVersion = 16.0.31613.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Extension", "Nullable.Extended.Extension\Nullable.Extended.Extension.csproj", "{46A78692-0A62-4894-BD3F-84D8493C4093}"
 EndProject
@@ -12,7 +12,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\..\RelaseNotes.md = ..\..\RelaseNotes.md
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nullable.Shared", "..\Nullable.Shared\Nullable.Shared.shproj", "{850B0F8F-F2C0-4BE3-B141-2CD93EA896D8}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		..\Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
+		..\Nullable.Shared\Nullable.Shared.projitems*{850b0f8f-f2c0-4be3-b141-2cd93ea896d8}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
