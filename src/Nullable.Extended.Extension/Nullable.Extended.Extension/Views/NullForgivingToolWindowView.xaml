@@ -79,7 +79,7 @@
     <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Static styles:ResourceKeys.ToolTipStyle}}" />
 
     <ControlTemplate x:Key="MultipleChoiceFilterTemplate">
-      <dgx:MultipleChoiceFilter />
+      <dgx:MultipleChoiceFilter HasTextFilter="True" />
     </ControlTemplate>
 
   </UserControl.Resources>
@@ -117,6 +117,8 @@
                 IsKeyboardFocusWithinChanged="DataGrid_IsKeyboardFocusWithinChanged"
                 dgx:Tools.ApplyInitialSorting="True"
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"
+                dgx:Tools.TrackFocusedCell="True"
+                dgx:DataGridFilter.StartFilteringKeyGesture="Ctrl+F"
                 toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenDocumentCommand}">
         <DataGrid.Columns>
           <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" />
@@ -141,11 +143,6 @@
             </Setter>
           </Style>
         </DataGrid.RowStyle>
-        <DataGrid.CellStyle>
-          <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Static styles:ResourceKeys.DataGridCellStyle}}">
-            <EventSetter Event="GotFocus" Handler="Cell_GotFocus" />
-          </Style>
-        </DataGrid.CellStyle>
         <b:Interaction.Behaviors>
           <dgx:ExtendedStarSizeBehavior />
         </b:Interaction.Behaviors>
