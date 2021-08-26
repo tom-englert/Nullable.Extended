@@ -19,7 +19,7 @@ namespace Nullable.Extended.Analyzer
         private const string GeneralTitle = "Find general usages of the NullForgiving operator";
         private const string NullOrDefaultTitle = "Find usages of the NullForgiving operator on null or default expression";
         private const string LambdaTitle = "Find usages of the NullForgiving operator inside lambda expressions";
-        private const string MessageFormat = "Instance of NullForgiving operator detected";
+        private const string MessageFormat = "Instance of NullForgiving operator without justtification detected";
         private const string Category = "nullable";
         private const string HelpLink = "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving";
 
