@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+
 using Nullable.Extended.Analyzer.SonarAdapter;
+
 using AnalysisContext = Nullable.Extended.Analyzer.SonarAdapter.AnalysisContext;
 
 namespace Nullable.Extended.Analyzer
@@ -16,7 +19,7 @@ namespace Nullable.Extended.Analyzer
         private static readonly string[] SupportedSuppressionIds = { "CS8602", "CS8603", "CS8604" };
 
         private static SuppressionDescriptor ToSuppressionDescriptor(string id) =>
-            new SuppressionDescriptor("NX_" + id, id, $"Suppress {id} when full graph walk proves safe access.");
+            new("NX_" + id, id, $"Suppress {id} when full graph walk proves safe access.");
 
         public override ImmutableArray<SuppressionDescriptor> SupportedSuppressions { get; } = SupportedSuppressionIds.Select(ToSuppressionDescriptor).ToImmutableArray();
 

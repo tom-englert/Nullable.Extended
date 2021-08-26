@@ -57,7 +57,7 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
             ReportDiagnostics(analyzerContexts, context);
         }
 
-        private void ReportDiagnostics(IEnumerable<ISymbolicExecutionAnalysisContext> analyzerContexts, SyntaxNodeAnalysisContext context)
+        private static void ReportDiagnostics(IEnumerable<ISymbolicExecutionAnalysisContext> analyzerContexts, SyntaxNodeAnalysisContext context)
         {
             foreach (var analyzerContext in analyzerContexts)
             {

@@ -9,7 +9,7 @@ namespace Nullable.Extended.Analyzer
         private static ImmutableDictionary<string, Logger> _loggers = ImmutableDictionary<string, Logger>.Empty.WithComparers(StringComparer.OrdinalIgnoreCase);
 
         private readonly string? _logFile;
-        private readonly object _mutex = new object();
+        private readonly object _mutex = new();
 
 
         private Logger(string? logFile)

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Xml;
-using System.Xml.Linq;
 using System.Xml.Serialization;
+
 using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Nullable.Extended.Analyzer
@@ -10,7 +10,7 @@ namespace Nullable.Extended.Analyzer
     [Serializable]
     public class Options
     {
-        private static readonly XmlSerializer Serializer = new XmlSerializer(typeof(Options));
+        private static readonly XmlSerializer Serializer = new(typeof(Options));
 
         public string? LogFile { get; set; }
 
@@ -53,7 +53,7 @@ namespace Nullable.Extended.Analyzer
                 var text = base.ReadElementString();
 
                 // bool TryParse accepts case-insensitive 'true' and 'false'
-                if (bool.TryParse(text, out bool result))
+                if (bool.TryParse(text, out var result))
                 {
                     text = XmlConvert.ToString(result);
                 }

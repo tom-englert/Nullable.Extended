@@ -453,20 +453,4 @@ class Test
 
 
     }
-
-#nullable enable
-    namespace N
-    {
-        class Test
-        {
-            private void Method(object[]? target1, object? target2)
-            {
-                var x = target1?.ToString();
-                if (x == null)
-                    return;
-
-                var y = target1[0].ToString();
-            }
-        }
-    }
 }

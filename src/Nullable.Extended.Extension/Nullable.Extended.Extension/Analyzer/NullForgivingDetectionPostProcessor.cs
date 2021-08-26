@@ -19,7 +19,7 @@ namespace Nullable.Extended.Extension.Analyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8900";
 
-        private static readonly IEqualityComparer<SyntaxNode> SyntaxNodeEqualityComparer = new DelegateEqualityComparer<SyntaxNode>(a => a.FullSpan);
+        private static readonly IEqualityComparer<SyntaxNode> SyntaxNodeEqualityComparer = new DelegateEqualityComparer<SyntaxNode>(a => a!.FullSpan);
 
         public async Task<IReadOnlyCollection<AnalysisResult>> PostProcessAsync(Project project, IEnumerable<AnalysisResult> analysisResults)
         {

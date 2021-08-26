@@ -15,8 +15,8 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
         internal const string NullDiagnosticId = "Null";
         internal const string NotNullDiagnosticId = "NotNull";
 
-        private static readonly DiagnosticDescriptor NullRule = new DiagnosticDescriptor(NullDiagnosticId, string.Empty, string.Empty, string.Empty, DiagnosticSeverity.Error, true);
-        private static readonly DiagnosticDescriptor NotNullRule = new DiagnosticDescriptor(NotNullDiagnosticId, string.Empty, string.Empty, string.Empty, DiagnosticSeverity.Error, true);
+        private static readonly DiagnosticDescriptor NullRule = new(NullDiagnosticId, string.Empty, string.Empty, string.Empty, DiagnosticSeverity.Error, true);
+        private static readonly DiagnosticDescriptor NotNullRule = new(NotNullDiagnosticId, string.Empty, string.Empty, string.Empty, DiagnosticSeverity.Error, true);
 
         public IEnumerable<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(NullRule, NotNullRule);
 
@@ -29,7 +29,7 @@ namespace Nullable.Extended.Analyzer.SonarAdapter
         {
             private readonly CSharpExplodedGraph explodedGraph;
             private readonly SyntaxNodeAnalysisContext context;
-            private readonly Dictionary<ExpressionSyntax, bool> identifiers = new Dictionary<ExpressionSyntax, bool>();
+            private readonly Dictionary<ExpressionSyntax, bool> identifiers = new();
 
             public AnalysisContext(CSharpExplodedGraph explodedGraph, SyntaxNodeAnalysisContext context)
             {
