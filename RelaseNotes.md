@@ -1,3 +1,8 @@
+1.7
+- #8: Improve keyboard navigation
+- #9: Navigate to operator crashes VS2022
+- #10: Recover the NullForgivingDetectionAnalyzer and support suppressions via `"// ! comment"`
+
 1.6
 - Fix #7: XAML assembly resolving fails for DGX
 
