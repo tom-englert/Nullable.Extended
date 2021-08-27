@@ -1,3 +1,6 @@
+1.8
+- #10: Fix justification, comments were not always detected properly
+
 1.7
 - #8: Improve keyboard navigation
 - #9: Navigate to operator crashes VS2022
