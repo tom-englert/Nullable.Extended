@@ -1,27 +1,24 @@
 ﻿using System.Collections.Generic;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
-using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Nullable.Extended.Analyzer.Test.Verifiers
 {
-    public static partial class CSharpAnalyzerVerifier<TAnalyzer>
+    public static partial class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>
         where TAnalyzer : DiagnosticAnalyzer, new()
+        where TCodeFix : CodeFixProvider, new()
     {
-        private class Test : CSharpAnalyzerTest<TAnalyzer, MSTestVerifier>
+        public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, MSTestVerifier>
         {
-            private readonly bool _ignoreSuppressedDiagnostics;
-
-            public Test(string testCode, bool ignoreSuppressedDiagnostics, IDictionary<string, ReportDiagnostic> diagnosticOptions = null)
+            public Test(string testCode, string fixedCode = null)
             {
-                _ignoreSuppressedDiagnostics = ignoreSuppressedDiagnostics;
                 TestCode = testCode;
-                TestBehaviors = TestBehaviors.SkipGeneratedCodeCheck;
-                diagnosticOptions ??= new Dictionary<string, ReportDiagnostic>();
+                FixedCode = fixedCode;
 
                 SolutionTransforms.Add((solution, projectId) =>
                 {
@@ -31,21 +28,13 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
 
                     compilationOptions = compilationOptions
                         .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
-                        .WithSpecificDiagnosticOptions(diagnosticOptions)
+                        .WithSpecificDiagnosticOptions(compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullForgivingDetectionDiagnosticOptions))
                         .WithNullableContextOptions(NullableContextOptions.Enable);
 
                     solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
 
                     return solution;
                 });
-            }
-
-            protected override bool IsCompilerDiagnosticIncluded(Diagnostic diagnostic, CompilerDiagnostics compilerDiagnostics)
-            {
-                if (_ignoreSuppressedDiagnostics && diagnostic.IsSuppressed)
-                    return false;
-
-                return base.IsCompilerDiagnosticIncluded(diagnostic, compilerDiagnostics);
             }
         }
     }

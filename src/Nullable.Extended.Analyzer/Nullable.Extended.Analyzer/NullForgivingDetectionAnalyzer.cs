@@ -19,13 +19,15 @@ namespace Nullable.Extended.Analyzer
         private const string GeneralTitle = "Find general usages of the NullForgiving operator";
         private const string NullOrDefaultTitle = "Find usages of the NullForgiving operator on null or default expression";
         private const string LambdaTitle = "Find usages of the NullForgiving operator inside lambda expressions";
-        private const string MessageFormat = "Instance of NullForgiving operator without justtification detected";
+        private const string MessageFormat = "Instance of NullForgiving operator without justification detected";
         private const string Category = "nullable";
         private const string HelpLink = "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving";
 
         private static readonly DiagnosticDescriptor GeneralRule = new(GeneralDiagnosticId, GeneralTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
         private static readonly DiagnosticDescriptor NullOrDefaultRule = new(NullOrDefaultDiagnosticId, NullOrDefaultTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
         private static readonly DiagnosticDescriptor LambdaRule = new(LambdaDiagnosticId, LambdaTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
+
+        public static ImmutableArray<string> SupportedDiagnosticIds { get; } = ImmutableArray.Create(GeneralDiagnosticId, NullOrDefaultDiagnosticId, LambdaDiagnosticId);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(GeneralRule, NullOrDefaultRule, LambdaRule);
 

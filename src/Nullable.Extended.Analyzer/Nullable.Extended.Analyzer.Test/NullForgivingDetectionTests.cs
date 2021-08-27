@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using VerifyCS = Nullable.Extended.AnalyzerTest.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
+
+using VerifyCS = Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
 
 namespace Nullable.Extended.Analyzer.Test
 {
     [TestClass]
     public class NullForgivingDetectionTests
     {
-        private static readonly Dictionary<string, ReportDiagnostic> DiagnosticOptions = new Dictionary<string, ReportDiagnostic>()
+        private static readonly Dictionary<string, ReportDiagnostic> DiagnosticOptions = new()
         {
             { NullForgivingDetectionAnalyzer.GeneralDiagnosticId, ReportDiagnostic.Error },
             { NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId, ReportDiagnostic.Error },
@@ -149,10 +151,7 @@ class C {
         public virtual string Id { get; set; } = null{|#0:!|};
 }";
 
-            var expected = new DiagnosticResult[]
-            {
-                // DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0),
-            };
+            var expected = DiagnosticResult.EmptyDiagnosticResults;
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected, DiagnosticOptions);
         }

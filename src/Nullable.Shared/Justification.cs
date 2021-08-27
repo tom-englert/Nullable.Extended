@@ -72,7 +72,7 @@ namespace Nullable.Shared
             return !lines.Any() || lines.All(string.IsNullOrWhiteSpace) ? null : lines;
         }
 
-        private static CSharpSyntaxNode? FindAncestorStatementOrDeclaration(this PostfixUnaryExpressionSyntax node)
+        public static CSharpSyntaxNode? FindAncestorStatementOrDeclaration(this PostfixUnaryExpressionSyntax node)
         {
             return node
                 .AncestorsAndSelf()
