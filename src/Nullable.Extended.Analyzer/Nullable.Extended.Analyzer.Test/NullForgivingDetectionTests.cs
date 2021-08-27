@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
@@ -11,7 +11,7 @@ namespace Nullable.Extended.Analyzer.Test
     [TestClass]
     public class NullForgivingDetectionTests
     {
-        private static readonly Dictionary<string, ReportDiagnostic> DiagnosticOptions = new()
+        private static readonly Dictionary<string, ReportDiagnostic> DiagnosticOptions = new Dictionary<string, ReportDiagnostic>()
         {
             { NullForgivingDetectionAnalyzer.GeneralDiagnosticId, ReportDiagnostic.Error },
             { NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId, ReportDiagnostic.Error },
@@ -135,28 +135,34 @@ class C {
             await VerifyCS.VerifyAnalyzerAsync(source, expected, DiagnosticOptions);
         }
 
+        [TestMethod]
+        public async Task JustificationOnPropertyAfterAttribute()
+        {
+            const string source = @"
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 
+class C {
+        [ReadOnly(true)]
+        // ! Id is never null, always serialized
+        public virtual string Id { get; set; } = null{|#0:!|};
+}";
+
+            var expected = new DiagnosticResult[]
+            {
+                // DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0),
+            };
+
+            await VerifyCS.VerifyAnalyzerAsync(source, expected, DiagnosticOptions);
+        }
     }
 
 #nullable enable
     class C1
     {
-        string? M(string? a)
-        {
-            if (a == null)
-                return null;
-
-            var b = a.ToString();
-            if (b == null)
-                return null;
-
-
-            var x = Enumerable.Range(0, 10)
-                .Select(i => ((object?)i.ToString(), (object?)i.ToString()))
-                .Select(item => item.Item1!.ToString() + item.Item2!.ToString())
-                .FirstOrDefault();
-
-            return x!;
-        }
+        [ReadOnly(true)]
+        // ! Id is never null, always serialized
+        public virtual string Id { get; set; } = null!;
     }
 }
