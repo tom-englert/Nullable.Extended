@@ -23,9 +23,9 @@ namespace Nullable.Extended.Analyzer
         private const string Category = "nullable";
         private const string HelpLink = "https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/operators/null-forgiving";
 
-        private static readonly DiagnosticDescriptor GeneralRule = new(GeneralDiagnosticId, GeneralTitle, MessageFormat, Category, DiagnosticSeverity.Hidden, true, null, HelpLink);
-        private static readonly DiagnosticDescriptor NullOrDefaultRule = new(NullOrDefaultDiagnosticId, NullOrDefaultTitle, MessageFormat, Category, DiagnosticSeverity.Hidden, true, null, HelpLink);
-        private static readonly DiagnosticDescriptor LambdaRule = new(LambdaDiagnosticId, LambdaTitle, MessageFormat, Category, DiagnosticSeverity.Hidden, true, null, HelpLink);
+        private static readonly DiagnosticDescriptor GeneralRule = new(GeneralDiagnosticId, GeneralTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
+        private static readonly DiagnosticDescriptor NullOrDefaultRule = new(NullOrDefaultDiagnosticId, NullOrDefaultTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
+        private static readonly DiagnosticDescriptor LambdaRule = new(LambdaDiagnosticId, LambdaTitle, MessageFormat, Category, DiagnosticSeverity.Info, true, null, HelpLink);
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(GeneralRule, NullOrDefaultRule, LambdaRule);
 
