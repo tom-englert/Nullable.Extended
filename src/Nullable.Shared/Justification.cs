@@ -6,6 +6,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+using TomsToolbox.Essentials;
+
 namespace Nullable.Shared
 {
     internal static class Justification
@@ -19,7 +21,7 @@ namespace Nullable.Shared
         {
             return node
                 .FindAncestorStatementOrDeclaration()
-                ?.GetRawJustificationLines(node)
+                ?.GetReversJustificationLines(node)
                 ?.Any()
                 ?? false;
         }
@@ -31,14 +33,13 @@ namespace Nullable.Shared
                 ?.GetJustificationText(node);
         }
 
-        private static IReadOnlyCollection<string>? GetRawJustificationLines(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
+        private static IReadOnlyCollection<string>? GetReversJustificationLines(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
             var lines = ancestor.DescendantNodesAndTokensAndSelf()
                 .TakeWhile(item => item != node)
                 .Where(item => item.Parent == ancestor)
-                .Reverse()
-                .Select(GetRawJustificationLines)
-                .LastOrDefault(item => item.Count > 0);
+                .Select(GetReversJustificationLines)
+                .FirstOrDefault(item => item?.Count > 0);
 
             return lines;
         }
@@ -51,30 +52,26 @@ namespace Nullable.Shared
 
         private static IEnumerable<string>? GetJustificationLines(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
-            return ancestor.GetRawJustificationLines(node)
-                ?.Select(s => s.Substring(SuppressionCommentPrefix.Length))
-                .Reverse();
+            return ancestor
+                .GetReversJustificationLines(node)
+                ?.Reverse();
         }
 
-        private static IReadOnlyCollection<string> GetRawJustificationLines(this SyntaxNodeOrToken node)
+        private static IReadOnlyCollection<string>? GetReversJustificationLines(this SyntaxNodeOrToken node)
         {
             if (!node.HasLeadingTrivia)
-                return Array.Empty<string>();
+                return null;
 
-            return node.GetLeadingTrivia()
+            var lines = node.GetLeadingTrivia()
                 .Where(t => t.Kind() == SyntaxKind.SingleLineCommentTrivia)
                 .Select(t => t.ToString())
                 .Reverse()
-                .TakeWhile(IsValidSuppressionComment)
+                .TakeWhile(value => value.StartsWith(SuppressionCommentPrefix))
+                .Select(s => s.Substring(SuppressionCommentPrefix.Length))
                 .ToList()
                 .AsReadOnly();
-        }
 
-        private static bool IsValidSuppressionComment(string value)
-        {
-            return value.Length > SuppressionCommentPrefix.Length 
-                   && value.StartsWith(SuppressionCommentPrefix) 
-                   && !char.IsWhiteSpace(value[SuppressionCommentPrefix.Length]);
+            return !lines.Any() || lines.All(line => line.IsNullOrWhiteSpace()) ? null : lines;
         }
 
         private static CSharpSyntaxNode? FindAncestorStatementOrDeclaration(this PostfixUnaryExpressionSyntax node)
