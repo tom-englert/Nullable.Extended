@@ -1,3 +1,6 @@
+1.9
+- #10: Add a code fix provider
+
 1.8
 - #10: Fix justification, comments were not always detected properly
 
