@@ -6,8 +6,6 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using TomsToolbox.Essentials;
-
 namespace Nullable.Shared
 {
     internal static class Justification
@@ -71,7 +69,7 @@ namespace Nullable.Shared
                 .ToList()
                 .AsReadOnly();
 
-            return !lines.Any() || lines.All(line => line.IsNullOrWhiteSpace()) ? null : lines;
+            return !lines.Any() || lines.All(string.IsNullOrWhiteSpace) ? null : lines;
         }
 
         private static CSharpSyntaxNode? FindAncestorStatementOrDeclaration(this PostfixUnaryExpressionSyntax node)
