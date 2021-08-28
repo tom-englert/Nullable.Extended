@@ -21,7 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="DataGridExtensions">
-      <Version>2.5.10</Version>
+      <Version>2.5.11</Version>
     </PackageReference>
     <PackageReference Include="Fody">
       <Version>6.5.2</Version>
