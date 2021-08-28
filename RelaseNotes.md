@@ -1,3 +1,7 @@
+1.10
+- improve data grid filtering experience
+- Fix: detect justification comment on field declaration
+
 1.9
 - #10: Add a code fix provider
 
