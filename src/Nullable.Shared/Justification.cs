@@ -10,15 +10,15 @@ namespace Nullable.Shared
 {
     internal static class Justification
     {
-        private const string SuppressionCommentPrefix = "// ! ";
+        public const string SuppressionCommentPrefix = "// ! ";
 
-        private static readonly HashSet<SyntaxKind> StatementOrDeclarationKind =
-            new(Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().Where(IsStatementOrDeclaration));
+        private static readonly HashSet<SyntaxKind> SuppressionCommentTargetKind =
+            new(Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().Where(IsSuppressionCommentTargetCandidate));
 
         public static bool HasJustificationText(this PostfixUnaryExpressionSyntax node)
         {
             return node
-                .FindAncestorStatementOrDeclaration()
+                .FindSuppressionCommentTarget()
                 ?.GetReversJustificationLines(node)
                 ?.Any()
                 ?? false;
@@ -27,7 +27,7 @@ namespace Nullable.Shared
         public static string? GetJustificationText(this PostfixUnaryExpressionSyntax node)
         {
             return node
-                .FindAncestorStatementOrDeclaration()
+                .FindSuppressionCommentTarget()
                 ?.GetJustificationText(node);
         }
 
@@ -72,16 +72,19 @@ namespace Nullable.Shared
             return !lines.Any() || lines.All(string.IsNullOrWhiteSpace) ? null : lines;
         }
 
-        public static CSharpSyntaxNode? FindAncestorStatementOrDeclaration(this PostfixUnaryExpressionSyntax node)
+        public static CSharpSyntaxNode? FindSuppressionCommentTarget(this PostfixUnaryExpressionSyntax node)
         {
             return node
                 .AncestorsAndSelf()
                 .OfType<CSharpSyntaxNode>()
-                .FirstOrDefault(i => StatementOrDeclarationKind.Contains(i.Kind()));
+                .FirstOrDefault(i => SuppressionCommentTargetKind.Contains(i.Kind()));
         }
 
-        private static bool IsStatementOrDeclaration(SyntaxKind syntaxKind)
+        private static bool IsSuppressionCommentTargetCandidate(SyntaxKind syntaxKind)
         {
+            if (syntaxKind == SyntaxKind.VariableDeclaration)
+                return false; // always use the parent declaration for variable declarations!
+
             var name = syntaxKind.ToString();
             return name.EndsWith("Statement", StringComparison.Ordinal) || name.EndsWith("Declaration", StringComparison.Ordinal);
         }

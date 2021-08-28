@@ -19,7 +19,7 @@ namespace Nullable.Extended.Analyzer
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NullForgivingDetectionAnalyzerCodeFixProvider)), Shared]
     public class NullForgivingDetectionAnalyzerCodeFixProvider : CodeFixProvider
     {
-        private const string CodeFixPlaceholderText = "// ! TODO:\r\n";
+        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + "TODO:\r\n";
         private const string CodeFixTitle = "Suppress with comment";
 
         private static readonly SyntaxTriviaList CodeFixPlaceholderTrivia = CSharpSyntaxTree.ParseText(CodeFixPlaceholderText).GetRoot().GetLeadingTrivia();
@@ -35,21 +35,25 @@ namespace Nullable.Extended.Analyzer
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
+            if (root == null)
+                return;
 
             var diagnostic = context.Diagnostics.First();
             var diagnosticSpan = diagnostic.Location.SourceSpan;
-            var syntax = root?.FindToken(diagnosticSpan.Start).Parent as PostfixUnaryExpressionSyntax;
+            var syntax = root.FindToken(diagnosticSpan.Start).Parent as PostfixUnaryExpressionSyntax;
 
-            var baseStatement = syntax?.FindAncestorStatementOrDeclaration();
+            var target = syntax?.FindSuppressionCommentTarget();
+            if (target == null)
+                return;
 
-            var codeAction = CodeAction.Create(CodeFixTitle, token => ApplyFix(context.Document, root, baseStatement, token), CodeFixTitle);
+            var codeAction = CodeAction.Create(CodeFixTitle, token => ApplyFix(context.Document, root, target, token), CodeFixTitle);
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
 
-        private async Task<Document> ApplyFix(Document document, SyntaxNode root, CSharpSyntaxNode baseStatement, CancellationToken token)
+        private async Task<Document> ApplyFix(Document document, SyntaxNode root, CSharpSyntaxNode targetNode, CancellationToken token)
         {
-            var leadingTrivia = baseStatement.GetLeadingTrivia();
+            var leadingTrivia = targetNode.GetLeadingTrivia();
             var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
 
             leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia);
@@ -59,9 +63,9 @@ namespace Nullable.Extended.Analyzer
                 leadingTrivia = leadingTrivia.Add(indent);
             }
 
-            var statement = baseStatement.WithLeadingTrivia(leadingTrivia);
+            var statement = targetNode.WithLeadingTrivia(leadingTrivia);
 
-            root = root.ReplaceNode(baseStatement, statement);
+            root = root.ReplaceNode(targetNode, statement);
 
             document = document.WithSyntaxRoot(root);
 

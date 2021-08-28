@@ -155,6 +155,24 @@ class C {
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected, DiagnosticOptions);
         }
+
+        [TestMethod]
+        public async Task JustificationOnFieldAssignment()
+        {
+            const string source = @"
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+
+class C {
+        // ! Id is never null, always serialized
+        public string _id = null{|#0:!|};
+}";
+
+            var expected = DiagnosticResult.EmptyDiagnosticResults;
+
+            await VerifyCS.VerifyAnalyzerAsync(source, expected, DiagnosticOptions);
+        }
     }
 
 #nullable enable
