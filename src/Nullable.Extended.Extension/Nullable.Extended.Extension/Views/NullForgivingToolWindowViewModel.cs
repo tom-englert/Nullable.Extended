@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
@@ -16,6 +17,7 @@ using TomsToolbox.Wpf.Composition.AttributedModel;
 namespace Nullable.Extended.Extension.Views
 {
     [VisualCompositionExport(nameof(NullForgivingToolWindow))]
+    [Shared]
     internal class NullForgivingToolWindowViewModel : INotifyPropertyChanged
     {
         private readonly DTE _dte;

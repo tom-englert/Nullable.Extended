@@ -1,7 +1,10 @@
-﻿using System.Windows;
+﻿using System.Composition;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+
 using DataGridExtensions;
+
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
 using TomsToolbox.Wpf.Composition.AttributedModel;
@@ -12,6 +15,7 @@ namespace Nullable.Extended.Extension.Views
     /// Interaction logic for NullForgivingToolWindowView.xaml
     /// </summary>
     [DataTemplate(typeof(NullForgivingToolWindowViewModel))]
+    [Shared]
     public partial class NullForgivingToolWindowView
     {
         public NullForgivingToolWindowView(IExportProvider exportProvider)
