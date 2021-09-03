@@ -95,13 +95,6 @@
             </Button.ToolTip>
             <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/refresh.png" />
           </Button>
-          <Button Style="{StaticResource ToolbarCommandButtonStyle}"
-                  Command="{Binding RemoveNotRequired}">
-            <Button.ToolTip>
-              <ToolTip>Remove all not required tokens</ToolTip>
-            </Button.ToolTip>
-            <Image SnapsToDevicePixels="True" Source="/Nullable.Extended.Extension;component/Resources/delete.png" />
-          </Button>
         </ToolBar>
       </ToolBarTray>
 

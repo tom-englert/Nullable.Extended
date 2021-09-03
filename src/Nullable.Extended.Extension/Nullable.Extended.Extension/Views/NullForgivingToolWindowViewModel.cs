@@ -6,7 +6,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Community.VisualStudio.Toolkit;
-using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Nullable.Extended.Extension.Analyzer;
@@ -20,8 +19,6 @@ namespace Nullable.Extended.Extension.Views
     [Shared]
     internal class NullForgivingToolWindowViewModel : INotifyPropertyChanged
     {
-        private readonly DTE _dte;
-
         public NullForgivingToolWindowViewModel(IServiceProvider serviceProvider, AnalyzerViewModel analyzerViewModel)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -29,8 +26,6 @@ namespace Nullable.Extended.Extension.Views
             AnalyzerViewModel = analyzerViewModel;
             SetResults(analyzerViewModel.AnalysisResults);
             AnalyzerViewModel.AnalysisResultsChanged += AnalyzerViewModel_AnalysisResultsChanged;
-
-            _dte = (DTE)serviceProvider.GetService(typeof(DTE)) ?? throw new InvalidOperationException("Can't retrieve DTE service.");
         }
 
         private void AnalyzerViewModel_AnalysisResultsChanged(object sender, AnalysisResultsChangedArgs e)
@@ -54,38 +49,9 @@ namespace Nullable.Extended.Extension.Views
 
         public ICommand OpenDocumentCommand => new DelegateCommand<NullForgivingAnalysisResult>(OpenDocument);
 
-        public ICommand RemoveNotRequired => new DelegateCommand(HasNotRequiredOperators, RemoveNotRequiredOperators);
-
         private bool HasNotRequiredOperators()
         {
             return NotRequiredAnalysisResults.Any();
-        }
-
-        private void RemoveNotRequiredOperators()
-        {
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var resultsToRemove = NotRequiredAnalysisResults;
-
-            var resultsByDocument = resultsToRemove.GroupBy(result => result.AnalysisContext.Document);
-
-            foreach (var documentResults in resultsByDocument)
-            {
-                var document = documentResults.Key;
-                var window = _dte.ItemOperations.OpenFile(document.FilePath, Constants.vsext_vk_Code);
-                var textDocument = (TextDocument)window.Document.Object();
-                var selection = textDocument.Selection;
-
-                foreach (var result in documentResults.OrderByDescending(r => r.Line).ThenByDescending(r => r.Column))
-                {
-                    selection.MoveTo(result.Line, result.Column);
-                    selection.MoveTo(result.Line, result.Column + 1, true);
-                    if (selection.Text == "!")
-                    {
-                        selection.Text = "";
-                    }
-                }
-            }
         }
 
         private IEnumerable<NullForgivingAnalysisResult> NotRequiredAnalysisResults => AnalysisResults.Where(result => !result.IsRequired && result.Context.IsValid());
