@@ -1,3 +1,6 @@
+1.11
+- Remove the "Remove all not required tokens" command, it's of no practical use 
+
 1.10
 - improve data grid filtering experience
 - Fix: detect justification comment on field declaration
