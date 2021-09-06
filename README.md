@@ -1,5 +1,5 @@
 # Nullable Extended
-[![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended?repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&repoName=tom-englert%2FNullable.Extended&branchName=AddExtension)
+[![Build Status](https://dev.azure.com/tom-englert/Open%20Source/_apis/build/status/Nullable.Extended?branchName=master)](https://dev.azure.com/tom-englert/Open%20Source/_build/latest?definitionId=39&branchName=master)
 [![NuGet Status](https://img.shields.io/nuget/v/Nullable.Extended.Analyzer.svg)](https://www.nuget.org/packages/Nullable.Extended.Analyzer/)
 
 ## Roslyn Tools and Analyzers to improve the experience when coding with Nullable Reference Types.
