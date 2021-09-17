@@ -9,7 +9,7 @@ using Nullable.Shared;
 
 using TomsToolbox.Essentials;
 
-namespace Nullable.Extended.Extension.Analyzer
+namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
     public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>, INotifyPropertyChanged, IComparable<NullForgivingAnalysisResult>
     {

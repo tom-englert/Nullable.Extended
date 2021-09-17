@@ -9,7 +9,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Extended.Extension.AnalyzerFramework;
 
-namespace Nullable.Extended.Extension.Analyzer
+namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer

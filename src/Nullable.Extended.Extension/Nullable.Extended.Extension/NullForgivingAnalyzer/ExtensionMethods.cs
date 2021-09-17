@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Shared;
 
-namespace Nullable.Extended.Extension.Analyzer
+namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
     public static class ExtensionMethods
     {

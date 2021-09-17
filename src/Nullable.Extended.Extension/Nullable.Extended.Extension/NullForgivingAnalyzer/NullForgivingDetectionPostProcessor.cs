@@ -15,7 +15,7 @@ using TomsToolbox.Essentials;
 
 using AnalysisResult = Nullable.Extended.Extension.AnalyzerFramework.AnalysisResult;
 
-namespace Nullable.Extended.Extension.Analyzer
+namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
     [Export(typeof(ISyntaxAnalysisPostProcessor))]
     internal class NullForgivingDetectionPostProcessor : ISyntaxAnalysisPostProcessor
