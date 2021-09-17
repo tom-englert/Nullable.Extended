@@ -45,7 +45,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
             if (other is null)
                 return 1;
 
-            return IsRequired == other.IsRequired ? 0 : IsRequired ? 1 : -1;
+            return IsRequired == other.IsRequired ? 0 : IsRequired ? -1 : 1;
         }
     }
 }

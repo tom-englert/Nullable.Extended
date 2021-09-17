@@ -11,8 +11,6 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using Nullable.Extended.Extension.AnalyzerFramework;
 
-using TomsToolbox.Essentials;
-
 using AnalysisResult = Nullable.Extended.Extension.AnalyzerFramework.AnalysisResult;
 
 namespace Nullable.Extended.Extension.NullForgivingAnalyzer
@@ -23,73 +21,78 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8900";
 
-        private static readonly IEqualityComparer<SyntaxNode> SyntaxNodeEqualityComparer = new DelegateEqualityComparer<SyntaxNode>(a => a!.FullSpan);
-
-        public async Task<IReadOnlyCollection<AnalysisResult>> PostProcessAsync(Project project, IEnumerable<AnalysisResult> analysisResults)
+        public async Task PostProcessAsync(Project project, IReadOnlyCollection<AnalysisResult> analysisResults)
         {
             var nullForgivingAnalysisResults = analysisResults
                 .OfType<NullForgivingAnalysisResult>()
                 .ToArray();
 
-            var resultsBySyntaxRoot = new Dictionary<SyntaxNode, NullForgivingAnalysisResult[]>(SyntaxNodeEqualityComparer);
-
-            project = await RewriteSyntaxTreesAsync(project, nullForgivingAnalysisResults, resultsBySyntaxRoot);
-
-            var compilation = await project.GetCompilationAsync();
-
-            if (compilation == null)
+            try
             {
-                return WithAllAsInvalid(nullForgivingAnalysisResults);
-            }
+                var analyzers = project.AnalyzerReferences
+                    .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
+                    .OfType<DiagnosticSuppressor>()
+                    .Cast<DiagnosticAnalyzer>()
+                    .ToImmutableArray();
 
-            var analyzers = project.AnalyzerReferences
-                .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
-                .OfType<DiagnosticSuppressor>()
-                .Cast<DiagnosticAnalyzer>()
-                .ToImmutableArray();
-
-            var allDiagnostics = analyzers.Any()
-                ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
-                : compilation.GetDiagnostics();
-
-            if (allDiagnostics.Any(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !IsNullableDiagnostic(diagnostic)))
-            {
-                return WithAllAsInvalid(nullForgivingAnalysisResults);
-            }
-
-            var nullableDiagnostics = allDiagnostics
-                .Where(d => !d.IsSuppressed)
-                .Where(IsNullableDiagnostic);
-
-            foreach (var diagnostic in nullableDiagnostics)
-            {
-                var sourceTree = diagnostic.Location.SourceTree;
-                if (sourceTree == null)
-                    continue;
-
-                var syntaxRoot = await sourceTree.GetRootAsync();
-
-                if (!resultsBySyntaxRoot.TryGetValue(syntaxRoot, out var results))
-                    continue;
-
-                bool IsAffectedResult(NullForgivingAnalysisResult result)
+                async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(Compilation compilation)
                 {
-                    var resultLocation = result.Node.Operand.GetLocation();
-                    var diagnosticLocation = diagnostic.Location;
-                    var intersection = diagnosticLocation.SourceSpan.Intersection(resultLocation.SourceSpan);
-
-                    return intersection == resultLocation.SourceSpan;
+                    return analyzers.Any()
+                        ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
+                        : compilation.GetDiagnostics();
                 }
 
-                var affectedResults = results.Where(IsAffectedResult);
+                var originalCompilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
+                var originalDiagnostics = await GetDiagnosticsAsync(originalCompilation);
 
-                foreach (var affectedResult in affectedResults)
+                ThrowOnCompilationErrors(originalDiagnostics);
+
+                var originalNullableDiagnosticLocations = new HashSet<FileLinePositionSpan>(originalDiagnostics
+                    .Where(d => !d.IsSuppressed)
+                    .Where(IsNullableDiagnostic)
+                    .Select(d => d.Location.GetLineSpan()));
+
+                foreach (var resultsByDocument in nullForgivingAnalysisResults.GroupBy(r => r.AnalysisContext.Document))
                 {
-                    affectedResult.IsRequired = true;
+                    var document = resultsByDocument.Key;
+                    var originalSyntaxRoot = await document.GetSyntaxRootAsync() ?? throw new InvalidOperationException("Error getting syntax root of document");
+
+                    foreach (var analysisResult in resultsByDocument)
+                    {
+                        var node = analysisResult.Node;
+                        var syntaxRoot = originalSyntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
+                        var compilation = await project
+                            .RemoveDocument(document.Id)
+                            .AddDocument(document.Name, syntaxRoot, document.Folders, document.FilePath)
+                            .Project
+                            .GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
+
+                        var allDiagnostics = await GetDiagnosticsAsync(compilation);
+
+                        ThrowOnCompilationErrors(allDiagnostics);
+
+                        bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
+                        {
+                            var span = d.Location.GetLineSpan();
+                            return span.Path == document.FilePath && !originalNullableDiagnosticLocations.Contains(span);
+                        }
+
+                        var newNullableDiagnostics = allDiagnostics
+                            .Where(d => !d.IsSuppressed)
+                            .Where(IsNullableDiagnostic)
+                            .Where(IsNewDiagnosticInCurrentDocument);
+
+                        if (newNullableDiagnostics.Any())
+                        {
+                            analysisResult.IsRequired = true;
+                        }
+                    }
                 }
             }
-
-            return nullForgivingAnalysisResults;
+            catch (InvalidOperationException)
+            {
+                SetAllInvalid(nullForgivingAnalysisResults);
+            }
         }
 
         private static bool IsNullableDiagnostic(Diagnostic d)
@@ -103,41 +106,26 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
                 && string.Compare(id, LastNullableDiagnostic, StringComparison.OrdinalIgnoreCase) <= 0;
         }
 
-        private static IReadOnlyCollection<AnalysisResult> WithAllAsInvalid(IReadOnlyCollection<NullForgivingAnalysisResult> items)
+        private static void SetAllInvalid(IReadOnlyCollection<NullForgivingAnalysisResult> items)
         {
             foreach (var item in items)
             {
                 item.Context = NullForgivingContext.Invalid;
             }
-
-            return items;
         }
 
-        private static async Task<Project> RewriteSyntaxTreesAsync(Project project, IEnumerable<NullForgivingAnalysisResult> analysisResults, IDictionary<SyntaxNode, NullForgivingAnalysisResult[]> resultsBySyntaxRoot)
+        private static SyntaxNode RewriteNullForgivingNode(SyntaxNode n)
         {
-            var resultsByDocument = analysisResults.GroupBy(r => r.AnalysisContext.Document);
+            var sourceCode = n.ToFullString().ReplaceNullForgivingToken();
+            return SyntaxFactory.ParseExpression(sourceCode);
+        }
 
-            foreach (var documentResults in resultsByDocument)
-            {
-                var document = documentResults.Key;
-                var root = await document.GetSyntaxRootAsync();
-                if (root == null)
-                    continue;
+        private static void ThrowOnCompilationErrors(IEnumerable<Diagnostic> diagnostics)
+        {
+            if (diagnostics.Any(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !IsNullableDiagnostic(diagnostic)))
+                throw new InvalidOperationException("Compilation has errors");
 
-                root = root.ReplaceNodes(documentResults.Select(r => r.Node), (originalNode, updatedNode) =>
-                {
-                    var sourceCode = updatedNode.ToFullString().ReplaceNullForgivingToken();
-                    return SyntaxFactory.ParseExpression(sourceCode);
-                });
 
-                resultsBySyntaxRoot.Add(root, documentResults.ToArray());
-
-                project = project
-                    .RemoveDocument(document.Id)
-                    .AddDocument(document.Name, root, document.Folders, document.FilePath).Project;
-            }
-
-            return project;
         }
     }
 }

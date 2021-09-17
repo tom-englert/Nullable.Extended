@@ -49,7 +49,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
             foreach (var analyzer in _postProcessors)
             {
-                results = await analyzer.PostProcessAsync(project, results);
+                await analyzer.PostProcessAsync(project, results);
             }
 
             return results;
