@@ -1,3 +1,6 @@
+1.12
+- Update DGX to improve composite filter experience
+
 1.11
 - Remove the "Remove all not required tokens" command, it's of no practical use 
 
