@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
 using TomsToolbox.Wpf.Composition.XamlExtensions;

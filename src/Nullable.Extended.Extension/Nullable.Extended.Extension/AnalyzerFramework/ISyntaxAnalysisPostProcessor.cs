@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework

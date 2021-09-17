@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
+
 using Microsoft.VisualStudio.Shell;
 
 namespace Nullable.Extended.Extension.Extension

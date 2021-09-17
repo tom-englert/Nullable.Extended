@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Nullable.Extended.Extension.AnalyzerFramework;
 
-namespace Nullable.Extended.Extension.Views
+namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     internal class AnalysisResultsChangedArgs : EventArgs
     {

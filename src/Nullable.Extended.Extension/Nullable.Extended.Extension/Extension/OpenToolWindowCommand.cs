@@ -1,8 +1,11 @@
 ﻿using System;
 using System.ComponentModel.Design;
+
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+
 using Nullable.Extended.Extension.Views;
+
 using Task = System.Threading.Tasks.Task;
 
 namespace Nullable.Extended.Extension.Extension

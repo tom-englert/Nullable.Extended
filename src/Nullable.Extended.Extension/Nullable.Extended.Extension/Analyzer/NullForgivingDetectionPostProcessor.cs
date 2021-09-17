@@ -4,11 +4,15 @@ using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
+
 using Nullable.Extended.Extension.AnalyzerFramework;
+
 using TomsToolbox.Essentials;
+
 using AnalysisResult = Nullable.Extended.Extension.AnalyzerFramework.AnalysisResult;
 
 namespace Nullable.Extended.Extension.Analyzer

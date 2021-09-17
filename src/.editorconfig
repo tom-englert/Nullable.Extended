@@ -1,4 +1,10 @@
 ﻿[*.cs]
 
 # RS2008: Enable analyzer release tracking
-dotnet_diagnostic.RS2008.severity = none
+dotnet_diagnostic.rs2008.severity = none
+
+# Microsoft .NET properties
+dotnet_separate_import_directive_groups = true
+
+# ReSharper properties
+resharper_csharp_wrap_lines = false

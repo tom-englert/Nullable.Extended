@@ -58,7 +58,8 @@
       </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <Style x:Key="{x:Static dgx:DataGridFilter.ColumnHeaderSearchCheckBoxStyleKey}" TargetType="CheckBox" BasedOn="{StaticResource {x:Static styles:ResourceKeys.CheckBoxStyle}}">
+    <Style x:Key="{x:Static dgx:DataGridFilter.ColumnHeaderSearchCheckBoxStyleKey}" TargetType="CheckBox"
+           BasedOn="{StaticResource {x:Static styles:ResourceKeys.CheckBoxStyle}}">
       <Setter Property="IsThreeState" Value="True" />
       <Setter Property="Margin" Value="4,0,2,0" />
       <Style.Triggers>

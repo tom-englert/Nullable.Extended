@@ -2,9 +2,11 @@
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using Nullable.Extended.Extension.AnalyzerFramework;
 
 namespace Nullable.Extended.Extension.Analyzer

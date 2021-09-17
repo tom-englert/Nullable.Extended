@@ -1,12 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31613.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31710.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Extension", "Nullable.Extended.Extension\Nullable.Extended.Extension.csproj", "{46A78692-0A62-4894-BD3F-84D8493C4093}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{384C3816-0901-42FB-A7A2-BB236A199CC3}"
 	ProjectSection(SolutionItems) = preProject
+		..\.editorconfig = ..\.editorconfig
 		..\directory.build.props = ..\directory.build.props
 		..\..\README.md = ..\..\README.md
 		..\..\RelaseNotes.md = ..\..\RelaseNotes.md

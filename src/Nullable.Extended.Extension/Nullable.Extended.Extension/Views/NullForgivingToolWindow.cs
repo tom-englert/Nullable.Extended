@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows.Input;
+
 using Microsoft.VisualStudio.Shell;
+
 using Nullable.Extended.Extension.Extension;
 
 namespace Nullable.Extended.Extension.Views

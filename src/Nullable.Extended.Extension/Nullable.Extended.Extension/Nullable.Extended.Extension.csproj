@@ -10,12 +10,14 @@
     <Nullable>enable</Nullable>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Design" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Label="PackageReferences">
     <PackageReference Include="Community.VisualStudio.Toolkit" Version="16.0.76.253-pre" />
     <PackageReference Include="ConfigureAwait.Fody">
       <Version>3.3.1</Version>

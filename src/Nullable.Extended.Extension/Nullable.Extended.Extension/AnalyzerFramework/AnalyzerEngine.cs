@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
+
 using TomsToolbox.Composition;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
