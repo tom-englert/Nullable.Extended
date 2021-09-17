@@ -5,6 +5,8 @@ using System.Windows.Input;
 
 using DataGridExtensions;
 
+using Nullable.Extended.Extension.AnalyzerFramework;
+
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
 using TomsToolbox.Wpf.Composition.AttributedModel;
@@ -30,9 +32,9 @@ namespace Nullable.Extended.Extension.Views
             if (e.Key == Key.Space || e.Key == Key.Enter)
             {
                 var item = (sender as DataGridRow)?.DataContext;
-                if (item != null)
+                if (item is AnalysisResult analysisResult)
                 {
-                    (DataContext as NullForgivingToolWindowViewModel)?.OpenDocumentCommand.Execute(item);
+                    analysisResult.OpenInDocument();
                 }
                 e.Handled = true;
             }

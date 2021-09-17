@@ -7,11 +7,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
+
 using PropertyChanged;
+
 using Throttle;
+
 using TomsToolbox.Essentials;
 
 #pragma warning disable VSTHRD100 // Avoid async void methods

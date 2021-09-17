@@ -111,7 +111,7 @@
                 dgx:DataGridFilter.IsAutoFilterEnabled="True"
                 dgx:Tools.TrackFocusedCell="True"
                 dgx:DataGridFilter.StartFilteringKeyGesture="Ctrl+F"
-                toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenDocumentCommand}">
+                toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenInDocumentCommand}">
         <DataGrid.Columns>
           <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" />
           <DataGridTextColumn Header="Context" Width="90" Binding="{Binding Context}"

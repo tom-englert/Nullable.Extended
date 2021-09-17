@@ -1,5 +1,7 @@
 ﻿using System.Text;
+
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using Nullable.Shared;
 
 namespace Nullable.Extended.Extension.Analyzer

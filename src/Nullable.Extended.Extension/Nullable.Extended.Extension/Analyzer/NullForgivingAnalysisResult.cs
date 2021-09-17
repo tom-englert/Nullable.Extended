@@ -1,9 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+
 using Nullable.Extended.Extension.AnalyzerFramework;
 using Nullable.Shared;
+
 using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.Extension.Analyzer
