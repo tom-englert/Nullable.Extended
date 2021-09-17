@@ -19,7 +19,7 @@ namespace Nullable.Extended.Extension.Views
     [Shared]
     internal class NullForgivingToolWindowViewModel : INotifyPropertyChanged
     {
-        public NullForgivingToolWindowViewModel(IServiceProvider serviceProvider, AnalyzerViewModel analyzerViewModel)
+        public NullForgivingToolWindowViewModel(AnalyzerViewModel analyzerViewModel)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -47,17 +47,10 @@ namespace Nullable.Extended.Extension.Views
 
         public ICommand AnalyzeCommand => new DelegateCommand(CanAnalyze, Analyze);
 
-        public ICommand OpenDocumentCommand => new DelegateCommand<NullForgivingAnalysisResult>(OpenDocument);
+        public ICommand OpenDocumentCommand => new DelegateCommand<AnalysisResult>(OpenDocument);
 
-        private bool HasNotRequiredOperators()
-        {
-            return NotRequiredAnalysisResults.Any();
-        }
-
-        private IEnumerable<NullForgivingAnalysisResult> NotRequiredAnalysisResults => AnalysisResults.Where(result => !result.IsRequired && result.Context.IsValid());
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "<Pending>")]
-        private static async void OpenDocument(NullForgivingAnalysisResult result)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage", "VSTHRD100:Avoid async void methods", Justification = "Event handler")]
+        private static async void OpenDocument(AnalysisResult result)
         {
             try
             {

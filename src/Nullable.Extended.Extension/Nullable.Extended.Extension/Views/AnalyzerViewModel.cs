@@ -25,7 +25,7 @@ namespace Nullable.Extended.Extension.Views
         private readonly IAnalyzerEngine _analyzerEngine;
         private readonly VisualStudioWorkspace _workspace;
 
-        private HashSet<DocumentId> _changedDocuments = new HashSet<DocumentId>();
+        private HashSet<DocumentId> _changedDocuments = new();
 
         public AnalyzerViewModel(IAnalyzerEngine analyzerEngine)
         {
