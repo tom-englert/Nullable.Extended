@@ -11,7 +11,7 @@ using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
-    public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>, INotifyPropertyChanged, IComparable<NullForgivingAnalysisResult>
+    public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>, IComparable<NullForgivingAnalysisResult>
     {
         public NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
             : base(analysisContext, node, node.OperatorToken.GetLocation())
@@ -26,14 +26,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 
         public NullForgivingContext Context { get; set; }
 
-        public bool IsRequired { get; set; }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public bool? IsRequired { get; set; }
 
         public override int CompareTo(object? other)
         {
@@ -45,7 +38,17 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
             if (other is null)
                 return 1;
 
-            return IsRequired == other.IsRequired ? 0 : IsRequired ? -1 : 1;
+            return GetSeverity(IsRequired) - GetSeverity(other.IsRequired);
+        }
+
+        private static int GetSeverity(bool? value)
+        {
+            return value switch
+            {
+                null => 0,
+                true => 1,
+                false => 2
+            };
         }
     }
 }

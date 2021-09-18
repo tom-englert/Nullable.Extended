@@ -113,7 +113,7 @@
                 dgx:DataGridFilter.StartFilteringKeyGesture="Ctrl+F"
                 toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenInDocumentCommand}">
         <DataGrid.Columns>
-          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" />
+          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired}" IsThreeState="True" />
           <DataGridTextColumn Header="Context" Width="90" Binding="{Binding Context}"
                               dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
           <DataGridTextColumn Header="File" Width="3*" Binding="{Binding RelativeFilePath}" SortDirection="Ascending"
@@ -135,6 +135,11 @@
                 </ItemsPanelTemplate>
               </Setter.Value>
             </Setter>
+            <Style.Triggers>
+              <DataTrigger Binding="{Binding HasCompilationErrors}" Value="True">
+                <Setter Property="Background" Value="LightCoral" />
+              </DataTrigger>
+            </Style.Triggers>
           </Style>
         </DataGrid.RowStyle>
         <b:Interaction.Behaviors>

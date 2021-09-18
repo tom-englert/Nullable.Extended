@@ -21,78 +21,51 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8900";
 
-        public async Task PostProcessAsync(Project project, IReadOnlyCollection<AnalysisResult> analysisResults)
+        public async Task PostProcessAsync(Project project, Document document, SyntaxNode syntaxRoot, ICollection<FileLinePositionSpan> diagnosticLocations,
+            Func<Compilation, Task<ImmutableArray<Diagnostic>>> getDiagnosticsAsync, IReadOnlyCollection<AnalysisResult> analysisResults)
         {
             var nullForgivingAnalysisResults = analysisResults
                 .OfType<NullForgivingAnalysisResult>()
-                .ToArray();
+                .ToList()
+                .AsReadOnly();
 
             try
             {
-                var analyzers = project.AnalyzerReferences
-                    .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
-                    .OfType<DiagnosticSuppressor>()
-                    .Cast<DiagnosticAnalyzer>()
-                    .ToImmutableArray();
-
-                async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(Compilation compilation)
+                foreach (var analysisResult in nullForgivingAnalysisResults)
                 {
-                    return analyzers.Any()
-                        ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
-                        : compilation.GetDiagnostics();
-                }
+                    var node = analysisResult.Node;
+                    var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
+                    var compilation = await project
+                        .RemoveDocument(document.Id)
+                        .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
+                        .Project
+                        .GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
 
-                var originalCompilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
-                var originalDiagnostics = await GetDiagnosticsAsync(originalCompilation);
+                    var allDiagnostics = await getDiagnosticsAsync(compilation);
 
-                ThrowOnCompilationErrors(originalDiagnostics);
-
-                var originalNullableDiagnosticLocations = new HashSet<FileLinePositionSpan>(originalDiagnostics
-                    .Where(d => !d.IsSuppressed)
-                    .Where(IsNullableDiagnostic)
-                    .Select(d => d.Location.GetLineSpan()));
-
-                foreach (var resultsByDocument in nullForgivingAnalysisResults.GroupBy(r => r.AnalysisContext.Document))
-                {
-                    var document = resultsByDocument.Key;
-                    var originalSyntaxRoot = await document.GetSyntaxRootAsync() ?? throw new InvalidOperationException("Error getting syntax root of document");
-
-                    foreach (var analysisResult in resultsByDocument)
+                    bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
                     {
-                        var node = analysisResult.Node;
-                        var syntaxRoot = originalSyntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
-                        var compilation = await project
-                            .RemoveDocument(document.Id)
-                            .AddDocument(document.Name, syntaxRoot, document.Folders, document.FilePath)
-                            .Project
-                            .GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
-
-                        var allDiagnostics = await GetDiagnosticsAsync(compilation);
-
-                        ThrowOnCompilationErrors(allDiagnostics);
-
-                        bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
-                        {
-                            var span = d.Location.GetLineSpan();
-                            return span.Path == document.FilePath && !originalNullableDiagnosticLocations.Contains(span);
-                        }
-
-                        var newNullableDiagnostics = allDiagnostics
-                            .Where(d => !d.IsSuppressed)
-                            .Where(IsNullableDiagnostic)
-                            .Where(IsNewDiagnosticInCurrentDocument);
-
-                        if (newNullableDiagnostics.Any())
-                        {
-                            analysisResult.IsRequired = true;
-                        }
+                        var span = d.Location.GetLineSpan();
+                        return span.Path == document.FilePath && !diagnosticLocations.Contains(span);
                     }
+
+                    var newNullableDiagnostics = allDiagnostics
+                        .Where(d => !d.IsSuppressed)
+                        .Where(IsNullableDiagnostic)
+                        .Where(IsNewDiagnosticInCurrentDocument);
+
+                    analysisResult.IsRequired = newNullableDiagnostics.Any();
                 }
             }
             catch (InvalidOperationException)
             {
                 SetAllInvalid(nullForgivingAnalysisResults);
             }
+        }
+
+        public bool IsSpecificDiagnostic(Diagnostic diagnostic, IReadOnlyCollection<AnalysisResult> results)
+        {
+            return IsNullableDiagnostic(diagnostic);
         }
 
         private static bool IsNullableDiagnostic(Diagnostic d)
@@ -118,14 +91,6 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
         {
             var sourceCode = n.ToFullString().ReplaceNullForgivingToken();
             return SyntaxFactory.ParseExpression(sourceCode);
-        }
-
-        private static void ThrowOnCompilationErrors(IEnumerable<Diagnostic> diagnostics)
-        {
-            if (diagnostics.Any(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !IsNullableDiagnostic(diagnostic)))
-                throw new InvalidOperationException("Compilation has errors");
-
-
         }
     }
 }

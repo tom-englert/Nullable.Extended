@@ -1,12 +1,14 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
-    public abstract class AnalysisResult : IComparable
+    public abstract class AnalysisResult : IComparable, INotifyPropertyChanged
     {
         internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, Location location)
         {
@@ -17,6 +19,8 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         }
 
         public AnalysisContext AnalysisContext { get; }
+
+        public bool HasCompilationErrors { get; set; }
 
         // Project.Name may have target framework as suffix, Project.AssemblyName may contain full path and/or target framework
         // => use file name
@@ -54,6 +58,18 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
 
         public abstract int CompareTo(object? obj);
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public override string ToString()
+        {
+            return Location + ": " + Node;
+        }
     }
 
     public abstract class AnalysisResult<T> : AnalysisResult

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 
 using TomsToolbox.Composition;
 
@@ -26,33 +28,95 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         {
             var documentTasks = documents.Select(AnalyzeDocumentAsync);
 
-            IEnumerable<AnalysisResult> analysisResults = (await Task.WhenAll(documentTasks))
-                .SelectMany(r => r);
+            var analysisResults = (await Task.WhenAll(documentTasks))
+                .SelectMany(r => r)
+                .ToList()
+                .AsReadOnly();
 
             var resultsByProject = analysisResults.GroupBy(result => result.AnalysisContext.Document.Project);
 
             var projectTasks = resultsByProject.Select(PostProcessProjectAsync);
 
-            analysisResults = (await Task.WhenAll(projectTasks))
-                .SelectMany(r => r)
-                .GroupBy(r => r.Position)
-                .Select(g => g.OrderBy(r => r).First());
+            await Task.WhenAll(projectTasks);
 
-            return analysisResults.ToList().AsReadOnly();
+            analysisResults = analysisResults
+                .GroupBy(r => r.Position)
+                .Select(g => g.OrderBy(r => r).First())
+                .ToList()
+                .AsReadOnly();
+
+            return analysisResults;
         }
 
-        private async Task<IReadOnlyCollection<AnalysisResult>> PostProcessProjectAsync(IGrouping<Project, AnalysisResult> analysisResults)
+        private Task PostProcessProjectAsync(IGrouping<Project, AnalysisResult> analysisResults)
         {
-            var project = analysisResults.Key;
-
-            IReadOnlyCollection<AnalysisResult> results = analysisResults.ToArray();
-
-            foreach (var analyzer in _postProcessors)
+            return Task.Run(async () =>
             {
-                await analyzer.PostProcessAsync(project, results);
-            }
+                if (!_postProcessors.Any())
+                    return;
 
-            return results;
+                try
+                {
+                    var project = analysisResults.Key;
+
+                    IReadOnlyCollection<AnalysisResult> results = analysisResults.ToArray();
+
+                    var analyzers = project.AnalyzerReferences
+                        .SelectMany(r => r.GetAnalyzers(LanguageNames.CSharp))
+                        .OfType<DiagnosticSuppressor>()
+                        .Cast<DiagnosticAnalyzer>()
+                        .ToImmutableArray();
+
+                    async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(Compilation compilation)
+                    {
+                        return analyzers.Any()
+                            ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
+                            : compilation.GetDiagnostics();
+                    }
+
+                    var compilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
+                    var diagnostics = await GetDiagnosticsAsync(compilation);
+                    var errors = diagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error
+                                                                 && !diagnostic.IsSuppressed
+                                                                 && !_postProcessors.Any(processor => processor.IsSpecificDiagnostic(diagnostic, results)))
+                        .ToImmutableArray();
+
+                    var diagnosticLocations = new HashSet<FileLinePositionSpan>(diagnostics.Select(d => d.Location.GetLineSpan()));
+
+                    foreach (var resultsByDocument in results.GroupBy(r => r.AnalysisContext.Document))
+                    {
+                        try
+                        {
+                            var document = resultsByDocument.Key;
+
+                            if (errors.Any(diagnostic => string.Equals(diagnostic.Location.GetLineSpan().Path, document.FilePath, StringComparison.OrdinalIgnoreCase)))
+                                throw new InvalidOperationException("Document has errors");
+
+                            var syntaxRoot = await document.GetSyntaxRootAsync() ?? throw new InvalidOperationException("Error getting syntax root of document");
+
+                            foreach (var analyzer in _postProcessors)
+                            {
+                                await analyzer.PostProcessAsync(project, document, syntaxRoot, diagnosticLocations, GetDiagnosticsAsync, results);
+                            }
+
+                        }
+                        catch
+                        {
+                            foreach (var result in resultsByDocument)
+                            {
+                                result.HasCompilationErrors = true;
+                            }
+                        }
+                    }
+                }
+                catch
+                {
+                    foreach (var result in analysisResults)
+                    {
+                        result.HasCompilationErrors = true;
+                    }
+                }
+            });
         }
 
         private Task<IReadOnlyCollection<AnalysisResult>> AnalyzeDocumentAsync(Document document)
