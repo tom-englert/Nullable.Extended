@@ -22,7 +22,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
         public async Task PostProcessAsync(Project project, Document document, SyntaxNode syntaxRoot, 
             ICollection<FileLinePositionSpan> diagnosticLocations,
             Func<Compilation, Task<ImmutableArray<Diagnostic>>> getDiagnosticsAsync, 
-            IReadOnlyCollection<AnalysisResult> analysisResults, 
+            IEnumerable<AnalysisResult> analysisResults, 
             CancellationToken cancellationToken)
         {
             var nullForgivingAnalysisResults = analysisResults

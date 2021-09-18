@@ -95,10 +95,9 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
                             if (errors.Any(diagnostic => string.Equals(diagnostic.Location.GetLineSpan().Path, filePath, StringComparison.OrdinalIgnoreCase)))
                                 throw new InvalidOperationException("Document has errors");
 
-
                             foreach (var analyzer in _postProcessors)
                             {
-                                await analyzer.PostProcessAsync(project, document, syntaxRoot, diagnosticLocations, GetDiagnosticsAsync, results, cancellationToken);
+                                await analyzer.PostProcessAsync(project, document, syntaxRoot, diagnosticLocations, GetDiagnosticsAsync, resultsByDocument, cancellationToken);
                             }
                         }
                         catch
