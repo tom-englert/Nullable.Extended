@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
@@ -14,7 +15,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer
     {
-        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext)
+        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext, CancellationToken cancellationToken)
         {
             var root = analysisContext.SyntaxRoot;
 

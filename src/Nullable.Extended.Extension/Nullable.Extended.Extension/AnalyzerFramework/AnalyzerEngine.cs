@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
@@ -13,7 +14,7 @@ using TomsToolbox.Composition;
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     [Export(typeof(IAnalyzerEngine))]
-    class AnalyzerEngine : IAnalyzerEngine
+    internal class AnalyzerEngine : IAnalyzerEngine
     {
         private readonly ICollection<ISyntaxTreeAnalyzer> _syntaxTreeAnalyzers;
         private readonly ICollection<ISyntaxAnalysisPostProcessor> _postProcessors;
@@ -24,9 +25,9 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
             _postProcessors = exportProvider.GetExportedValues<ISyntaxAnalysisPostProcessor>().ToArray();
         }
 
-        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documents)
+        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(IEnumerable<Document> documents, CancellationToken cancellationToken)
         {
-            var documentTasks = documents.Select(AnalyzeDocumentAsync);
+            var documentTasks = documents.Select(doc => AnalyzeDocumentAsync(doc, cancellationToken));
 
             var analysisResults = (await Task.WhenAll(documentTasks))
                 .SelectMany(r => r)
@@ -35,7 +36,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
             var resultsByProject = analysisResults.GroupBy(result => result.AnalysisContext.Document.Project);
 
-            var projectTasks = resultsByProject.Select(PostProcessProjectAsync);
+            var projectTasks = resultsByProject.Select(results => PostProcessProjectAsync(results, cancellationToken));
 
             await Task.WhenAll(projectTasks);
 
@@ -48,7 +49,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
             return analysisResults;
         }
 
-        private Task PostProcessProjectAsync(IGrouping<Project, AnalysisResult> analysisResults)
+        private Task PostProcessProjectAsync(IGrouping<Project, AnalysisResult> analysisResults, CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
             {
@@ -70,11 +71,11 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
                     async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(Compilation compilation)
                     {
                         return analyzers.Any()
-                            ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync()
+                            ? await compilation.WithAnalyzers(analyzers).GetAllDiagnosticsAsync(cancellationToken)
                             : compilation.GetDiagnostics();
                     }
 
-                    var compilation = await project.GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
+                    var compilation = await project.GetCompilationAsync(cancellationToken) ?? throw new InvalidOperationException("Error getting compilation of project");
                     var diagnostics = await GetDiagnosticsAsync(compilation);
                     var errors = diagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error
                                                                  && !diagnostic.IsSuppressed
@@ -88,17 +89,17 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
                         try
                         {
                             var document = resultsByDocument.Key;
+                            var filePath = document.FilePath;
+                            var syntaxRoot = resultsByDocument.First().AnalysisContext.SyntaxRoot;
 
-                            if (errors.Any(diagnostic => string.Equals(diagnostic.Location.GetLineSpan().Path, document.FilePath, StringComparison.OrdinalIgnoreCase)))
+                            if (errors.Any(diagnostic => string.Equals(diagnostic.Location.GetLineSpan().Path, filePath, StringComparison.OrdinalIgnoreCase)))
                                 throw new InvalidOperationException("Document has errors");
 
-                            var syntaxRoot = await document.GetSyntaxRootAsync() ?? throw new InvalidOperationException("Error getting syntax root of document");
 
                             foreach (var analyzer in _postProcessors)
                             {
-                                await analyzer.PostProcessAsync(project, document, syntaxRoot, diagnosticLocations, GetDiagnosticsAsync, results);
+                                await analyzer.PostProcessAsync(project, document, syntaxRoot, diagnosticLocations, GetDiagnosticsAsync, results, cancellationToken);
                             }
-
                         }
                         catch
                         {
@@ -116,30 +117,30 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
                         result.HasCompilationErrors = true;
                     }
                 }
-            });
+            }, cancellationToken);
         }
 
-        private Task<IReadOnlyCollection<AnalysisResult>> AnalyzeDocumentAsync(Document document)
+        private Task<IReadOnlyCollection<AnalysisResult>> AnalyzeDocumentAsync(Document document, CancellationToken cancellationToken)
         {
             return Task.Run(async () =>
             {
-                var syntaxTree = await document.GetSyntaxTreeAsync();
+                var syntaxTree = await document.GetSyntaxTreeAsync(cancellationToken);
                 if (syntaxTree == null)
                     return (IReadOnlyCollection<AnalysisResult>)Array.Empty<AnalysisResult>();
 
-                var syntaxRoot = await syntaxTree.GetRootAsync();
+                var syntaxRoot = await syntaxTree.GetRootAsync(cancellationToken);
                 if (syntaxRoot.BeginsWithAutoGeneratedComment())
                     return Array.Empty<AnalysisResult>();
 
                 var tasks = _syntaxTreeAnalyzers
-                    .Select(analyzer => analyzer.AnalyzeAsync(new AnalysisContext(document, syntaxTree, syntaxRoot)));
+                    .Select(analyzer => analyzer.AnalyzeAsync(new AnalysisContext(document, syntaxTree, syntaxRoot), cancellationToken));
 
                 var results = await Task.WhenAll(tasks);
 
                 return results
                     .SelectMany(r => r)
                     .ToArray();
-            });
+            }, cancellationToken);
         }
     }
 }

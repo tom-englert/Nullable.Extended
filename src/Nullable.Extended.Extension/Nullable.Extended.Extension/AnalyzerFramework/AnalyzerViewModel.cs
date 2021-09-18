@@ -114,7 +114,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
             {
                 IsAnalyzing = true;
 
-                return await _analyzerEngine.AnalyzeAsync(documentsToAnalyze).ConfigureAwait(true);
+                return await _analyzerEngine.AnalyzeAsync(documentsToAnalyze, CancellationToken.None).ConfigureAwait(true);
             }
             finally
             {

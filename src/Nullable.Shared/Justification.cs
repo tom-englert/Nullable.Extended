@@ -31,7 +31,7 @@ namespace Nullable.Shared
                 ?.GetJustificationText(node);
         }
 
-        private static IReadOnlyCollection<string>? GetReversJustificationLines(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
+        private static IReadOnlyCollection<string>? GetReversJustificationLines(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
             var lines = ancestor.DescendantNodesAndTokensAndSelf()
                 .TakeWhile(item => item != node)
@@ -42,13 +42,13 @@ namespace Nullable.Shared
             return lines;
         }
 
-        private static string? GetJustificationText(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
+        private static string? GetJustificationText(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
             var lines = ancestor.GetJustificationLines(node);
             return lines == null ? null : string.Join(Environment.NewLine, lines);
         }
 
-        private static IEnumerable<string>? GetJustificationLines(this CSharpSyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
+        private static IEnumerable<string>? GetJustificationLines(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
             return ancestor
                 .GetReversJustificationLines(node)

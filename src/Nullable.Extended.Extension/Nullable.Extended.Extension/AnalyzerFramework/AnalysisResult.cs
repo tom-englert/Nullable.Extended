@@ -4,7 +4,6 @@ using System.IO;
 using System.Runtime.CompilerServices;
 
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
@@ -54,8 +53,6 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public SyntaxNode Node { get; }
 
         public Location Location { get; }
-
-        public string Prefix => AnalysisContext.Text.ToString(TextSpan.FromBounds(0, Node.Span.End));
 
         public abstract int CompareTo(object? obj);
 

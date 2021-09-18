@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Composition;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.Diagnostics;
 
 using Nullable.Extended.Extension.AnalyzerFramework;
-
-using AnalysisResult = Nullable.Extended.Extension.AnalyzerFramework.AnalysisResult;
 
 namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 {
@@ -21,8 +19,11 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8900";
 
-        public async Task PostProcessAsync(Project project, Document document, SyntaxNode syntaxRoot, ICollection<FileLinePositionSpan> diagnosticLocations,
-            Func<Compilation, Task<ImmutableArray<Diagnostic>>> getDiagnosticsAsync, IReadOnlyCollection<AnalysisResult> analysisResults)
+        public async Task PostProcessAsync(Project project, Document document, SyntaxNode syntaxRoot, 
+            ICollection<FileLinePositionSpan> diagnosticLocations,
+            Func<Compilation, Task<ImmutableArray<Diagnostic>>> getDiagnosticsAsync, 
+            IReadOnlyCollection<AnalysisResult> analysisResults, 
+            CancellationToken cancellationToken)
         {
             var nullForgivingAnalysisResults = analysisResults
                 .OfType<NullForgivingAnalysisResult>()
@@ -39,7 +40,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
                         .RemoveDocument(document.Id)
                         .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
                         .Project
-                        .GetCompilationAsync() ?? throw new InvalidOperationException("Error getting compilation of project");
+                        .GetCompilationAsync(cancellationToken) ?? throw new InvalidOperationException("Error getting compilation of project");
 
                     var allDiagnostics = await getDiagnosticsAsync(compilation);
 
@@ -79,7 +80,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
                 && string.Compare(id, LastNullableDiagnostic, StringComparison.OrdinalIgnoreCase) <= 0;
         }
 
-        private static void SetAllInvalid(IReadOnlyCollection<NullForgivingAnalysisResult> items)
+        private static void SetAllInvalid(IEnumerable<NullForgivingAnalysisResult> items)
         {
             foreach (var item in items)
             {

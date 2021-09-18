@@ -14,13 +14,6 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
             return new StringBuilder(value) { [index] = ' ' }.ToString();
         }
 
-        public static bool IsValid(this NullForgivingContext context)
-        {
-            return context == NullForgivingContext.General
-                   || context == NullForgivingContext.Lambda
-                   || context == NullForgivingContext.NullOrDefault;
-        }
-
         public static NullForgivingContext GetContext(this PostfixUnaryExpressionSyntax node)
         {
             if (node.IsNullOrDefaultExpression())

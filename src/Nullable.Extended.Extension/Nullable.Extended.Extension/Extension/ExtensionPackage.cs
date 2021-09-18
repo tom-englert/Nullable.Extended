@@ -25,22 +25,21 @@ namespace Nullable.Extended.Extension.Extension
         public const string PackageGuidString = "e8b6cb89-75cb-433f-a8d9-52719840e6fe";
 
         private readonly IKernel _kernel = new StandardKernel();
-        private readonly IExportProvider _exportProvider;
 
         public ExtensionPackage()
         {
-            _exportProvider = new ExportProvider(_kernel);
+            ExportProvider = new ExportProvider(_kernel);
         }
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
             _kernel.BindExports(GetType().Assembly);
-            _kernel.Bind<IExportProvider>().ToConstant(_exportProvider);
+            _kernel.Bind<IExportProvider>().ToConstant(ExportProvider);
             _kernel.Bind<IServiceProvider>().ToConstant(this);
 
             await OpenToolWindowCommand.InitializeAsync(this);
         }
 
-        public IExportProvider ExportProvider => _exportProvider;
+        public IExportProvider ExportProvider { get; }
     }
 }

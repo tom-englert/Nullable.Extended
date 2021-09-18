@@ -29,7 +29,7 @@ namespace Nullable.Extended.Extension.Views
 
         private void DataGridRow_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Space || e.Key == Key.Enter)
+            if (e.Key is Key.Space or Key.Enter && Keyboard.Modifiers == ModifierKeys.None)
             {
                 var item = (sender as DataGridRow)?.DataContext;
                 if (item is AnalysisResult analysisResult)

@@ -23,7 +23,7 @@ namespace Nullable.Extended.Extension.Extension
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("64068b4a-85d8-46a8-adb6-78dc86efbd95");
+        public static readonly Guid CommandSet = new("64068b4a-85d8-46a8-adb6-78dc86efbd95");
 
         /// <summary>
         /// VS Package that provides this command, not null.
