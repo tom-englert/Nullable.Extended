@@ -1,5 +1,6 @@
 1.12
 - Update DGX to improve composite filter experience
+- Improve reliability of the "Required" flag by analyzing each result individually.
 
 1.11
 - Remove the "Remove all not required tokens" command, it's of no practical use 
