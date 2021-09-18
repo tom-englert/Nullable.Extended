@@ -32,8 +32,8 @@ namespace Nullable.Extended.Extension.Views
         {
             // Do not pass CTRL+'F' to visual studio, we do our own search
             if (m.Msg != 0x0100 
-                || m.WParam != (IntPtr)0x46 && (m.WParam != (IntPtr)0x66) 
-                || (Keyboard.Modifiers & ModifierKeys.Control) == 0)
+                || m.WParam != (IntPtr)0x46 && m.WParam != (IntPtr)0x66 
+                || Keyboard.Modifiers != ModifierKeys.Control)
             {
                 return base.PreProcessMessage(ref m);
             }
