@@ -77,7 +77,12 @@ If the "Required" column is not checked, it is a hint that the null-forgiving op
 
 ---
 ## Roslyn Analyzer
-----
+
+### Installation
+
+Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
+
+---
 ### Show unjustified occurrences of the null-forgiving operator as warnings
 
 The analyzer will generate a warning for every unjustified occurrence of the null-forgiving operator. Depending on the context the code will be NX0001 to NX0003.
@@ -90,7 +95,7 @@ The warning will disappear after a justification comment has been added:
 
 ![no_warning](assets/AnalyzerNoWarningWithJustification.png)
 
-> You can easily configure the warning level for via you editor.config file.
+> You can easily configure the warning levels via you editor.config file.
 
 ----
 ### Suppressing False Positives
@@ -119,10 +124,6 @@ It leverages the flow analysis of the [Sonar Analyzer](https://github.com/SonarS
 warning if flow analysis reports that access is safe.
 
 > This may not cover all cases, but the most ubiquitous.
-
-#### Installation
-
-Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
 
 #### Configuration
 
