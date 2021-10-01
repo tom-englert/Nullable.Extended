@@ -34,12 +34,10 @@ Justification comments are one or more single line comments above the statement 
 // ! This is only needed to demo the feature
 var text = value1!.ToString();
 ```
-----
 #### There are two tools available:
-- A [Visual Studio Extension](#visual-studio-extension) that analyzes your sources and tracks usage of null forgiving operators: 
-- A [Roslyn Analyzer](#roslyn-analyzer) that double-checks nullability warnings and suppresses some false positives:
+- A [Visual Studio Extension](#visual-studio-extension) that analyzes your sources and tracks usage of null forgiving operators.
+- A [Roslyn Analyzer](#roslyn-analyzer) that shows a warning for every unjustified usage of the null-forgiving operator, and also double-checks nullability warnings and suppresses some false positives.
 
-----
 ## Visual Studio Extension
 
 The [Visual Studio Extension](#visual-studio-extension) lists all occurrences, 
@@ -53,13 +51,11 @@ Occurrences are grouped into three categories, to reflect their different contex
 > e.g. general usages can be mostly avoided by cleaning up the code,
 while inside lambda expressions they are often unavoidable
 
-----
 ### Installation
 
 Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullableExtended) or from the [Releases](../../releases) page.
 The latest CI build is available from the [Open VSIX Gallery](https://www.vsixgallery.com/extension/Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf)
 
-----
 ### Usage
 
 Start the tool window from the tools menu:
