@@ -21,8 +21,8 @@ It's hard to find the null forgiving operators in code, because the `!` symbol i
 Another obstacle is that after some time you or your colleagues won't remember why you have
 added a null-forgiving operator, or if its usage has been validated, so you will have to look at the code again and again.
 
-Both tools will assist you in managing these problems. 
-They will detect and show occurrences of the null-forgiving operator and encourage you to annotate them with a justification comment,
+This toolset will assist you in managing these problems. 
+It will detect and show occurrences of the null-forgiving operator and encourage you to annotate them with a justification comment,
 so you and your colleagues will instantly know why this usage of the null-forgiving operator is required.
 
 The [Visual Studio Extension](#visual-studio-extension) will show you all occurrences in a list, 
@@ -54,13 +54,13 @@ Occurrences are grouped into three categories, to reflect their different contex
 while inside lambda expressions they are often unavoidable
 
 ----
-#### Installation
+### Installation
 
 Install the extension from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=TomEnglert.NullableExtended) or from the [Releases](../../releases) page.
 The latest CI build is available from the [Open VSIX Gallery](https://www.vsixgallery.com/extension/Nullable.Extended.75a92614-c590-4401-b04b-04926c0e21cf)
 
 ----
-#### Usage
+### Usage
 
 Start the tool window from the tools menu:
 
@@ -82,7 +82,6 @@ If the "Required" column is not checked, it is a hint that the null-forgiving op
 
 Simply install the [NuGet Package](https://www.nuget.org/packages/Nullable.Extended.Analyzer/) in your projects.
 
----
 ### Show unjustified occurrences of the null-forgiving operator as warnings
 
 The analyzer will generate a warning for every unjustified occurrence of the null-forgiving operator. Depending on the context the code will be NX0001 to NX0003.
@@ -97,7 +96,6 @@ The warning will disappear after a justification comment has been added:
 
 > You can easily configure the warning levels via you editor.config file.
 
-----
 ### Suppressing False Positives
 
 After using nullable reference types and the nullable analysis for a while you'll may notice some false positive `CS8602`, `CS8603` or `CS8604` warnings that may be not expected.
