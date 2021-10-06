@@ -1,3 +1,6 @@
+1.13
+- Adjust colors to better match VS2022
+
 1.12
 - Update DGX to improve composite filter experience
 - Improve reliability of the "Required" flag by analyzing each result individually.
