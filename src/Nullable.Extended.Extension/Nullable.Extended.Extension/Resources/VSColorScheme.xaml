@@ -25,9 +25,9 @@
                    Color="{DynamicResource {x:Static vsfx:VsColors.HighlightTextKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.InfoTextBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.InfoTextKey}}" />
   <SolidColorBrush x:Key="{x:Static SystemColors.InfoBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowBackgroundKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.InfoBackgroundKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}"
                    Color="{DynamicResource {x:Static vsfx:VsColors.MenuKey}}" />
@@ -37,9 +37,9 @@
                    Color="{DynamicResource {x:Static vsfx:VsColors.MenuTextKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.WindowBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.ComboBoxBackgroundKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowBackgroundKey}}" />
   <SolidColorBrush x:Key="{x:Static SystemColors.WindowTextBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.WindowTextKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.ActiveCaptionBrushKey}"
                    Color="{DynamicResource {x:Static vsfx:VsColors.TitleBarActiveKey}}" />
@@ -56,7 +56,7 @@
                    Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" Opacity=".5" />
 
   <SolidColorBrush x:Key="{x:Static styles:ResourceKeys.BorderBrush}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.ActiveBorderKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowBorderKey}}" />
   <SolidColorBrush x:Key="{x:Static styles:ResourceKeys.DisabledBrush}"
                    Color="{DynamicResource {x:Static vsfx:VsColors.ComboBoxDisabledBackgroundKey}}" />
 
