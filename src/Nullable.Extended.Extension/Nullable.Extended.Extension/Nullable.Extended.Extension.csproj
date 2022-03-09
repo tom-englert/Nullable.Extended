@@ -24,10 +24,10 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="DataGridExtensions">
-      <Version>2.5.12</Version>
+      <Version>2.5.13</Version>
     </PackageReference>
     <PackageReference Include="Fody">
-      <Version>6.5.3</Version>
+      <Version>6.6.0</Version>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="3.8.0" />
@@ -48,16 +48,16 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="TomsToolbox.Composition.Ninject">
-      <Version>2.7.2</Version>
+      <Version>2.7.6</Version>
     </PackageReference>
     <PackageReference Include="TomsToolbox.Wpf.Composition">
-      <Version>2.7.2</Version>
+      <Version>2.7.6</Version>
     </PackageReference>
     <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel">
-      <Version>2.7.2</Version>
+      <Version>2.7.6</Version>
     </PackageReference>
     <PackageReference Include="TomsToolbox.Wpf.Styles">
-      <Version>2.7.2</Version>
+      <Version>2.7.6</Version>
     </PackageReference>
     <PackageReference Include="VSIX-SdkProjectAdapter" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>

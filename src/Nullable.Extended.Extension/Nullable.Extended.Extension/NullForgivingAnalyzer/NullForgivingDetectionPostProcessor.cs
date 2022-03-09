@@ -36,6 +36,7 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
                 {
                     var node = analysisResult.Node;
                     var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
+                    // var sourceCode = rewrittenSyntaxRoot.GetText().ToString();
                     var compilation = await project
                         .RemoveDocument(document.Id)
                         .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
