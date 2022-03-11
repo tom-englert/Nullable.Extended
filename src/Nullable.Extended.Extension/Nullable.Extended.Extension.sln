@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nullable.Shared", "..\Nullable.Shared\Nullable.Shared.shproj", "{850B0F8F-F2C0-4BE3-B141-2CD93EA896D8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{B73304A2-3D19-4401-831E-3EFD053A8EA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{19CCBB5E-8425-4C0E-AE47-2F41D249FA45}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		..\Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
@@ -29,6 +33,14 @@ Global
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B73304A2-3D19-4401-831E-3EFD053A8EA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B73304A2-3D19-4401-831E-3EFD053A8EA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B73304A2-3D19-4401-831E-3EFD053A8EA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B73304A2-3D19-4401-831E-3EFD053A8EA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19CCBB5E-8425-4C0E-AE47-2F41D249FA45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19CCBB5E-8425-4C0E-AE47-2F41D249FA45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19CCBB5E-8425-4C0E-AE47-2F41D249FA45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19CCBB5E-8425-4C0E-AE47-2F41D249FA45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
