@@ -3,18 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Community.VisualStudio.Toolkit;
-
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.VisualStudio.Text;
 
 using TomsToolbox.Essentials;
 
 using Project = Microsoft.CodeAnalysis.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
-
-#pragma warning disable VSTHRD100 // Avoid async void methods
 
 namespace Nullable.Extended.Extension.AnalyzerFramework
 {
@@ -149,27 +144,6 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public static IEnumerable<Document> GetDocumentsToAnalyze(this Project project)
         {
             return project.Documents.Where(document => document.ShouldBeAnalyzed());
-        }
-
-        public static async void OpenInDocument(this AnalysisResult result)
-        {
-            try
-            {
-                var textView = (await VS.Documents.OpenAsync(result.FilePath).ConfigureAwait(true))?.TextView;
-                if (textView == null)
-                    return;
-
-                var snapshot = textView.FormattedLineSource.SourceTextSnapshot;
-                var line = snapshot.Lines.Skip(result.Line - 1).FirstOrDefault();
-                var span = new SnapshotSpan(new VirtualSnapshotPoint(line, result.Column - 1).Position, new VirtualSnapshotPoint(line, result.Column).Position);
-
-                textView.Selection.Select(span, false);
-                textView.ViewScroller.EnsureSpanVisible(span);
-            }
-            catch
-            {
-                // Probably the document has already changed and the span is no longer valid. User can simply retry.
-            }
         }
     }
 }

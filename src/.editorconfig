@@ -14,3 +14,6 @@ csharp_style_var_elsewhere = true
 
 # CA2007: Consider calling ConfigureAwait on the awaited task => using ConfigureAwait.Fody
 dotnet_diagnostic.CA2007.severity = none
+
+# CA1062: Validate arguments of public methods
+dotnet_diagnostic.CA1062.severity = none

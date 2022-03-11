@@ -41,7 +41,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         public ICommand AnalyzeCommand => new DelegateCommand(CanAnalyze, AnalyzeSolution);
 
-        public static ICommand OpenInDocumentCommand => new DelegateCommand<AnalysisResult>(ExtensionMethods.OpenInDocument);
+        public static ICommand OpenInDocumentCommand => new DelegateCommand<AnalysisResult>(Views.ExtensionMethods.OpenInDocument);
 
         private bool CanAnalyze()
         {
