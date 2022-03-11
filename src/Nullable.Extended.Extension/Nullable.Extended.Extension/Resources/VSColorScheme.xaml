@@ -25,9 +25,9 @@
                    Color="{DynamicResource {x:Static vsfx:VsColors.HighlightTextKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.InfoTextBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.InfoTextKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" />
   <SolidColorBrush x:Key="{x:Static SystemColors.InfoBrushKey}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.InfoBackgroundKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowBackgroundKey}}" />
 
   <SolidColorBrush x:Key="{x:Static SystemColors.MenuBrushKey}"
                    Color="{DynamicResource {x:Static vsfx:VsColors.MenuKey}}" />
@@ -56,7 +56,7 @@
                    Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowTextKey}}" Opacity=".5" />
 
   <SolidColorBrush x:Key="{x:Static styles:ResourceKeys.BorderBrush}"
-                   Color="{DynamicResource {x:Static vsfx:VsColors.ToolWindowBorderKey}}" />
+                   Color="{DynamicResource {x:Static vsfx:VsColors.ComboBoxDisabledBorderKey}}" />
   <SolidColorBrush x:Key="{x:Static styles:ResourceKeys.DisabledBrush}"
                    Color="{DynamicResource {x:Static vsfx:VsColors.ComboBoxDisabledBackgroundKey}}" />
 
