@@ -133,36 +133,14 @@ namespace Nullable.Extended.Analyzer.Test
             };
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected);
-        }
 
-        [TestMethod]
-        public async Task Test_CS8604_NetFramework()
-        {
-            const string source = """
-            class C
-            {
-                public string M1(string x)
-                {
-                    return x.ToString();
-                }
-                public void M2(string? x, string? y)
-                {
-                    if (string.IsNullOrEmpty(x))
-                        return;
-
-                    M1({|#0:x|});
-                    M1({|#1:y|});
-                }
-            }
-            """;
-
-            var expected = new[]
+            var expected2 = new[]
             {
                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
                 DiagnosticResult.CompilerError("CS8604").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected, NetFramework);
+            await VerifyCS.VerifyAnalyzerAsync(source, expected2, NetFramework);
         }
 
         [TestMethod]
@@ -193,38 +171,15 @@ namespace Nullable.Extended.Analyzer.Test
             };
 
             await VerifyCS.VerifyAnalyzerAsync(source, expected);
-        }
 
-        [TestMethod]
-        public async Task Test_CS8604_multiple_args_NetFramework()
-        {
-            const string source = """
-                class C
-                {
-                    public string M1(string x, string y, string z)
-                    {
-                        return x.ToString();
-                    }
-                    public void M2(string? x, string? y)
-                    {
-                        if (string.IsNullOrEmpty(x))
-                            return;
-
-                        var z = y ?? x;
-
-                        M1({|#0:x|}, {|#1:y|}, {|#2:z|});
-                    }
-                }
-                """;
-
-            var expected = new[]
+            var expected2 = new[]
             {
                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
                 DiagnosticResult.CompilerError("CS8604").WithLocation(0).WithIsSuppressed(true),
                 DiagnosticResult.CompilerError("CS8604").WithLocation(2).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected, NetFramework);
+            await VerifyCS.VerifyAnalyzerAsync(source, expected2, NetFramework);
         }
 
         [TestMethod]
