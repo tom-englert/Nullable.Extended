@@ -1,7 +1,10 @@
-﻿using System.Xml;
+﻿using System.Globalization;
+using System.Xml;
 using System.Xml.Serialization;
 
 using Microsoft.CodeAnalysis.Diagnostics;
+
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Nullable.Extended.Analyzer
 {
@@ -12,7 +15,15 @@ namespace Nullable.Extended.Analyzer
 
         public int? MaxSteps { get; set; }
 
-        public bool DisableSuppressions { get; set; }
+        [XmlIgnore]
+        public bool DisableSuppressions
+        {
+            get => bool.TryParse(DisableSuppressionsText, out var result) && result;
+            set => DisableSuppressionsText = value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        [XmlElement("DisableSuppressions")]
+        public string? DisableSuppressionsText { get; set; }
 
         public static Options Read(AnalyzerConfigOptions configOptions)
         {
@@ -34,27 +45,9 @@ namespace Nullable.Extended.Analyzer
         public static Options Deserialize(string options)
         {
             using var stringReader = new StringReader($"<Options>{options}</Options>");
-            using var xmlReader = new CaseInsensitiveXmlReader(stringReader);
+            using var xmlReader = new XmlTextReader(stringReader);
 
             return (Options)Serializer.Deserialize(xmlReader);
-        }
-
-        private class CaseInsensitiveXmlReader : XmlTextReader
-        {
-            public CaseInsensitiveXmlReader(TextReader reader) : base(reader) { }
-
-            public override string ReadElementString()
-            {
-                var text = base.ReadElementString();
-
-                // bool TryParse accepts case-insensitive 'true' and 'false'
-                if (bool.TryParse(text, out var result))
-                {
-                    text = XmlConvert.ToString(result);
-                }
-
-                return text;
-            }
         }
     }
 }
