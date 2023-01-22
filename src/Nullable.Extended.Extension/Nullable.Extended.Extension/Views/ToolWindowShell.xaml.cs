@@ -1,11 +1,9 @@
 ﻿using System.Composition;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;
-using TomsToolbox.Wpf.Composition.XamlExtensions;
 using TomsToolbox.Wpf.Styles;
 
 namespace Nullable.Extended.Extension.Views

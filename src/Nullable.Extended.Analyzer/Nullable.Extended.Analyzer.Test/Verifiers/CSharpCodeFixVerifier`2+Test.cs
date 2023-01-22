@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Nullable.Extended.Analyzer.Test.Verifiers
@@ -15,26 +14,26 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
     {
         public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, MSTestVerifier>
         {
-            public Test(string testCode, string fixedCode = null)
+            public Test(string testCode, string? fixedCode = null, ReferenceAssemblies? referenceAssemblies = null)
             {
                 TestCode = testCode;
-                FixedCode = fixedCode;
+                FixedCode = fixedCode!;
+                ReferenceAssemblies = referenceAssemblies ?? ReferenceAssemblies.Net.Net60;
+            }
 
-                SolutionTransforms.Add((solution, projectId) =>
-                {
-                    var compilationOptions = (CSharpCompilationOptions)solution
-                        .GetProject(projectId)
-                        .CompilationOptions;
+            protected override CompilationOptions CreateCompilationOptions()
+            {
+                var compilationOptions = (CSharpCompilationOptions)base.CreateCompilationOptions();
 
-                    compilationOptions = compilationOptions
-                        .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
-                        .WithSpecificDiagnosticOptions(compilationOptions.SpecificDiagnosticOptions.SetItems(CSharpVerifierHelper.NullForgivingDetectionDiagnosticOptions))
-                        .WithNullableContextOptions(NullableContextOptions.Enable);
+                return compilationOptions
+                    .WithSpecificDiagnosticOptions(CSharpVerifierHelper.NullableWarnings)
+                    .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
+                    .WithNullableContextOptions(NullableContextOptions.Enable);
+            }
 
-                    solution = solution.WithProjectCompilationOptions(projectId, compilationOptions);
-
-                    return solution;
-                });
+            protected override ParseOptions CreateParseOptions()
+            {
+                return new CSharpParseOptions(LanguageVersion.CSharp10, DocumentationMode.Diagnose);
             }
         }
     }

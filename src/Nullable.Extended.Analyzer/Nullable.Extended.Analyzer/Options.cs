@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
 
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -12,8 +10,6 @@ namespace Nullable.Extended.Analyzer
     {
         private static readonly XmlSerializer Serializer = new(typeof(Options));
 
-        public string? LogFile { get; set; }
-
         public int? MaxSteps { get; set; }
 
         public bool DisableSuppressions { get; set; }
@@ -22,8 +18,7 @@ namespace Nullable.Extended.Analyzer
         {
             try
             {
-                if (configOptions.TryGetValue("build_property.nullableextendedanalyzer", out var options) &&
-                    !string.IsNullOrEmpty(options))
+                if (configOptions.TryGetValue("build_property.nullableextendedanalyzer", out var options) && !string.IsNullOrEmpty(options))
                 {
                     return Deserialize(options);
                 }

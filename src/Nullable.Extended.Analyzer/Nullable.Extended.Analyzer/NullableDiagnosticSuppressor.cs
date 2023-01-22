@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Diagnostics;
-using System.Linq;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -30,15 +27,9 @@ namespace Nullable.Extended.Analyzer
             if (options.DisableSuppressions)
                 return;
 
-            var logger = Logger.Get(options.LogFile);
-
-            logger.Log(() => $"ReportSuppressions: {context.ReportedDiagnostics.Length}={string.Join("|", context.ReportedDiagnostics)}");
-
             var cancellationToken = context.CancellationToken;
 
             var cachedDiagnostics= new Dictionary<SyntaxNode, IList<Diagnostic>>();
-
-            var index = 0;
 
             foreach (var diagnostic in context.ReportedDiagnostics)
             {
@@ -59,27 +50,18 @@ namespace Nullable.Extended.Analyzer
                     var runner = new SymbolicExecutionRunner(new NullPointerDereference(), context.CancellationToken, options.MaxSteps ?? 5000);
                     runner.Initialize(analysisContext);
 
-                    var stopwatch = Stopwatch.StartNew();
-                    
                     var detectedDiagnostics = analysisContext.Analyze(elementNode, context, sourceTree);
-
-                    var elapsed = stopwatch.ElapsedMilliseconds;
-                    stopwatch.Stop();
-
-                    logger.Log(() => $"  Analyzing {++index}: {elapsed} ms, {runner.Steps} steps, {detectedDiagnostics.Count} diagnostics");
 
                     var detected = detectedDiagnostics.FirstOrDefault(d => elementNodeLocation == d.Location);
                     if (detected?.Id != NullPointerDereference.NotNullDiagnosticId) 
                         continue;
 
                     var suppression = SupportedSuppressions.Single(item => item.SuppressedDiagnosticId == diagnostic.Id);
-                    logger.Log(() => $"    ReportSuppression: {diagnostic}");
                     context.ReportSuppression(Suppression.Create(suppression, diagnostic));
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     // could not analyze the full graph, so just do not suppress anything.
-                    logger.Log($"  Error: {ex}");
                 }
             }
         }

@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Extended.Extension.AnalyzerFramework;
 using Nullable.Shared;

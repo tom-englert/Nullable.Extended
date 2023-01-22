@@ -1,7 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -36,17 +33,17 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
         }
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, string)"/>
-        public static async Task VerifyCodeFixAsync(string source, string fixedSource)
-            => await VerifyCodeFixAsync(source, DiagnosticResult.EmptyDiagnosticResults, fixedSource);
+        public static async Task VerifyCodeFixAsync(string source, string? fixedSource, ReferenceAssemblies? referenceAssemblies = null)
+            => await VerifyCodeFixAsync(source, DiagnosticResult.EmptyDiagnosticResults, fixedSource, referenceAssemblies);
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, DiagnosticResult, string)"/>
-        public static async Task VerifyCodeFixAsync(string source, DiagnosticResult expected, string fixedSource)
-            => await VerifyCodeFixAsync(source, new[] { expected }, fixedSource);
+        public static async Task VerifyCodeFixAsync(string source, DiagnosticResult expected, string? fixedSource, ReferenceAssemblies? referenceAssemblies = null)
+            => await VerifyCodeFixAsync(source, new[] { expected }, fixedSource, referenceAssemblies);
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, DiagnosticResult[], string)"/>
-        public static async Task VerifyCodeFixAsync(string source, DiagnosticResult[] expected, string fixedSource)
+        public static async Task VerifyCodeFixAsync(string source, IEnumerable<DiagnosticResult> expected, string? fixedSource, ReferenceAssemblies? referenceAssemblies = null)
         {
-            var test = new Test(source, fixedSource);
+            var test = new Test(source, fixedSource, referenceAssemblies);
 
             test.ExpectedDiagnostics.AddRange(expected);
             await test.RunAsync(CancellationToken.None);

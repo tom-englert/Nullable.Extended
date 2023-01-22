@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Nullable.Extended.Extension.AnalyzerFramework
+﻿namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     internal class AnalysisResultsChangedArgs : EventArgs
     {

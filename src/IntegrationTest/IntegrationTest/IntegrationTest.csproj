@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -11,16 +10,10 @@
     </NullableExtendedAnalyzer>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
-
   <ItemGroup>
-    <PackageReference Include="Nullable.Extended.Analyzer" Version="1.10.4539">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Nullable.Extended.Analyzer" Version="1.10.4539" PrivateAssets="all" />
   </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 
 using Community.VisualStudio.Toolkit;

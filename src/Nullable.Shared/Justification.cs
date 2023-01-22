@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -45,7 +41,7 @@ namespace Nullable.Shared
         private static string? GetJustificationText(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
         {
             var lines = ancestor.GetJustificationLines(node);
-            return lines == null ? null : string.Join(Environment.NewLine, lines);
+            return lines == null ? null : string.Join("\r\n", lines);
         }
 
         private static IEnumerable<string>? GetJustificationLines(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
@@ -61,7 +57,7 @@ namespace Nullable.Shared
                 return null;
 
             var lines = node.GetLeadingTrivia()
-                .Where(t => t.Kind() == SyntaxKind.SingleLineCommentTrivia)
+                .Where(t => t.IsKind(SyntaxKind.SingleLineCommentTrivia))
                 .Select(t => t.ToString())
                 .Reverse()
                 .TakeWhile(value => value.StartsWith(SuppressionCommentPrefix))

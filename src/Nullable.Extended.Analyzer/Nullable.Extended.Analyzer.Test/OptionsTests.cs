@@ -16,7 +16,6 @@ namespace Nullable.Extended.Analyzer.Test
 ";
             var target = Options.Deserialize(config);
 
-            Assert.AreEqual("LogPath", target.LogFile);
             Assert.AreEqual(true, target.DisableSuppressions);
             Assert.AreEqual(42, target.MaxSteps);
         }
@@ -29,7 +28,6 @@ namespace Nullable.Extended.Analyzer.Test
 ";
             var target = Options.Deserialize(config);
 
-            Assert.AreEqual(null, target.LogFile);
             Assert.AreEqual(false, target.DisableSuppressions);
             Assert.AreEqual(null, target.MaxSteps);
         }

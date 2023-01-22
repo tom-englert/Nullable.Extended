@@ -1,4 +1,24 @@
-﻿[*.cs]
+﻿root = true
+
+[*]
+indent_style = space
+indent_size = 2
+
+# Code files
+[*.{cs,csx,vb,vbx}]
+indent_size = 4
+insert_final_newline = true
+charset = utf-8-bom
+
+# Code style
+[*.{cs,vb}]
+# Organize usings
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+csharp_indent_case_contents_when_block	= false
+
+# Diagnostic configuration  
+[*.cs]
 
 # RS2008: Enable analyzer release tracking
 dotnet_diagnostic.rs2008.severity = none

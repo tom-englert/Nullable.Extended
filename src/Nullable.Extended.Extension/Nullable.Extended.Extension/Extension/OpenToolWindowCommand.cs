@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.Design;
+﻿using System.ComponentModel.Design;
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;

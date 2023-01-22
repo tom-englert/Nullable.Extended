@@ -17,29 +17,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonarAnalyzer.CSharp", "..\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarAnalyzer", "SonarAnalyzer", "{773BD62B-74C8-4F9B-B458-7F3FACB6E933}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Roslyn", "Roslyn", "{BC37F1F9-7176-4104-A858-6A6BF9DE6A33}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests", "..\roslyn\src\Compilers\CSharp\Test\Semantic\Microsoft.CodeAnalysis.CSharp.Semantic.UnitTests.csproj", "{6BCE23F5-AA61-4CE5-92AE-E9645607BC33}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4F1551EA-DF15-4E7E-9511-88146E869B70} = {4F1551EA-DF15-4E7E-9511-88146E869B70}
-	EndProjectSection
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis", "..\roslyn\src\Compilers\Core\Portable\Microsoft.CodeAnalysis.csproj", "{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis.CSharp.Test.Utilities", "..\roslyn\src\Compilers\Test\Utilities\CSharp\Microsoft.CodeAnalysis.CSharp.Test.Utilities.csproj", "{C4F610EC-DB05-40C7-8972-889A7D973C96}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis.CSharp", "..\roslyn\src\Compilers\CSharp\Portable\Microsoft.CodeAnalysis.CSharp.csproj", "{302D725B-E5E8-47D1-BDE1-2CD53387FF2A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CSharpSyntaxGenerator", "..\roslyn\src\Tools\Source\CompilerGeneratorTools\Source\CSharpSyntaxGenerator\CSharpSyntaxGenerator.csproj", "{AD141653-BB0C-45AA-8A85-AC416AA968A7}"
-EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Microsoft.CodeAnalysis.VisualBasic", "..\roslyn\src\Compilers\VisualBasic\Portable\Microsoft.CodeAnalysis.VisualBasic.vbproj", "{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roslyn.Test.PdbUtilities", "..\roslyn\src\Test\PdbUtilities\Roslyn.Test.PdbUtilities.csproj", "{F4EC29DC-DBBF-48D7-992C-91042B01BCDF}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis.Test.Utilities", "..\roslyn\src\Compilers\Test\Core\Microsoft.CodeAnalysis.Test.Utilities.csproj", "{A758C998-E8DE-49A0-B6AB-5A2D95A28F46}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.CodeAnalysis.Compiler.Test.Resources", "..\roslyn\src\Compilers\Test\Resources\Core\Microsoft.CodeAnalysis.Compiler.Test.Resources.csproj", "{AAB9260C-5214-406E-BD92-7D744CE9C9E8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99A09AA7-58BE-4D61-BCDA-7DA7FDF1300B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -55,17 +32,6 @@ EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nullable.Shared", "Nullable.Shared\Nullable.Shared.shproj", "{850B0F8F-F2C0-4BE3-B141-2CD93EA896D8}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		..\roslyn\src\Compilers\Core\AnalyzerDriver\AnalyzerDriver.projitems*{1d7f8d8b-debf-4b48-9dd8-82d5fb3d12fc}*SharedItemsImports = 5
-		..\roslyn\src\Dependencies\CodeAnalysis.Debugging\Microsoft.CodeAnalysis.Debugging.projitems*{1d7f8d8b-debf-4b48-9dd8-82d5fb3d12fc}*SharedItemsImports = 5
-		..\roslyn\src\Dependencies\Collections\Microsoft.CodeAnalysis.Collections.projitems*{1d7f8d8b-debf-4b48-9dd8-82d5fb3d12fc}*SharedItemsImports = 5
-		..\roslyn\src\Dependencies\PooledObjects\Microsoft.CodeAnalysis.PooledObjects.projitems*{1d7f8d8b-debf-4b48-9dd8-82d5fb3d12fc}*SharedItemsImports = 5
-		..\roslyn\src\Compilers\CSharp\CSharpAnalyzerDriver\CSharpAnalyzerDriver.projitems*{302d725b-e5e8-47d1-bde1-2cd53387ff2a}*SharedItemsImports = 5
-		Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
-		Nullable.Shared\Nullable.Shared.projitems*{4f1551ea-df15-4e7e-9511-88146e869b70}*SharedItemsImports = 5
-		..\roslyn\src\Compilers\VisualBasic\BasicAnalyzerDriver\BasicAnalyzerDriver.projitems*{77ef5f9c-e5b2-423b-aea3-889cb259cca0}*SharedItemsImports = 5
-		Nullable.Shared\Nullable.Shared.projitems*{850b0f8f-f2c0-4be3-b141-2cd93ea896d8}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -95,42 +61,6 @@ Global
 		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6BCE23F5-AA61-4CE5-92AE-E9645607BC33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6BCE23F5-AA61-4CE5-92AE-E9645607BC33}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6BCE23F5-AA61-4CE5-92AE-E9645607BC33}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6BCE23F5-AA61-4CE5-92AE-E9645607BC33}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C4F610EC-DB05-40C7-8972-889A7D973C96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C4F610EC-DB05-40C7-8972-889A7D973C96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C4F610EC-DB05-40C7-8972-889A7D973C96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C4F610EC-DB05-40C7-8972-889A7D973C96}.Release|Any CPU.Build.0 = Release|Any CPU
-		{302D725B-E5E8-47D1-BDE1-2CD53387FF2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{302D725B-E5E8-47D1-BDE1-2CD53387FF2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{302D725B-E5E8-47D1-BDE1-2CD53387FF2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{302D725B-E5E8-47D1-BDE1-2CD53387FF2A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AD141653-BB0C-45AA-8A85-AC416AA968A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AD141653-BB0C-45AA-8A85-AC416AA968A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AD141653-BB0C-45AA-8A85-AC416AA968A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AD141653-BB0C-45AA-8A85-AC416AA968A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F4EC29DC-DBBF-48D7-992C-91042B01BCDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F4EC29DC-DBBF-48D7-992C-91042B01BCDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F4EC29DC-DBBF-48D7-992C-91042B01BCDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F4EC29DC-DBBF-48D7-992C-91042B01BCDF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A758C998-E8DE-49A0-B6AB-5A2D95A28F46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A758C998-E8DE-49A0-B6AB-5A2D95A28F46}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A758C998-E8DE-49A0-B6AB-5A2D95A28F46}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A758C998-E8DE-49A0-B6AB-5A2D95A28F46}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AAB9260C-5214-406E-BD92-7D744CE9C9E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AAB9260C-5214-406E-BD92-7D744CE9C9E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AAB9260C-5214-406E-BD92-7D744CE9C9E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AAB9260C-5214-406E-BD92-7D744CE9C9E8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -143,18 +73,14 @@ Global
 		{F766F556-CB91-408A-9149-EB963DE1B817} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
 		{8A8A663E-1318-4361-BC97-2E63666FEADB} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
 		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
-		{6BCE23F5-AA61-4CE5-92AE-E9645607BC33} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{1D7F8D8B-DEBF-4B48-9DD8-82D5FB3D12FC} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{C4F610EC-DB05-40C7-8972-889A7D973C96} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{302D725B-E5E8-47D1-BDE1-2CD53387FF2A} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{AD141653-BB0C-45AA-8A85-AC416AA968A7} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{77EF5F9C-E5B2-423B-AEA3-889CB259CCA0} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{F4EC29DC-DBBF-48D7-992C-91042B01BCDF} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{A758C998-E8DE-49A0-B6AB-5A2D95A28F46} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
-		{AAB9260C-5214-406E-BD92-7D744CE9C9E8} = {BC37F1F9-7176-4104-A858-6A6BF9DE6A33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 		RESX_ShowErrorsInErrorList = False
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
+		Nullable.Shared\Nullable.Shared.projitems*{4f1551ea-df15-4e7e-9511-88146e869b70}*SharedItemsImports = 5
+		Nullable.Shared\Nullable.Shared.projitems*{850b0f8f-f2c0-4be3-b141-2cd93ea896d8}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
