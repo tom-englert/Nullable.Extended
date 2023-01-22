@@ -4,8 +4,6 @@ using System.Xml.Serialization;
 
 using Microsoft.CodeAnalysis.Diagnostics;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace Nullable.Extended.Analyzer
 {
     [Serializable]
