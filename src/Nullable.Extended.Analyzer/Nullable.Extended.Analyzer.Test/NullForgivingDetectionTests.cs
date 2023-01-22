@@ -3,7 +3,7 @@
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using VerifyCS = Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
+using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
 
 namespace Nullable.Extended.Analyzer.Test
 {
@@ -26,7 +26,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -48,7 +48,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -72,7 +72,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(2),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -102,7 +102,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -130,7 +130,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -150,7 +150,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = DiagnosticResult.EmptyDiagnosticResults;
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -169,7 +169,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = DiagnosticResult.EmptyDiagnosticResults;
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
     }
 

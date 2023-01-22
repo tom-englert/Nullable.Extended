@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis.Testing;
 
-using VerifyCS = Nullable.Extended.Analyzer.Test.Verifiers.CSharpSuppressorVerifier<Nullable.Extended.Analyzer.NullableDiagnosticSuppressor>;
+using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpSuppressorVerifier<Nullable.Extended.Analyzer.NullableDiagnosticSuppressor>;
 
 namespace Nullable.Extended.Analyzer.Test
 {
@@ -16,7 +16,7 @@ namespace Nullable.Extended.Analyzer.Test
         {
             const string source = @"";
 
-            await VerifyCS.VerifyAnalyzerAsync(source, Array.Empty<DiagnosticResult>());
+            await VerifyAnalyzerAsync(source, Array.Empty<DiagnosticResult>());
         }
 
         [TestMethod]
@@ -43,7 +43,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -78,7 +78,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -103,7 +103,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -132,7 +132,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
 
             var expected2 = new[]
             {
@@ -140,7 +140,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected2, NetFramework);
+            await VerifyAnalyzerAsync(source, expected2, NetFramework);
         }
 
         [TestMethod]
@@ -170,7 +170,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
 
             var expected2 = new[]
             {
@@ -179,7 +179,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(2).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected2, NetFramework);
+            await VerifyAnalyzerAsync(source, expected2, NetFramework);
         }
 
         [TestMethod]
@@ -207,7 +207,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(1),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
 
             var expected2 = new[]
             {
@@ -216,7 +216,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8604").WithLocation(2).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected2, NetFramework);
+            await VerifyAnalyzerAsync(source, expected2, NetFramework);
         }
 
         [TestMethod]
@@ -241,7 +241,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -266,7 +266,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -291,7 +291,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8603").WithLocation(0).WithIsSuppressed(true)
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -369,7 +369,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -403,7 +403,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -437,7 +437,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
 
         [TestMethod]
@@ -462,7 +462,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerError("CS8602").WithLocation(0).WithIsSuppressed(true),
             };
 
-            await VerifyCS.VerifyAnalyzerAsync(source, expected);
+            await VerifyAnalyzerAsync(source, expected);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using VerifyCS = Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
+using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
     Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer,
     Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzerCodeFixProvider>;
 
@@ -38,7 +38,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCS.VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFixAsync(source, expected, fixedSource);
         }
 
         [TestMethod]
@@ -70,7 +70,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCS.VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFixAsync(source, expected, fixedSource);
         }
     }
 }
