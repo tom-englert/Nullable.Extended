@@ -27,7 +27,7 @@ steps:
   inputs:
     command: 'test'
     projects: '$(solution)'
-    arguments: '--no-build'
+    arguments: '--no-build --configuration $(buildConfiguration)'
 
 - task: CopyFiles@2
   inputs:
