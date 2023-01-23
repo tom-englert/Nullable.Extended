@@ -23,10 +23,11 @@ steps:
     configuration: '$(buildConfiguration)'
     msbuildArgs: '-restore'
 
-- task: VSTest@2
+- task: DotNetCoreCLI@2
   inputs:
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
+    command: 'test'
+    projects: '$(solution)'
+    arguments: '--no-build'
 
 - task: CopyFiles@2
   inputs:
