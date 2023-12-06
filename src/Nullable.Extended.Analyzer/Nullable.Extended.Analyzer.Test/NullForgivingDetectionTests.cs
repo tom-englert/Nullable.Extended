@@ -23,7 +23,7 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -45,7 +45,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = new[]
             {
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -67,9 +67,26 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(0),
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(1),
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(2),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(0),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(1),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(2),
+            };
+
+            await VerifyAnalyzerAsync(source, expected);
+        }
+
+        [TestMethod]
+        public async Task NullForgivingDetectOnNullOrDefaultOnInitOnlyProperty()
+        {
+            const string source = """
+            class C1
+            {
+                public string Id { get; init; } = null{|#0:!|};
+            }
+            """;
+            var expected = new[]
+            {
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.InitDiagnosticId).WithLocation(0),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -96,10 +113,10 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(0),
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(1),
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(2),
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(0),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(1),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(2),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -127,7 +144,7 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
+                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -176,8 +193,6 @@ namespace Nullable.Extended.Analyzer.Test
 #nullable enable
     class C1
     {
-        [ReadOnly(true)]
-        // ! Id is never null, always serialized
-        public virtual string Id { get; set; } = null!;
+        public string Id { get; init; } = null!;
     }
 }
