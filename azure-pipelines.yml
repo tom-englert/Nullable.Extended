@@ -17,6 +17,7 @@ steps:
   condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
 
 - task: VSBuild@1
+  displayName: Build
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
@@ -24,6 +25,7 @@ steps:
     msbuildArgs: '-restore'
 
 - task: DotNetCoreCLI@2
+  displayName: Test
   inputs:
     command: 'test'
     projects: '$(solution)'
