@@ -9,14 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Analyzer.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Analyzer.Test", "Nullable.Extended.Analyzer\Nullable.Extended.Analyzer.Test\Nullable.Extended.Analyzer.Test.csproj", "{C948FA6A-8290-41F2-AA63-BFAEA89DD911}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonarAnalyzer.CFG", "..\sonar-dotnet\analyzers\src\SonarAnalyzer.CFG\SonarAnalyzer.CFG.csproj", "{F766F556-CB91-408A-9149-EB963DE1B817}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonarAnalyzer.Common", "..\sonar-dotnet\analyzers\src\SonarAnalyzer.Common\SonarAnalyzer.Common.csproj", "{8A8A663E-1318-4361-BC97-2E63666FEADB}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SonarAnalyzer.CSharp", "..\sonar-dotnet\analyzers\src\SonarAnalyzer.CSharp\SonarAnalyzer.CSharp.csproj", "{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SonarAnalyzer", "SonarAnalyzer", "{773BD62B-74C8-4F9B-B458-7F3FACB6E933}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{99A09AA7-58BE-4D61-BCDA-7DA7FDF1300B}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
@@ -49,18 +41,6 @@ Global
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F766F556-CB91-408A-9149-EB963DE1B817}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F766F556-CB91-408A-9149-EB963DE1B817}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F766F556-CB91-408A-9149-EB963DE1B817}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F766F556-CB91-408A-9149-EB963DE1B817}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8A8A663E-1318-4361-BC97-2E63666FEADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8A8A663E-1318-4361-BC97-2E63666FEADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8A8A663E-1318-4361-BC97-2E63666FEADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8A8A663E-1318-4361-BC97-2E63666FEADB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,14 +49,9 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{F766F556-CB91-408A-9149-EB963DE1B817} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
-		{8A8A663E-1318-4361-BC97-2E63666FEADB} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
-		{CA8EEC07-8775-42E3-91EB-E51F4DB72A48} = {773BD62B-74C8-4F9B-B458-7F3FACB6E933}
-	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 		RESX_ShowErrorsInErrorList = False
+		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
