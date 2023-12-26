@@ -1,3 +1,11 @@
+1.15
+- Default severity of analyzers should be warning to be suppressable.
+
+1.14
+- Introduce InitRule for "init only" properties; 
+- Default severity is now Error.
+- Remove the outdated sonar-based suppressor.
+
 1.13
 - Adjust colors to better match VS2022
 
