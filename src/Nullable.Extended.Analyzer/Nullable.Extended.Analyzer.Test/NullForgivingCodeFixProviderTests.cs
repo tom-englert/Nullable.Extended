@@ -35,7 +35,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyCodeFixAsync(source, expected, fixedSource);
@@ -67,7 +67,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyCodeFixAsync(source, expected, fixedSource);

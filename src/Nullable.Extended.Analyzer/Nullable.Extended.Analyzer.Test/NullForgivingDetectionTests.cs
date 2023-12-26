@@ -23,7 +23,7 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -45,7 +45,7 @@ namespace Nullable.Extended.Analyzer.Test
 
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -67,9 +67,9 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(0),
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(1),
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(2),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(0),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(1),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.NullOrDefaultDiagnosticId).WithLocation(2),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -86,7 +86,7 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.InitDiagnosticId).WithLocation(0),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.InitDiagnosticId).WithLocation(0),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -113,10 +113,10 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(0),
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(1),
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(2),
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(0),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.LambdaDiagnosticId).WithLocation(1),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(2),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
             await VerifyAnalyzerAsync(source, expected);
@@ -144,7 +144,7 @@ namespace Nullable.Extended.Analyzer.Test
             """;
             var expected = new[]
             {
-                DiagnosticResult.CompilerError(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(3),
             };
 
             await VerifyAnalyzerAsync(source, expected);
