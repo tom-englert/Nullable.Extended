@@ -20,7 +20,7 @@
   <ItemGroup Label="PackageReferences">
     <PackageReference Include="Community.VisualStudio.Toolkit" Version="16.0.76.253-pre" />
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
-    <PackageReference Include="DataGridExtensions" Version="2.5.15" />
+    <PackageReference Include="DataGridExtensions" Version="2.6.0" />
     <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="[3.8.0]" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime" />
@@ -30,10 +30,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
     <PackageReference Include="Throttle.Fody" Version="1.7.0" PrivateAssets="all" />
-    <PackageReference Include="TomsToolbox.Composition.Ninject" Version="2.10.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition" Version="2.10.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.10.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Styles" Version="2.10.0" />
+    <PackageReference Include="TomsToolbox.Composition.Ninject" Version="2.11.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition" Version="2.11.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.11.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Styles" Version="2.11.0" />
     <PackageReference Include="VSIX-SdkProjectAdapter" Version="3.0.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
