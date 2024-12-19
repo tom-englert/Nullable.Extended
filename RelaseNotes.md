@@ -1,3 +1,6 @@
+[Next]
+- The codefix suggestion will use the same line ending as the offending code.
+
 1.15
 - Default severity of analyzers should be warning to be suppressable.
 
