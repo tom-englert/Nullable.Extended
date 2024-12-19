@@ -58,7 +58,7 @@ namespace Nullable.Extended.Analyzer
 
             leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia.Add(newline));
 
-            if (indent != default(SyntaxTrivia))
+            if (indent != default)
             {
                 leadingTrivia = leadingTrivia.Add(indent);
             }

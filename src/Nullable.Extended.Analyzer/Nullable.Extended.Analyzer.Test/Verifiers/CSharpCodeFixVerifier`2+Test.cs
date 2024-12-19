@@ -4,7 +4,6 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.CodeAnalysis.Testing.Verifiers;
 
 namespace Nullable.Extended.Analyzer.Test.Verifiers
 {
@@ -12,7 +11,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
         where TAnalyzer : DiagnosticAnalyzer, new()
         where TCodeFix : CodeFixProvider, new()
     {
-        public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, MSTestVerifier>
+        public class Test : CSharpCodeFixTest<TAnalyzer, TCodeFix, DefaultVerifier>
         {
             public Test(string testCode, string? fixedCode = null, ReferenceAssemblies? referenceAssemblies = null)
             {
