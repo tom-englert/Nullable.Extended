@@ -1,17 +1,15 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UseWPF>true</UseWPF>
-    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <TargetFramework>net472</TargetFramework>
+    <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+  </PropertyGroup>
+  <PropertyGroup Label="Debug">
     <StartAction>Program</StartAction>
     <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
     <StartArguments>/rootsuffix Exp</StartArguments>
-    <Nullable>enable</Nullable>
-    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System.Windows.Forms" />
@@ -21,19 +19,19 @@
     <PackageReference Include="Community.VisualStudio.Toolkit" Version="16.0.76.253-pre" />
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="DataGridExtensions" Version="2.6.0" />
-    <PackageReference Include="Fody" Version="6.8.0" PrivateAssets="all" />
+    <PackageReference Include="Fody" Version="6.9.1" PrivateAssets="all" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="[3.8.0]" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.5210-preview5" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.12.2069" PrivateAssets="all" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="[3.8.0]" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[3.8.0]" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
     <PackageReference Include="Throttle.Fody" Version="1.7.0" PrivateAssets="all" />
-    <PackageReference Include="TomsToolbox.Composition.Ninject" Version="2.11.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition" Version="2.11.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.11.0" />
-    <PackageReference Include="TomsToolbox.Wpf.Styles" Version="2.11.0" />
+    <PackageReference Include="TomsToolbox.Composition.Ninject" Version="2.21.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition" Version="2.21.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.21.0" />
+    <PackageReference Include="TomsToolbox.Wpf.Styles" Version="2.21.0" />
     <PackageReference Include="VSIX-SdkProjectAdapter" Version="3.0.0" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
