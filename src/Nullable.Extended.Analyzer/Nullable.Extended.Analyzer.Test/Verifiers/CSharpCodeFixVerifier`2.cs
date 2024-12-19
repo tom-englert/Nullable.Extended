@@ -41,10 +41,11 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
             => await VerifyCodeFixAsync(source, new[] { expected }, fixedSource, referenceAssemblies);
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, DiagnosticResult[], string)"/>
-        public static async Task VerifyCodeFixAsync(string source, IEnumerable<DiagnosticResult> expected, string? fixedSource, ReferenceAssemblies? referenceAssemblies = null)
+        public static async Task VerifyCodeFixAsync(string source, IEnumerable<DiagnosticResult> expected, string? fixedSource, ReferenceAssemblies? referenceAssemblies = null, OutputKind? outputKind = null)
         {
             var test = new Test(source, fixedSource, referenceAssemblies);
-
+            if (outputKind is not null)
+                test.TestState.OutputKind = outputKind;
             test.ExpectedDiagnostics.AddRange(expected);
             await test.RunAsync(CancellationToken.None);
         }
