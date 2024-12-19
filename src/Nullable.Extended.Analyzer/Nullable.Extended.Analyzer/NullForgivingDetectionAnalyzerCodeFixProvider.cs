@@ -49,12 +49,12 @@ namespace Nullable.Extended.Analyzer
         private async Task<Document> ApplyFix(Document document, SyntaxNode root, CSharpSyntaxNode targetNode, CancellationToken token)
         {
             var leadingTrivia = targetNode.GetLeadingTrivia();
+            var trailingTrivia = targetNode.GetTrailingTrivia();
             var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
 
-            var newline = leadingTrivia.FirstOrDefault(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
-            newline = targetNode.GetTrailingTrivia().FirstOrDefault(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
-            if (Equals(newline, default(SyntaxTrivia)))
-                newline = SyntaxFactory.CarriageReturnLineFeed;
+            IEnumerable<SyntaxTrivia> triviaList = [..leadingTrivia, ..trailingTrivia, SyntaxFactory.CarriageReturnLineFeed];
+
+            var newline = triviaList.First(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
 
             leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia.Add(newline));
 
