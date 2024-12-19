@@ -14,7 +14,7 @@ namespace Nullable.Extended.Analyzer
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NullForgivingDetectionAnalyzerCodeFixProvider)), Shared]
     public class NullForgivingDetectionAnalyzerCodeFixProvider : CodeFixProvider
     {
-        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + "TODO:\r\n";
+        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + "TODO:";
         private const string CodeFixTitle = "Suppress with comment";
 
         private static readonly SyntaxTriviaList CodeFixPlaceholderTrivia = CSharpSyntaxTree.ParseText(CodeFixPlaceholderText).GetRoot().GetLeadingTrivia();
@@ -49,9 +49,14 @@ namespace Nullable.Extended.Analyzer
         private async Task<Document> ApplyFix(Document document, SyntaxNode root, CSharpSyntaxNode targetNode, CancellationToken token)
         {
             var leadingTrivia = targetNode.GetLeadingTrivia();
+            var trailingTrivia = targetNode.GetTrailingTrivia();
             var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
 
-            leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia);
+            IEnumerable<SyntaxTrivia> triviaList = [..leadingTrivia, ..trailingTrivia, SyntaxFactory.CarriageReturnLineFeed];
+
+            var newline = triviaList.First(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
+
+            leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia.Add(newline));
 
             if (indent != null)
             {

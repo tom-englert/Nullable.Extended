@@ -12,7 +12,8 @@ namespace Nullable.Extended.Analyzer.Test
     public class NullForgivingCodeFixProviderTests
     {
         [TestMethod]
-        public async Task CommentIsAddedToBareItem()
+        [DataRow("\n"), DataRow("\r\n")]
+        public async Task CommentIsAddedToBareItem(string lineEnding)
         {
             const string source = """
             class C {
@@ -38,11 +39,12 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
         }
 
         [TestMethod]
-        public async Task CommentIsAddedToItemThatAlreadyHasAComment()
+        [DataRow("\n"), DataRow("\r\n")]
+        public async Task CommentIsAddedToItemThatAlreadyHasAComment(string lineEnding)
         {
             const string source = """
             class C {
@@ -70,7 +72,7 @@ namespace Nullable.Extended.Analyzer.Test
                 DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.GeneralDiagnosticId).WithLocation(0)
             };
 
-            await VerifyCodeFixAsync(source, expected, fixedSource);
+            await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
         }
     }
 }
