@@ -20,11 +20,11 @@
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="DataGridExtensions" Version="2.6.0" />
     <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="[3.8.0]" />
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.206" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.12.2069" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="[3.8.0]" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[3.8.0]" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="[4.5.0]" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.13.40008" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.13.2126" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="[4.5.0]" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="[4.5.0]" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
     <PackageReference Include="Throttle.Fody" Version="1.7.0" PrivateAssets="all" />

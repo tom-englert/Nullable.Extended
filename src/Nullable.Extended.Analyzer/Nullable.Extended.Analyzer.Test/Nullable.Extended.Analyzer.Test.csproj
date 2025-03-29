@@ -17,6 +17,10 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
+  <ItemGroup Label="Transitive fixes">
+    <PackageReference Include="NuGet.Packaging" Version="6.13.2" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Nullable.Extended.Analyzer\Nullable.Extended.Analyzer.csproj" />
   </ItemGroup>
