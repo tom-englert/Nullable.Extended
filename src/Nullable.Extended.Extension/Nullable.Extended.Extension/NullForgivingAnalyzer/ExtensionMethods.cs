@@ -1,5 +1,7 @@
 ﻿using System.Text;
 
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Shared;
@@ -16,9 +18,9 @@ namespace Nullable.Extended.Extension.NullForgivingAnalyzer
 
         public static NullForgivingContext GetContext(this PostfixUnaryExpressionSyntax node)
         {
-            if (node.IsNullOrDefaultExpression())
+            if (node.IsNullOrDefaultExpression(out var expression))
             {
-                return NullForgivingContext.NullOrDefault;
+                return expression.IsInitOnlyPropertyAssignment() ? NullForgivingContext.Init : NullForgivingContext.NullOrDefault;
             }
 
             if (node.IsInsideLambdaExpression())

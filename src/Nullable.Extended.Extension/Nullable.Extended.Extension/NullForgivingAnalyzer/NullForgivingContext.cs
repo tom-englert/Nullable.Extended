@@ -5,6 +5,7 @@
         Invalid,
         General,
         NullOrDefault,
-        Lambda
+        Lambda,
+        Init
     }
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UseWPF>true</UseWPF>
-    <TargetFramework>net472</TargetFramework>
+    <TargetFramework>net48</TargetFramework>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
@@ -16,7 +16,7 @@
     <Reference Include="System.Design" />
   </ItemGroup>
   <ItemGroup Label="PackageReferences">
-    <PackageReference Include="Community.VisualStudio.Toolkit" Version="16.0.76.253-pre" />
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.533" />
     <PackageReference Include="ConfigureAwait.Fody" Version="3.3.2" PrivateAssets="all" />
     <PackageReference Include="DataGridExtensions" Version="2.6.0" />
     <PackageReference Include="Fody" Version="6.9.2" PrivateAssets="all" />

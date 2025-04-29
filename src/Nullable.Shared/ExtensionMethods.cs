@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -16,12 +18,14 @@ namespace Nullable.Shared
             return node.AncestorsAndSelf().Any(n => n is LambdaExpressionSyntax);
         }
 
-        public static bool IsNullOrDefaultExpression(this SyntaxNode node)
+        public static bool IsNullOrDefaultExpression(this SyntaxNode node, [NotNullWhen(true)] out PostfixUnaryExpressionSyntax? expression)
         {
-            if (node is not PostfixUnaryExpressionSyntax e)
+            expression = node as PostfixUnaryExpressionSyntax;
+           
+            if (expression is null)
                 return false;
 
-            switch (e.Operand)
+            switch (expression.Operand)
             {
                 case LiteralExpressionSyntax l:
 #pragma warning disable IDE0010
@@ -40,6 +44,11 @@ namespace Nullable.Shared
             }
 
             return false;
+        }
+
+        public static bool IsInitOnlyPropertyAssignment(this PostfixUnaryExpressionSyntax node)
+        {
+            return node.Parent is EqualsValueClauseSyntax { Parent: PropertyDeclarationSyntax propertyDeclaration } && propertyDeclaration.AccessorList?.Accessors.Any(item => item.IsKind(SyntaxKind.InitAccessorDeclaration)) == true;
         }
     }
 }

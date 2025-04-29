@@ -52,11 +52,9 @@ namespace Nullable.Extended.Analyzer
 
         private static DiagnosticDescriptor GetDiagnosticDescriptor(SyntaxNode node)
         {
-            if (node.IsNullOrDefaultExpression())
+            if (node.IsNullOrDefaultExpression(out var expression))
             {
-                var isInitOnlyPropertyAssignment = node.Parent is EqualsValueClauseSyntax { Parent: PropertyDeclarationSyntax propertyDeclaration } && propertyDeclaration.AccessorList?.Accessors.Any(item => item.IsKind(SyntaxKind.InitAccessorDeclaration)) == true;
-                
-                return isInitOnlyPropertyAssignment ? InitRule : NullOrDefaultRule;
+                return expression.IsInitOnlyPropertyAssignment() ? InitRule : NullOrDefaultRule;
             }
 
             if (node.IsInsideLambdaExpression())
