@@ -9,6 +9,7 @@ using Nullable.Shared;
 
 namespace Nullable.Extended.Analyzer
 {
+#pragma warning disable RS1038 // Analyzer should be in a separate project
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NullForgivingDetectionAnalyzer : DiagnosticAnalyzer
     {
