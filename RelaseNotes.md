@@ -1,5 +1,8 @@
 [Next]
 
+1.15.2
+- Show also NX0004 (Init only) context in VS extension.
+
 1.15.1
 - The codefix suggestion will use the same line ending as the offending code.
 - Fix crash when suggesting a fix for un-indented code.
