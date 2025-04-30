@@ -36,7 +36,7 @@ var text = value1!.ToString();
 ```
 #### There are two tools available:
 - A [Visual Studio Extension](#visual-studio-extension) that analyzes your sources and tracks usage of null forgiving operators.
-- A [Roslyn Analyzer](#roslyn-analyzer) that shows a warning for every unjustified usage of the null-forgiving operator, and also double-checks nullability warnings and suppresses some false positives.
+- A [Roslyn Analyzer](#roslyn-analyzer) that shows a warning for every unjustified usage of the null-forgiving operator.
 
 ## Visual Studio Extension
 
