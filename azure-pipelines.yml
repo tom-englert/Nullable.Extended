@@ -23,6 +23,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     msbuildArgs: '-restore'
+  env:
+    DeployExtension: False  
 
 - task: DotNetCoreCLI@2
   displayName: Test
