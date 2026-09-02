@@ -12,6 +12,7 @@
     <SignAssembly Condition="'$(Configuration)' == 'Release'">true</SignAssembly>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+    <IsDeploymentTarget>true</IsDeploymentTarget>
   </PropertyGroup>
 
   <ItemGroup>

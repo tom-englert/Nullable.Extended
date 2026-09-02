@@ -6,6 +6,7 @@
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
     <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
+    <IsDeploymentTarget>true</IsDeploymentTarget>
   </PropertyGroup>
   <PropertyGroup Label="Debug">
     <StartAction>Program</StartAction>
