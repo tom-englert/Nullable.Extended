@@ -77,6 +77,33 @@ namespace Nullable.Extended.Analyzer.Test
         }
 
         [TestMethod]
+        [DataRow("\n"), DataRow("\r\n")]
+        public async Task CommentIsAddedToInitOnlyProperty(string lineEnding)
+        {
+            const string source = """
+            class C1
+            {
+                public string Id { get; init; } = null!;
+            }
+            """;
+
+            const string fixedSource = """
+            class C1
+            {
+                // ! TODO:
+                public string Id { get; init; } = null!;
+            }
+            """;
+
+            var expected = new[]
+            {
+                DiagnosticResult.CompilerWarning(NullForgivingDetectionAnalyzer.InitDiagnosticId).WithSpan(3, 43, 3, 44)
+            };
+
+            await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
+        }
+
+        [TestMethod]
         public async Task CommentIsAddedToTopLevelStatement()
         {
             const string source = """

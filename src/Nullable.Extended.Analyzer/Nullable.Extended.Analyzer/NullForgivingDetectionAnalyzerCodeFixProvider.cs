@@ -19,7 +19,7 @@ namespace Nullable.Extended.Analyzer
 
         private static readonly SyntaxTriviaList CodeFixPlaceholderTrivia = CSharpSyntaxTree.ParseText(CodeFixPlaceholderText).GetRoot().GetLeadingTrivia();
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds => NullForgivingDetectionAnalyzer.SupportedDiagnosticIds;
+        public sealed override ImmutableArray<string> FixableDiagnosticIds => NullForgivingDetectionAnalyzer.SupportedDiagnosticIds.ToImmutableArray();
 
         public override FixAllProvider? GetFixAllProvider()
         {
@@ -52,7 +52,7 @@ namespace Nullable.Extended.Analyzer
             var trailingTrivia = targetNode.GetTrailingTrivia();
             var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
 
-            IEnumerable<SyntaxTrivia> triviaList = [..leadingTrivia, ..trailingTrivia, SyntaxFactory.CarriageReturnLineFeed];
+            IEnumerable<SyntaxTrivia> triviaList = [.. leadingTrivia, .. trailingTrivia, SyntaxFactory.CarriageReturnLineFeed];
 
             var newline = triviaList.First(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
 

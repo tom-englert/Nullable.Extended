@@ -31,9 +31,11 @@ namespace Nullable.Extended.Analyzer
         private static readonly DiagnosticDescriptor LambdaRule = new(LambdaDiagnosticId, LambdaTitle, MessageFormat, Category, DiagnosticSeverity.Warning, true, null, HelpLink);
         private static readonly DiagnosticDescriptor InitRule = new(InitDiagnosticId, InitTitle, MessageFormat, Category, DiagnosticSeverity.Warning, true, null, HelpLink);
 
-        public static ImmutableArray<string> SupportedDiagnosticIds { get; } = ImmutableArray.Create(GeneralDiagnosticId, NullOrDefaultDiagnosticId, LambdaDiagnosticId);
+        private static readonly ImmutableArray<DiagnosticDescriptor> AllDiagnostics = ImmutableArray.Create(GeneralRule, NullOrDefaultRule, LambdaRule, InitRule);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get; } = ImmutableArray.Create(GeneralRule, NullOrDefaultRule, LambdaRule, InitRule);
+        public static IEnumerable<string> SupportedDiagnosticIds => AllDiagnostics.Select(d => d.Id);
+
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => AllDiagnostics;
 
         public override void Initialize(AnalysisContext context)
         {
