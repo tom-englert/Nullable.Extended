@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.0.31612.314
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12120.281
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Analyzer", "Nullable.Extended.Analyzer\Nullable.Extended.Analyzer\Nullable.Extended.Analyzer.csproj", "{4F1551EA-DF15-4E7E-9511-88146E869B70}"
 EndProject
@@ -43,6 +43,7 @@ Global
 		{C948FA6A-8290-41F2-AA63-BFAEA89DD911}.Release|Any CPU.Build.0 = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
@@ -50,7 +51,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		RESX_ShowErrorsInErrorList = False
 		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
