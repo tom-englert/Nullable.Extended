@@ -43,13 +43,14 @@ var text = value1!.ToString();
 The [Visual Studio Extension](#visual-studio-extension) lists all occurrences, 
 categorizes them, and even detects those that are still present in code but no longer needed.
 
-Occurrences are grouped into three categories, to reflect their different contexts:
-- General usages of the null-forgiving operator.
-- Null-forgiving operator on the `null` or `default` literals.
+Occurrences are grouped into four categories, to reflect their different contexts:
+- Null-forgiving operator on the `null` or `default` literals at init only property assignment.
+- Null-forgiving operator on the `null` or `default` literals at any other statement.
 - Null-forgiving operator inside lambda expressions.
+- Any other usage of the null-forgiving operator.
 
 > e.g. general usages can be mostly avoided by cleaning up the code,
-while inside lambda expressions they are often unavoidable
+while inside lambda expressions they are often unavoidable, so you might want to configure different severity levels for different categories.
 
 ### Installation
 
