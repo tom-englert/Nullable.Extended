@@ -1,5 +1,11 @@
 [Next]
 
+1.16.1
+- Update dependencies to latest versions
+
+1.16.0
+- Fix: No code fix provided for the rule NX0004
+
 1.15.2
 - Show also NX0004 (Init only) context in VS extension.
 
