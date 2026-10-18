@@ -1,8 +1,8 @@
 {
   "$schema": "https://aka.ms/vs-publish-schema",
   "categories": [
-    "Tools",
-    "Coding"
+    "programming languages",
+    "coding"
   ],
   "identity": {
     "internalName": "NullableExtended"

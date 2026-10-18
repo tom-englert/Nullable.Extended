@@ -14,9 +14,9 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
         continue-on-error: true
@@ -31,13 +31,13 @@ jobs:
         run: dotnet test --solution "${{ env.SOLUTION }}" --no-build --configuration ${{ env.BUILD_CONFIGURATION }}
 
       - name: Upload NuGet packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Package
           path: src/**/${{ env.BUILD_CONFIGURATION }}/*.nupkg
 
       - name: Upload VSIX
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: Vsix
           path: src/**/${{ env.BUILD_CONFIGURATION }}/**/*.vsix
@@ -59,6 +59,30 @@ jobs:
         if ($tag -ne $version) { throw "Tag '$tag' does not match version '$version' in Directory.Build.props" }
         "PackageVersion=$version" >> $env:GITHUB_ENV
 
+    - name: Extract release notes
+      shell: pwsh
+      run: |
+        $tag = "$env:GITHUB_REF_NAME".TrimStart('v')
+        $notes = @()
+        $found = $false
+        foreach ($line in Get-Content RelaseNotes.md) {
+          if ($line.Trim() -match '^\d+(\.\d+)*$') {
+            if ($found) { break }
+            if ($line.Trim() -eq $tag) { $found = $true }
+            continue
+          }
+          if ($found) { $notes += $line }
+        }
+        New-Item -ItemType Directory -Force publish-assets | Out-Null
+        ($notes -join "`n").Trim() | Set-Content publish-assets/release-notes.txt
+        Copy-Item vs-publish.json, README.md publish-assets/
+
+    - name: Upload publish assets
+      uses: actions/upload-artifact@v7
+      with:
+        name: PublishAssets
+        path: publish-assets
+
   publish_nuget:
     needs: publish
     runs-on: ubuntu-latest
@@ -66,7 +90,7 @@ jobs:
       id-token: write
     steps:
       - name: Download NuGet packages
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: Package
           path: packages
@@ -86,24 +110,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v7
-
-      - name: Extract release notes
-        shell: pwsh
-        run: |
-          $tag = "$env:GITHUB_REF_NAME".TrimStart('v')
-          $notes = @()
-          $found = $false
-          foreach ($line in Get-Content RelaseNotes.md) {
-            if ($line.Trim() -match '^\d+(\.\d+)*$') {
-              if ($found) { break }
-              if ($line.Trim() -eq $tag) { $found = $true }
-              continue
-            }
-            if ($found) { $notes += $line }
-          }
-          ($notes -join "`n").Trim() | Set-Content release-notes.txt
-
       - uses: actions/download-artifact@v8
         with:
           path: artifacts
@@ -112,7 +118,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           draft: true
-          body_path: release-notes.txt
+          body_path: artifacts/PublishAssets/release-notes.txt
           files: |
             artifacts/Package/*.nupkg
             artifacts/Vsix/*.vsix
@@ -143,7 +149,10 @@ jobs:
     name: Publish to Marketplace
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v7
+      - name: Download publish assets
+        uses: actions/download-artifact@v8
+        with:
+          name: PublishAssets
 
       - name: Download artifact
         uses: actions/download-artifact@v8
