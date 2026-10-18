@@ -13,6 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
+		..\.github\workflows\build.yml = ..\.github\workflows\build.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Packages.props = Directory.Packages.props
 		..\LICENSE.txt = ..\LICENSE.txt
@@ -68,7 +69,6 @@ Global
 		SolutionGuid = {7D3F265F-3672-482A-9F3F-6CE8488584C6}
 	EndGlobalSection
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Nullable.Shared\Nullable.Shared.projitems*{46a78692-0a62-4894-bd3f-84d8493c4093}*SharedItemsImports = 5
 		Nullable.Shared\Nullable.Shared.projitems*{4f1551ea-df15-4e7e-9511-88146e869b70}*SharedItemsImports = 5
 		Nullable.Shared\Nullable.Shared.projitems*{850b0f8f-f2c0-4be3-b141-2cd93ea896d8}*SharedItemsImports = 13
 	EndGlobalSection
