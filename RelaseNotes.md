@@ -1,5 +1,8 @@
 [Next]
 
+1.17.0
+- Roll forward to 17.0 due to version conflicts with old versioning sheme.
+
 1.16.1
 - Update dependencies to latest versions
 
