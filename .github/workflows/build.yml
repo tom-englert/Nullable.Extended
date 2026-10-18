@@ -124,8 +124,8 @@ jobs:
           draft: true
           body_path: artifacts/PublishAssets/release-notes.txt
           files: |
-            artifacts/Package/*.nupkg
-            artifacts/Vsix/*.vsix
+            artifacts/Package/**/*.nupkg
+            artifacts/Vsix/**/*.vsix
 
   publish_vsixgallery:
     needs: publish
