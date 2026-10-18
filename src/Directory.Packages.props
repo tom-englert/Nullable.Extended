@@ -35,4 +35,9 @@
     <PackageVersion Include="VSIX-SdkProjectAdapter" Version="4.0.0" />
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageMitigation Include="System.Security.Cryptography.Pkcs" Version="9.0.6" Justification="Transient dependency of the Analyzer Testing framework, only for local testing" />
+    <PackageMitigation Include="MessagePack" Version="2.5.192" Justification="Transient dependency of Visual Studio SDK, managed by VSIX SDK" />
+  </ItemGroup>
 </Project>
