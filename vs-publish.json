@@ -1,13 +1,15 @@
 {
-  "$schema": "http://json.schemastore.org/vsix-publish",
-  "categories": [ "coding" ],
+  "$schema": "https://aka.ms/vs-publish-schema",
+  "categories": [
+    "Tools",
+    "Coding"
+  ],
   "identity": {
-    "internalName": "Nullable.Extended"
+    "internalName": "NullableExtended"
   },
   "overview": "README.md",
-  "priceCategory": "free",
   "publisher": "tom-englert",
   "private": false,
-  "qna": false,
-  "repo": "https://github.com/tom-englert/Nullable.Extended"
+  "repo": "https://github.com/tom-englert/Nullable.Extended",
+  "qna": false
 }
