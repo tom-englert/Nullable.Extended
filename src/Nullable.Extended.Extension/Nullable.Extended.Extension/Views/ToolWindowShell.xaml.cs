@@ -28,7 +28,7 @@ namespace Nullable.Extended.Extension.Views
         }
 
         public static readonly DependencyProperty IsDarkThemeProperty = DependencyProperty.Register(
-            "IsDarkTheme", typeof(bool), typeof(ToolWindowShell), new PropertyMetadata(default(bool)));
+            nameof(IsDarkTheme), typeof(bool), typeof(ToolWindowShell), new PropertyMetadata(default(bool)));
 
         public bool IsDarkTheme
         {
