@@ -14,7 +14,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		..\azure-pipelines.yml = ..\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
 		..\LICENSE.txt = ..\LICENSE.txt
+		NuGet.config = NuGet.config
 		..\README.md = ..\README.md
 		..\RelaseNotes.md = ..\RelaseNotes.md
 	EndProjectSection
@@ -22,6 +24,10 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Nullable.Extended.Extension", "Nullable.Extended.Extension\Nullable.Extended.Extension\Nullable.Extended.Extension.csproj", "{46A78692-0A62-4894-BD3F-84D8493C4093}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Nullable.Shared", "Nullable.Shared\Nullable.Shared.shproj", "{850B0F8F-F2C0-4BE3-B141-2CD93EA896D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{5A7F8005-C165-6259-8009-1115B9A95056}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0A1E64AE-D0ED-E6EE-0445-2888C87C6BF3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +52,14 @@ Global
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46A78692-0A62-4894-BD3F-84D8493C4093}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A7F8005-C165-6259-8009-1115B9A95056}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A7F8005-C165-6259-8009-1115B9A95056}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A7F8005-C165-6259-8009-1115B9A95056}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A7F8005-C165-6259-8009-1115B9A95056}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A1E64AE-D0ED-E6EE-0445-2888C87C6BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A1E64AE-D0ED-E6EE-0445-2888C87C6BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A1E64AE-D0ED-E6EE-0445-2888C87C6BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A1E64AE-D0ED-E6EE-0445-2888C87C6BF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

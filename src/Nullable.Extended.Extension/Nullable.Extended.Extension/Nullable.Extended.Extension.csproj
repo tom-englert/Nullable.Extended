@@ -14,23 +14,23 @@
     <StartArguments>/rootsuffix Exp</StartArguments>
   </PropertyGroup>
   <ItemGroup Label="PackageReferences">
-    <PackageReference Include="Community.VisualStudio.Toolkit.17" Version="17.0.551" />
-    <PackageReference Include="ConfigureAwait.Fody" Version="3.4.1" PrivateAssets="all" />
-    <PackageReference Include="DataGridExtensions" Version="2.9.1" />
-    <PackageReference Include="Fody" Version="6.9.3" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" ExcludeAssets="runtime" />
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-    <PackageReference Include="PropertyChanged.Fody" Version="4.1.0" PrivateAssets="all" />
-    <PackageReference Include="Throttle.Fody" Version="1.7.0" PrivateAssets="all" />
-    <PackageReference Include="TomsToolbox.Composition.Ninject" Version="2.26.1" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition" Version="2.26.1" />
-    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.26.1" />
-    <PackageReference Include="TomsToolbox.Wpf.Styles" Version="2.26.1" />
-    <PackageReference Include="VSIX-SdkProjectAdapter" Version="4.0.0" PrivateAssets="all" />
+    <PackageReference Include="Community.VisualStudio.Toolkit.17" />
+    <PackageReference Include="ConfigureAwait.Fody" PrivateAssets="all" />
+    <PackageReference Include="DataGridExtensions" />
+    <PackageReference Include="Fody" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK" ExcludeAssets="runtime" />
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="PropertyChanged.Fody" PrivateAssets="all" />
+    <PackageReference Include="Throttle.Fody" PrivateAssets="all" />
+    <PackageReference Include="TomsToolbox.Composition.Ninject" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition" />
+    <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" />
+    <PackageReference Include="TomsToolbox.Wpf.Styles" />
+    <PackageReference Include="VSIX-SdkProjectAdapter" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\*.png" />

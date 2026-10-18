@@ -1,8 +1,7 @@
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.MSBuild;
 
 using Xunit;
@@ -15,14 +14,16 @@ namespace Test
         public async Task Test1()
         {
             var project = await OpenProject();
-            var documents = project.Documents;
+            var documents = project
+                .Documents
+                .Where(d => d.Folders.Count == 0); // exclude generated files in obj folder
             var compilation = await project.GetCompilationAsync();
 
             Assert.Single(documents);
 
             var diagnostics = compilation!.GetDiagnostics();
 
-            var errors = diagnostics.Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error && !diagnostic.IsSuppressed);
+            var errors = diagnostics.Where(diagnostic => diagnostic is { Severity: DiagnosticSeverity.Error, IsSuppressed: false });
 
             Assert.Empty(errors);
 
