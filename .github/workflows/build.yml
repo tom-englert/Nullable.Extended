@@ -133,10 +133,10 @@ jobs:
       - name: Publish to Open VSIX Gallery
         shell: pwsh
         run: |
-          Get-ChildItem vsix -Filter *.vsix -Recurse | ForEach-Object {
-            curl.exe -L "https://www.vsixgallery.com/api/upload?repo=$env:repoUrl&issuetracker=$env:repoUrl/issues" -F "file=@`"$($_.FullName)`""
-            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          }
+          $vsix = Get-ChildItem vsix -Filter *.vsix -Recurse | Select-Object -First 1
+          if (-not $vsix) { throw 'No vsix found' }
+          $uri = "https://www.vsixgallery.com/api/upload?repo=$env:repoUrl&issuetracker=$env:repoUrl/issues"
+          Invoke-WebRequest -Uri $uri -Method Post -Form @{ file = $vsix } | Out-Null
 
   publish_marketplace:
     needs: publish
