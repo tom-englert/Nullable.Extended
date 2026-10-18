@@ -4,7 +4,7 @@
     <TargetFramework>net48</TargetFramework>
     <MinimumVisualStudioVersion>16.0</MinimumVisualStudioVersion>
     <RuntimeIdentifiers>win</RuntimeIdentifiers>
-    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
+    <MSBuildWarningsAsMessages>MSB3277;CVSTBLD002</MSBuildWarningsAsMessages>
     <VSSDKBuildToolsAutoSetup>true</VSSDKBuildToolsAutoSetup>
     <IsDeploymentTarget>true</IsDeploymentTarget>
   </PropertyGroup>

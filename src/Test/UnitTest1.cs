@@ -17,11 +17,11 @@ namespace Test
             var documents = project
                 .Documents
                 .Where(d => d.Folders.Count == 0); // exclude generated files in obj folder
-            var compilation = await project.GetCompilationAsync();
+            var compilation = await project.GetCompilationAsync(TestContext.Current.CancellationToken);
 
             Assert.Single(documents);
 
-            var diagnostics = compilation!.GetDiagnostics();
+            var diagnostics = compilation!.GetDiagnostics(TestContext.Current.CancellationToken);
 
             var errors = diagnostics.Where(diagnostic => diagnostic is { Severity: DiagnosticSeverity.Error, IsSuppressed: false });
 
@@ -35,7 +35,7 @@ namespace Test
         async Task<Project> OpenProject([CallerFilePath] string? thisFile = null)
         {
             MSBuildLocator.RegisterDefaults();
-            var workspace = MSBuildWorkspace.Create();
+            var workspace = MSBuildWorkspace.Create(new Dictionary<string, string> { ["AnalyzeSample"] = "true" });
             workspace.LoadMetadataForReferencedProjects = true;
 
             Directory.SetCurrentDirectory(Path.Combine(Path.GetDirectoryName(thisFile)!, @"..\Sample"));

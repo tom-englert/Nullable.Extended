@@ -8,4 +8,9 @@
     <ImplicitUsings>disable</ImplicitUsings>
   </PropertyGroup>
 
+  <!-- Suppress the intentional nullable warnings in regular builds; the unit test sets AnalyzeSample=true. -->
+  <PropertyGroup Condition="'$(AnalyzeSample)' != 'true'">
+    <NoWarn>$(NoWarn);CS0649;CS8602;CS8604</NoWarn>
+  </PropertyGroup>
+
 </Project>
