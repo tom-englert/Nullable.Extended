@@ -5,7 +5,7 @@ using System.Windows.Input;
 
 using DataGridExtensions;
 
-using Nullable.Extended.Extension.AnalyzerFramework;
+using Nullable.Extended.AnalyzerFramework;
 
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition;

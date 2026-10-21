@@ -1,12 +1,10 @@
 ﻿using System.Text;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Shared;
 
-namespace Nullable.Extended.Extension.NullForgivingAnalyzer
+namespace Nullable.Extended.NullForgivingAnalyzer
 {
     public static class ExtensionMethods
     {

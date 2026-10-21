@@ -1,6 +1,4 @@
-﻿using System.IO;
-
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
 using TomsToolbox.Essentials;
@@ -8,7 +6,7 @@ using TomsToolbox.Essentials;
 using Project = Microsoft.CodeAnalysis.Project;
 using Solution = Microsoft.CodeAnalysis.Solution;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.AnalyzerFramework
 {
     public static class ExtensionMethods
     {

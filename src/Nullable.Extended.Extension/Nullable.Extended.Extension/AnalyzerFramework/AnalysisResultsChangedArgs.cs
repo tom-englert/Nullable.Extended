@@ -1,4 +1,6 @@
-﻿namespace Nullable.Extended.Extension.AnalyzerFramework
+﻿using Nullable.Extended.AnalyzerFramework;
+
+namespace Nullable.Extended.Extension.AnalyzerFramework
 {
     internal class AnalysisResultsChangedArgs : EventArgs
     {

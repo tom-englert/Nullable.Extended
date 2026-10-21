@@ -6,10 +6,10 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 using TomsToolbox.Composition;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.AnalyzerFramework
 {
     [Export(typeof(IAnalyzerEngine))]
-    internal class AnalyzerEngine : IAnalyzerEngine
+    public class AnalyzerEngine : IAnalyzerEngine
     {
         private readonly ICollection<ISyntaxTreeAnalyzer> _syntaxTreeAnalyzers;
         private readonly ICollection<ISyntaxAnalysisPostProcessor> _postProcessors;

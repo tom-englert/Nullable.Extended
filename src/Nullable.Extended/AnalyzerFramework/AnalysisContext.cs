@@ -1,7 +1,7 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.AnalyzerFramework
 {
     /// <summary>
     /// Contains the information about the context within which the syntax tree was analyzed.

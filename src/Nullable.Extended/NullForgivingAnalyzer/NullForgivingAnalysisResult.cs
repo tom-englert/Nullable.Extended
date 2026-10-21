@@ -1,26 +1,20 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using Nullable.Extended.Extension.AnalyzerFramework;
+using Nullable.Extended.AnalyzerFramework;
 using Nullable.Shared;
 
 using TomsToolbox.Essentials;
 
-namespace Nullable.Extended.Extension.NullForgivingAnalyzer
+namespace Nullable.Extended.NullForgivingAnalyzer
 {
-    public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>, IComparable<NullForgivingAnalysisResult>
+    public class NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
+        : AnalysisResult<PostfixUnaryExpressionSyntax>(analysisContext, node, node.OperatorToken.GetLocation()), IComparable<NullForgivingAnalysisResult>
     {
-        public NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
-            : base(analysisContext, node, node.OperatorToken.GetLocation())
-        {
-            Context = context;
-            Justification = node.GetJustificationText();
-        }
-
-        public string? Justification { get; }
+        public string? Justification { get; } = node.GetJustificationText();
 
         public bool IsJustified => !Justification.IsNullOrEmpty();
 
-        public NullForgivingContext Context { get; set; }
+        public NullForgivingContext Context { get; set; } = context;
 
         public bool? IsRequired { get; set; }
 

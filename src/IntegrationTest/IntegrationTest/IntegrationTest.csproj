@@ -11,6 +11,6 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Nullable.Extended.Analyzer" PrivateAssets="all" />
+    <PackageReference Include="Nullable.Extended.Analyzer" PrivateAssets="all" VersionOverride="1.*" />
   </ItemGroup>
 </Project>

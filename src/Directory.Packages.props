@@ -8,7 +8,7 @@
     <PackageVersion Include="coverlet.collector" Version="3.1.0" />
     <PackageVersion Include="DataGridExtensions" Version="2.9.1" />
     <PackageVersion Include="Fody" Version="6.9.3" />
-    <PackageVersion Include="Microsoft.Build.Framework" Version="17.11.48" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="17.11.48" PinnedRange="[,18.0-alpha)" Justification="18.x requires Net11" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
@@ -28,6 +28,7 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageVersion Include="Throttle.Fody" Version="1.7.0" />
+    <PackageVersion Include="TomsToolbox.Composition" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Composition.Ninject" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Wpf.Composition" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.26.1" />

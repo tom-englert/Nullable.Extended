@@ -2,7 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.AnalyzerFramework
 {
     internal interface ISyntaxAnalysisPostProcessor
     {

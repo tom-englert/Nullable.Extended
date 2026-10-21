@@ -1,4 +1,4 @@
-﻿namespace Nullable.Extended.Extension.NullForgivingAnalyzer
+﻿namespace Nullable.Extended.NullForgivingAnalyzer
 {
     public enum NullForgivingContext
     {

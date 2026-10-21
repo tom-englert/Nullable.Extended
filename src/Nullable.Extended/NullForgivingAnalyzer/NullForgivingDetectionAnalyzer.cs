@@ -4,9 +4,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-using Nullable.Extended.Extension.AnalyzerFramework;
+using Nullable.Extended.AnalyzerFramework;
 
-namespace Nullable.Extended.Extension.NullForgivingAnalyzer
+namespace Nullable.Extended.NullForgivingAnalyzer
 {
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer

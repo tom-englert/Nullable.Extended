@@ -5,7 +5,7 @@ using Community.VisualStudio.Toolkit;
 
 using Microsoft.VisualStudio.Text;
 
-using Nullable.Extended.Extension.AnalyzerFramework;
+using Nullable.Extended.AnalyzerFramework;
 
 using TomsToolbox.Composition;
 using TomsToolbox.Wpf.Composition.XamlExtensions;

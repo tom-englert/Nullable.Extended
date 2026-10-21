@@ -4,9 +4,12 @@ using System.Windows.Input;
 
 using Microsoft.VisualStudio.Shell;
 
+using Nullable.Extended.AnalyzerFramework;
+using Nullable.Extended.Extension.AnalyzerFramework;
+
 using TomsToolbox.Wpf;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.Extension.Views
 {
     internal abstract class AnalyzerResultViewModel<TResult> : INotifyPropertyChanged where TResult : AnalysisResult
     {

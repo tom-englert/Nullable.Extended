@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-
-using Microsoft.CodeAnalysis.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.CodeAnalysis.Testing;
 
 using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
 

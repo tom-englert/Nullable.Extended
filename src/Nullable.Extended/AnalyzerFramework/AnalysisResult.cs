@@ -1,12 +1,10 @@
 ﻿using System.ComponentModel;
-using System.IO;
-using System.Runtime.CompilerServices;
 
 using Microsoft.CodeAnalysis;
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.AnalyzerFramework
 {
-    public abstract class AnalysisResult : IComparable, INotifyPropertyChanged
+    public abstract partial class AnalysisResult : IComparable, INotifyPropertyChanged
     {
         internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, Location location)
         {
@@ -22,7 +20,7 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
 
         // Project.Name may have target framework as suffix, Project.AssemblyName may contain full path and/or target framework
         // => use file name
-        public string ProjectName => Path.GetFileNameWithoutExtension(AnalysisContext.Document.Project.FilePath);
+        public string ProjectName => Path.GetFileNameWithoutExtension(AnalysisContext.Document.Project.FilePath ?? string.Empty);
 
         public string FilePath => AnalysisContext.SyntaxTree.FilePath;
 
@@ -30,9 +28,9 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         {
             get
             {
-                var solutionPath = Path.GetDirectoryName(AnalysisContext.Document.Project.Solution.FilePath);
+                var solutionPath = Path.GetDirectoryName(AnalysisContext.Document.Project.Solution.FilePath) ?? string.Empty;
                 var documentPath = FilePath;
-                var solutionPathLength = solutionPath?.Length ?? 0;
+                var solutionPathLength = solutionPath.Length;
 
                 if (solutionPathLength > 0 && documentPath.StartsWith(solutionPath, StringComparison.OrdinalIgnoreCase))
                 {
@@ -54,13 +52,6 @@ namespace Nullable.Extended.Extension.AnalyzerFramework
         public Location Location { get; }
 
         public abstract int CompareTo(object? obj);
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
 
         public override string ToString()
         {

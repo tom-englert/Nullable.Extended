@@ -32,6 +32,9 @@
     <PackageReference Include="TomsToolbox.Wpf.Styles" />
     <PackageReference Include="VSIX-SdkProjectAdapter" PrivateAssets="all" />
   </ItemGroup>
+  <ItemGroup Label="ProjectReferences">
+    <ProjectReference Include="..\..\Nullable.Extended\Nullable.Extended.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\*.png" />
     <Resource Include="Resources\*.png" />
@@ -48,5 +51,4 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
-  <Import Project="..\..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
 </Project>

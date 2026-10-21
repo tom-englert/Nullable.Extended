@@ -1,6 +1,5 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
     Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer,

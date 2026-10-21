@@ -17,7 +17,7 @@ Your code is already well separated:
 ## Suggested architecture
 
 1. **Extract a core library**, e.g. `Nullable.Extended.Core` (netstandard2.0 or net8+), containing `AnalysisResult`, `AnalysisContext`, `AnalyzerEngine`, the analyzer and the post-processor. Both the Visual Studio extension and the MCP server reference it.
-2. **Create a console app `Nullable.Extended.Mcp`** (net8 or net10) using the official `ModelContextProtocol` C# SDK over stdio. Load the solution with `MSBuildWorkspace` and `Microsoft.Build.Locator`. Your `Test/UnitTest1.cs` already does exactly this, so you have a working prototype of the loading step.
+2. **Create a console app `Nullable.Extended.Mcp`** (net10) using the official `ModelContextProtocol` C# SDK over stdio. Load the solution with `MSBuildWorkspace` and `Microsoft.Build.Locator`. Your `Test/UnitTest1.cs` already does exactly this, so you have a working prototype of the loading step.
 3. **Package it as a dotnet tool** (`dotnet tool install -g ...`) so users can register it with one line in their MCP config.
 
 ## Tools to expose

@@ -4,9 +4,9 @@ using System.Composition;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
-using Nullable.Extended.Extension.AnalyzerFramework;
+using Nullable.Extended.AnalyzerFramework;
 
-namespace Nullable.Extended.Extension.NullForgivingAnalyzer
+namespace Nullable.Extended.NullForgivingAnalyzer
 {
     [Export(typeof(ISyntaxAnalysisPostProcessor))]
     internal class NullForgivingDetectionPostProcessor : ISyntaxAnalysisPostProcessor

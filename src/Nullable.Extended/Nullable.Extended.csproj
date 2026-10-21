@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup Label="PackageReferences">
+    <PackageReference Include="ConfigureAwait.Fody" PrivateAssets="all" />
+    <PackageReference Include="Fody" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" />
+    <PackageReference Include="PropertyChanged.Fody" PrivateAssets="all" />
+    <PackageReference Include="TomsToolbox.Composition" />
+  </ItemGroup>
+
+  <Import Project="..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
+
+</Project>

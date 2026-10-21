@@ -7,6 +7,9 @@ using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.LanguageServices;
 
+using Nullable.Extended.AnalyzerFramework;
+using Nullable.Extended.Extension.AnalyzerFramework;
+
 using PropertyChanged;
 
 using Throttle;
@@ -15,7 +18,7 @@ using TomsToolbox.Essentials;
 
 #pragma warning disable VSTHRD100 // Avoid async void methods
 
-namespace Nullable.Extended.Extension.AnalyzerFramework
+namespace Nullable.Extended.Extension.Views
 {
     [Export, Shared]
     internal class AnalyzerViewModel : INotifyPropertyChanged
