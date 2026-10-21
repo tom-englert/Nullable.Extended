@@ -7,8 +7,8 @@ using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.NullForgivingAnalyzer
 {
-    public class NullForgivingAnalysisResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
-        : AnalysisResult<PostfixUnaryExpressionSyntax>(analysisContext, node, node.OperatorToken.GetLocation()), IComparable<NullForgivingAnalysisResult>
+    public class NullForgivingAnalysisResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
+        : AnalysisResult<PostfixUnaryExpressionSyntax>(documentContext, node, node.OperatorToken.GetLocation()), IComparable<NullForgivingAnalysisResult>
     {
         public string? Justification { get; } = node.GetJustificationText();
 

@@ -6,29 +6,29 @@ namespace Nullable.Extended.AnalyzerFramework
 {
     public abstract partial class AnalysisResult : IComparable, INotifyPropertyChanged
     {
-        internal AnalysisResult(AnalysisContext analysisContext, SyntaxNode node, Location location)
+        internal AnalysisResult(DocumentContext documentContext, SyntaxNode node, Location location)
         {
             Node = node;
             Location = location;
-            AnalysisContext = analysisContext;
+            DocumentContext = documentContext;
             Position = location.GetLineSpan();
         }
 
-        public AnalysisContext AnalysisContext { get; }
+        public DocumentContext DocumentContext { get; }
 
         public bool HasCompilationErrors { get; set; }
 
         // Project.Name may have target framework as suffix, Project.AssemblyName may contain full path and/or target framework
         // => use file name
-        public string ProjectName => Path.GetFileNameWithoutExtension(AnalysisContext.Document.Project.FilePath ?? string.Empty);
+        public string ProjectName => Path.GetFileNameWithoutExtension(DocumentContext.Document.Project.FilePath ?? string.Empty);
 
-        public string FilePath => AnalysisContext.SyntaxTree.FilePath;
+        public string FilePath => DocumentContext.SyntaxTree.FilePath;
 
         public string RelativeFilePath
         {
             get
             {
-                var solutionPath = Path.GetDirectoryName(AnalysisContext.Document.Project.Solution.FilePath) ?? string.Empty;
+                var solutionPath = Path.GetDirectoryName(DocumentContext.Document.Project.Solution.FilePath) ?? string.Empty;
                 var documentPath = FilePath;
                 var solutionPathLength = solutionPath.Length;
 
@@ -62,8 +62,8 @@ namespace Nullable.Extended.AnalyzerFramework
     public abstract class AnalysisResult<T> : AnalysisResult
         where T : SyntaxNode
     {
-        internal AnalysisResult(AnalysisContext analysisContext, T node, Location location)
-            : base(analysisContext, node, location)
+        internal AnalysisResult(DocumentContext documentContext, T node, Location location)
+            : base(documentContext, node, location)
         {
         }
 

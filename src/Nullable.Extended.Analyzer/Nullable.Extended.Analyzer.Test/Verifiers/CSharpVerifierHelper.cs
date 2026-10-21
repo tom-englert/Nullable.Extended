@@ -20,7 +20,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
 
         private static ImmutableDictionary<string, ReportDiagnostic> GetNullableWarningsFromCompiler()
         {
-            string[] args = { "/warnaserror:nullable" };
+            string[] args = ["/warnaserror:nullable"];
             var commandLineArguments = CSharpCommandLineParser.Default.Parse(args, baseDirectory: Environment.CurrentDirectory, sdkDirectory: Environment.CurrentDirectory);
             return commandLineArguments.CompilationOptions.SpecificDiagnosticOptions;
         }
@@ -57,7 +57,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
         public static AnalyzerTest<TVerifier> AddPackages<TVerifier>(this AnalyzerTest<TVerifier> test, params PackageIdentity[] packages)
             where TVerifier : IVerifier, new()
         {
-            test.ReferenceAssemblies = test.ReferenceAssemblies.WithPackages(packages.ToImmutableArray());
+            test.ReferenceAssemblies = test.ReferenceAssemblies.WithPackages([.. packages]);
 
             return test;
         }

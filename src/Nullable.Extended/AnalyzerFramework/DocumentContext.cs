@@ -7,9 +7,9 @@ namespace Nullable.Extended.AnalyzerFramework
     /// Contains the information about the context within which the syntax tree was analyzed.
     /// The syntax tree belongs to a document, which is contained within a project.
     /// </summary>
-    public sealed class AnalysisContext
+    public sealed class DocumentContext
     {
-        public AnalysisContext(Document document, SyntaxTree syntaxTree, SyntaxNode syntaxRoot)
+        public DocumentContext(Document document, SyntaxTree syntaxTree, SyntaxNode syntaxRoot)
         {
             Document = document;
             SyntaxTree = syntaxTree;

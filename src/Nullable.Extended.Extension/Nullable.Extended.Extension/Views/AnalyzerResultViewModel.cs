@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 using Microsoft.VisualStudio.Shell;
@@ -11,7 +10,7 @@ using TomsToolbox.Wpf;
 
 namespace Nullable.Extended.Extension.Views
 {
-    internal abstract class AnalyzerResultViewModel<TResult> : INotifyPropertyChanged where TResult : AnalysisResult
+    internal abstract partial class AnalyzerResultViewModel<TResult> : INotifyPropertyChanged where TResult : AnalysisResult
     {
         protected AnalyzerResultViewModel(AnalyzerViewModel analyzerViewModel)
         {
@@ -27,7 +26,7 @@ namespace Nullable.Extended.Extension.Views
             SetResults(e.Results);
         }
 
-        protected void SetResults(IEnumerable<AnalysisResult> results)
+        private void SetResults(IEnumerable<AnalysisResult> results)
         {
             AnalysisResults = results
                 .OfType<TResult>()
@@ -37,11 +36,11 @@ namespace Nullable.Extended.Extension.Views
 
         public AnalyzerViewModel AnalyzerViewModel { get; }
 
-        public IReadOnlyList<TResult> AnalysisResults { get; private set; } = Array.Empty<TResult>();
+        public IReadOnlyList<TResult> AnalysisResults { get; private set; } = [];
 
         public ICommand AnalyzeCommand => new DelegateCommand(CanAnalyze, AnalyzeSolution);
 
-        public static ICommand OpenInDocumentCommand => new DelegateCommand<AnalysisResult>(Views.ExtensionMethods.OpenInDocument);
+        public static ICommand OpenInDocumentCommand => new DelegateCommand<AnalysisResult>(result => result.OpenInDocument());
 
         private bool CanAnalyze()
         {
@@ -51,13 +50,6 @@ namespace Nullable.Extended.Extension.Views
         private void AnalyzeSolution()
         {
             AnalyzerViewModel.AnalyzeSolution();
-        }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

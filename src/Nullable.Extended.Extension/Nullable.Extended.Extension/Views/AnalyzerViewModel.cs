@@ -1,7 +1,6 @@
 ﻿using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Composition;
-using System.Runtime.CompilerServices;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.ComponentModelHost;
@@ -21,12 +20,12 @@ using TomsToolbox.Essentials;
 namespace Nullable.Extended.Extension.Views
 {
     [Export, Shared]
-    internal class AnalyzerViewModel : INotifyPropertyChanged
+    internal partial class AnalyzerViewModel : INotifyPropertyChanged
     {
         private readonly IAnalyzerEngine _analyzerEngine;
         private readonly VisualStudioWorkspace _workspace;
 
-        private HashSet<DocumentId> _changedDocuments = new();
+        private HashSet<DocumentId> _changedDocuments = [];
 
         public AnalyzerViewModel(IAnalyzerEngine analyzerEngine)
         {
@@ -80,7 +79,7 @@ namespace Nullable.Extended.Extension.Views
 
             try
             {
-                var changedDocuments = Interlocked.Exchange(ref _changedDocuments, new HashSet<DocumentId>());
+                var changedDocuments = Interlocked.Exchange(ref _changedDocuments, []);
 
                 var documents = changedDocuments
                     .Select(documentId => _workspace.CurrentSolution.GetDocument(documentId))
@@ -94,8 +93,8 @@ namespace Nullable.Extended.Extension.Views
                 var updated = await AnalyzeAsync(documentsToAnalyze);
 
                 AnalysisResults = AnalysisResults
-                    .RemoveAll(existing => documentFiles.Contains(existing.AnalysisContext.Document.FilePath))
-                    .AddRange(updated.Where(d => documentFiles.Contains(d.AnalysisContext.Document.FilePath)));
+                    .RemoveAll(existing => documentFiles.Contains(existing.DocumentContext.Document.FilePath))
+                    .AddRange(updated.Where(d => documentFiles.Contains(d.DocumentContext.Document.FilePath)));
             }
             catch
             {
@@ -126,12 +125,5 @@ namespace Nullable.Extended.Extension.Views
         }
 
         public event EventHandler<AnalysisResultsChangedArgs>? AnalysisResultsChanged;
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
     }
 }

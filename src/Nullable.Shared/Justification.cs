@@ -9,7 +9,7 @@ namespace Nullable.Shared
         public const string SuppressionCommentPrefix = "// ! ";
 
         private static readonly HashSet<SyntaxKind> SuppressionCommentTargetKind =
-            new(Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().Where(IsSuppressionCommentTargetCandidate));
+            [.. Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().Where(IsSuppressionCommentTargetCandidate)];
 
         public static bool HasJustificationText(this PostfixUnaryExpressionSyntax node)
         {

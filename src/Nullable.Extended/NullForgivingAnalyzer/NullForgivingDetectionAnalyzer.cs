@@ -11,23 +11,23 @@ namespace Nullable.Extended.NullForgivingAnalyzer
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer
     {
-        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(AnalysisContext analysisContext, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
         {
-            var root = analysisContext.SyntaxRoot;
+            var root = documentContext.SyntaxRoot;
 
             var items = root
                 .DescendantNodesAndSelf()
                 .OfType<PostfixUnaryExpressionSyntax>()
                 .Where(node => node.IsKind(SyntaxKind.SuppressNullableWarningExpression))
-                .Select(item => MapResult(analysisContext, item))
+                .Select(item => MapResult(documentContext, item))
                 .ToArray();
 
             return await Task.FromResult(items);
         }
 
-        private static AnalysisResult MapResult(AnalysisContext analysisContext, PostfixUnaryExpressionSyntax node)
+        private static AnalysisResult MapResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node)
         {
-            return new NullForgivingAnalysisResult(analysisContext, node, node.GetContext());
+            return new NullForgivingAnalysisResult(documentContext, node, node.GetContext());
         }
     }
 }
