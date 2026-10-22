@@ -84,23 +84,9 @@ namespace Test
             Assert.True(Assert.Single(results).IsRequired);
         }
 
-        private static async Task<IReadOnlyList<NullForgivingAnalysisResult>> Analyze(string source, ISyntaxAnalysisPostProcessor? postProcessor = null)
+        private static Task<IReadOnlyList<NullForgivingAnalysisResult>> Analyze(string source, ISyntaxAnalysisPostProcessor? postProcessor = null)
         {
-            var cancellationToken = TestContext.Current.CancellationToken;
-
-            using var workspace = new AdhocWorkspace();
-
-            var document = TestProject.CreateDocument(workspace, source);
-
-            var session = new AnalysisSession([document], [new NullForgivingDetectionAnalyzer()], [postProcessor ?? new NullForgivingDetectionPostProcessor()], cancellationToken);
-
-            await session.StartAsync();
-            await session.Completion;
-
-            return session.DocumentContexts
-                .SelectMany(context => context.Results)
-                .Cast<NullForgivingAnalysisResult>()
-                .ToList();
+            return NullForgivingAnalysis.AnalyzeAsync([source], postProcessor: postProcessor);
         }
 
         private sealed class ThrowingPostProcessor : ISyntaxAnalysisPostProcessor

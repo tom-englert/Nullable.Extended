@@ -2,6 +2,7 @@
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.AnalyzerFramework
 {
@@ -31,11 +32,23 @@ namespace Nullable.Extended.AnalyzerFramework
             return filePath != null && _errorFilePaths.Contains(filePath);
         }
 
-        public async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(Compilation compilation, CancellationToken cancellationToken)
+        /// <summary>
+        /// Gets the diagnostics of a document with its syntax root replaced by <paramref name="modifiedRoot"/>, all other documents unchanged.
+        /// Without suppressors only the diagnostics inside <paramref name="scope"/> are calculated, or of the whole document if no scope is specified.
+        /// </summary>
+        public async Task<ImmutableArray<Diagnostic>> GetDiagnosticsAsync(DocumentContext documentContext, SyntaxNode modifiedRoot, TextSpan? scope, CancellationToken cancellationToken)
         {
+            var compilation = await Project.GetCompilationAsync(cancellationToken).ConfigureAwait(false)
+                              ?? throw new InvalidOperationException("Error getting compilation of project");
+
+            var originalTree = documentContext.SyntaxTree;
+            var modifiedTree = originalTree.WithRootAndOptions(modifiedRoot, originalTree.Options);
+            var modifiedCompilation = compilation.ReplaceSyntaxTree(originalTree, modifiedTree);
+
+            // Suppressors work on the diagnostics of the whole compilation, so only without suppressors the analysis can be limited to the modified tree.
             return _analyzers.Any()
-                ? await compilation.WithAnalyzers(_analyzers).GetAllDiagnosticsAsync(cancellationToken).ConfigureAwait(false)
-                : compilation.GetDiagnostics(cancellationToken);
+                ? await modifiedCompilation.WithAnalyzers(_analyzers).GetAllDiagnosticsAsync(cancellationToken).ConfigureAwait(false)
+                : modifiedCompilation.GetSemanticModel(modifiedTree).GetDiagnostics(scope, cancellationToken);
         }
 
         public static async Task<ProjectContext> CreateAsync(Project project, IEnumerable<ISyntaxAnalysisPostProcessor> postProcessors, CancellationToken cancellationToken)

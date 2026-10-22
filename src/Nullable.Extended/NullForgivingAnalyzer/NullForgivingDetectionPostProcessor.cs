@@ -3,6 +3,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Text;
 
 using Nullable.Extended.AnalyzerFramework;
 
@@ -24,13 +25,7 @@ namespace Nullable.Extended.NullForgivingAnalyzer
             {
                 var node = analysisResult.Node;
                 var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
-                var compilation = await document.Project
-                    .RemoveDocument(document.Id)
-                    .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
-                    .Project
-                    .GetCompilationAsync(cancellationToken) ?? throw new InvalidOperationException("Error getting compilation of project");
-
-                var allDiagnostics = await projectContext.GetDiagnosticsAsync(compilation, cancellationToken);
+                var allDiagnostics = await projectContext.GetDiagnosticsAsync(documentContext, rewrittenSyntaxRoot, GetAnalysisScope(node), cancellationToken);
 
                 bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
                 {
@@ -61,6 +56,29 @@ namespace Nullable.Extended.NullForgivingAnalyzer
         {
             return string.Compare(id, FirstNullableDiagnostic, StringComparison.OrdinalIgnoreCase) >= 0
                 && string.Compare(id, LastNullableDiagnostic, StringComparison.OrdinalIgnoreCase) <= 0;
+        }
+
+        // Nullable flow analysis works per method body, so only the diagnostics of the enclosing body can change.
+        // Fields, initializers and constructors can also cause diagnostics at other members of the type, e.g. CS8618, so use the type for them.
+        private static TextSpan? GetAnalysisScope(SyntaxNode node)
+        {
+            foreach (var ancestor in node.Ancestors())
+            {
+                switch (ancestor)
+                {
+                    case MethodDeclarationSyntax:
+                    case AccessorDeclarationSyntax:
+                    case OperatorDeclarationSyntax:
+                    case ConversionOperatorDeclarationSyntax:
+                    case DestructorDeclarationSyntax:
+                    case BaseTypeDeclarationSyntax:
+                        return ancestor.FullSpan;
+                    case GlobalStatementSyntax:
+                        return null;
+                }
+            }
+
+            return null;
         }
 
         private static SyntaxNode RewriteNullForgivingNode(PostfixUnaryExpressionSyntax node)
