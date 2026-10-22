@@ -77,6 +77,43 @@
 
     <Style TargetType="ToolTip" BasedOn="{StaticResource {x:Static styles:ResourceKeys.ToolTipStyle}}" />
 
+    <!-- Shows a spinner instead of the indeterminate state while it's not yet determined if the operator is required. -->
+    <Style x:Key="RequiredCheckBoxStyle" TargetType="CheckBox" BasedOn="{StaticResource {x:Static styles:ResourceKeys.CheckBoxStyle}}">
+      <Setter Property="HorizontalAlignment" Value="Center" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Style.Triggers>
+        <Trigger Property="IsChecked" Value="{x:Null}">
+          <Setter Property="ToolTip" Value="Analysis is pending" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="CheckBox">
+                <Ellipse x:Name="Spinner" Width="12" Height="12" Margin="1"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Stroke="{TemplateBinding Foreground}" StrokeThickness="2"
+                         StrokeDashArray="5 3" StrokeDashCap="Round"
+                         RenderTransformOrigin="0.5,0.5">
+                  <Ellipse.RenderTransform>
+                    <RotateTransform />
+                  </Ellipse.RenderTransform>
+                </Ellipse>
+                <ControlTemplate.Triggers>
+                  <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="Spinner">
+                    <BeginStoryboard>
+                      <Storyboard>
+                        <DoubleAnimation Storyboard.TargetName="Spinner"
+                                         Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                                         From="0" To="360" Duration="0:0:1" RepeatBehavior="Forever" />
+                      </Storyboard>
+                    </BeginStoryboard>
+                  </EventTrigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
     <ControlTemplate x:Key="MultipleChoiceFilterTemplate">
       <dgx:MultipleChoiceFilter HasTextFilter="True" />
     </ControlTemplate>
@@ -113,7 +150,8 @@
                 dgx:DataGridFilter.StartFilteringKeyGesture="Ctrl+F"
                 toms:ItemsControlExtensions.DefaultItemCommand="{Binding OpenInDocumentCommand}">
         <DataGrid.Columns>
-          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired, Mode=OneWay}" IsThreeState="True" />
+          <DataGridCheckBoxColumn Header="Required" Binding="{Binding IsRequired, Mode=OneWay}" IsThreeState="True"
+                                  ElementStyle="{StaticResource RequiredCheckBoxStyle}" />
           <DataGridTextColumn Header="Context" Width="90" Binding="{Binding Context}"
                               dgx:DataGridFilterColumn.Template="{StaticResource MultipleChoiceFilterTemplate}" />
           <DataGridTextColumn Header="File" Width="3*" Binding="{Binding RelativeFilePath}" SortDirection="Ascending"
