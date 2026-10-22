@@ -1,19 +1,11 @@
-﻿using System.Text;
-
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Shared;
 
 namespace Nullable.Extended.NullForgivingAnalyzer
 {
-    public static class ExtensionMethods
+    internal static class ExtensionMethods
     {
-        public static string ReplaceNullForgivingToken(this string value)
-        {
-            var index = value.LastIndexOf('!');
-            return new StringBuilder(value) { [index] = ' ' }.ToString();
-        }
-
         public static NullForgivingContext GetContext(this PostfixUnaryExpressionSyntax node)
         {
             if (node.IsNullOrDefaultExpression(out var expression))

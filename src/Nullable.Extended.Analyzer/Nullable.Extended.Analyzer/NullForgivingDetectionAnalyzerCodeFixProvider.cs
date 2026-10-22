@@ -17,7 +17,7 @@ namespace Nullable.Extended.Analyzer
         private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + "TODO:";
         private const string CodeFixTitle = "Suppress with comment";
 
-        private static readonly SyntaxTriviaList CodeFixPlaceholderTrivia = CSharpSyntaxTree.ParseText(CodeFixPlaceholderText).GetRoot().GetLeadingTrivia();
+        private static readonly SyntaxTrivia CodeFixPlaceholderTrivia = SyntaxFactory.Comment(CodeFixPlaceholderText);
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds => NullForgivingDetectionAnalyzer.SupportedDiagnosticIds.ToImmutableArray();
 
@@ -41,35 +41,34 @@ namespace Nullable.Extended.Analyzer
             if (target == null)
                 return;
 
-            var codeAction = CodeAction.Create(CodeFixTitle, token => ApplyFix(context.Document, root, target, token), CodeFixTitle);
+            var codeAction = CodeAction.Create(CodeFixTitle, _ => Task.FromResult(AddPlaceholderComment(context.Document, root, target)), CodeFixTitle);
 
             context.RegisterCodeFix(codeAction, diagnostic);
         }
 
-        private async Task<Document> ApplyFix(Document document, SyntaxNode root, CSharpSyntaxNode targetNode, CancellationToken token)
+        private static Document AddPlaceholderComment(Document document, SyntaxNode root, CSharpSyntaxNode target)
         {
-            var leadingTrivia = targetNode.GetLeadingTrivia();
-            var trailingTrivia = targetNode.GetTrailingTrivia();
+            var leadingTrivia = target.GetLeadingTrivia();
             var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
 
-            IEnumerable<SyntaxTrivia> triviaList = [.. leadingTrivia, .. trailingTrivia, SyntaxFactory.CarriageReturnLineFeed];
+            // reuse the line ending of the document; only fall back to CRLF if the target has no line ending at all
+            var newline = leadingTrivia
+                .Concat(target.GetTrailingTrivia())
+                .FirstOrDefault(item => item.IsKind(SyntaxKind.EndOfLineTrivia));
 
-            var newline = triviaList.First(trivia => trivia.IsKind(SyntaxKind.EndOfLineTrivia));
+            if (newline == default)
+            {
+                newline = SyntaxFactory.CarriageReturnLineFeed;
+            }
 
-            leadingTrivia = leadingTrivia.AddRange(CodeFixPlaceholderTrivia.Add(newline));
+            leadingTrivia = leadingTrivia.Add(CodeFixPlaceholderTrivia).Add(newline);
 
             if (indent != default)
             {
                 leadingTrivia = leadingTrivia.Add(indent);
             }
 
-            var statement = targetNode.WithLeadingTrivia(leadingTrivia);
-
-            root = root.ReplaceNode(targetNode, statement);
-
-            document = document.WithSyntaxRoot(root);
-
-            return await Task.FromResult(document);
+            return document.WithSyntaxRoot(root.ReplaceNode(target, target.WithLeadingTrivia(leadingTrivia)));
         }
     }
 }

@@ -7,38 +7,21 @@ using TomsToolbox.Essentials;
 
 namespace Nullable.Extended.NullForgivingAnalyzer
 {
-    public class NullForgivingAnalysisResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
-        : AnalysisResult<PostfixUnaryExpressionSyntax>(documentContext, node, node.OperatorToken.GetLocation()), IComparable<NullForgivingAnalysisResult>
+    public class NullForgivingAnalysisResult : AnalysisResult<PostfixUnaryExpressionSyntax>
     {
-        public string? Justification { get; } = node.GetJustificationText();
+        internal NullForgivingAnalysisResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node, NullForgivingContext context)
+            : base(documentContext, node, node.OperatorToken.GetLocation())
+        {
+            Context = context;
+            Justification = node.GetJustificationText();
+        }
+
+        public string? Justification { get; }
 
         public bool IsJustified => !Justification.IsNullOrEmpty();
 
-        public NullForgivingContext Context { get; set; } = context;
+        public NullForgivingContext Context { get; }
 
-        public bool? IsRequired { get; set; }
-
-        public override int CompareTo(object? other)
-        {
-            return CompareTo(other as NullForgivingAnalysisResult);
-        }
-
-        public int CompareTo(NullForgivingAnalysisResult? other)
-        {
-            if (other is null)
-                return 1;
-
-            return GetSeverity(IsRequired) - GetSeverity(other.IsRequired);
-        }
-
-        private static int GetSeverity(bool? value)
-        {
-            return value switch
-            {
-                null => 0,
-                true => 1,
-                false => 2
-            };
-        }
+        public bool? IsRequired { get; internal set; }
     }
 }

@@ -4,7 +4,6 @@ using System.Windows.Input;
 using Microsoft.VisualStudio.Shell;
 
 using Nullable.Extended.AnalyzerFramework;
-using Nullable.Extended.Extension.AnalyzerFramework;
 
 using TomsToolbox.Wpf;
 
@@ -18,12 +17,15 @@ namespace Nullable.Extended.Extension.Views
 
             AnalyzerViewModel = analyzerViewModel;
             SetResults(analyzerViewModel.AnalysisResults);
-            AnalyzerViewModel.AnalysisResultsChanged += AnalyzerViewModel_AnalysisResultsChanged;
+            AnalyzerViewModel.PropertyChanged += AnalyzerViewModel_PropertyChanged;
         }
 
-        private void AnalyzerViewModel_AnalysisResultsChanged(object sender, AnalysisResultsChangedArgs e)
+        private void AnalyzerViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            SetResults(e.Results);
+            if (e.PropertyName == nameof(AnalyzerViewModel.AnalysisResults))
+            {
+                SetResults(AnalyzerViewModel.AnalysisResults);
+            }
         }
 
         private void SetResults(IEnumerable<AnalysisResult> results)

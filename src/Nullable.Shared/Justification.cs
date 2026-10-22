@@ -13,59 +13,42 @@ namespace Nullable.Shared
 
         public static bool HasJustificationText(this PostfixUnaryExpressionSyntax node)
         {
-            return node
-                .FindSuppressionCommentTarget()
-                ?.GetReversJustificationLines(node)
-                ?.Any()
-                ?? false;
+            return node.GetJustificationLines() != null;
         }
 
         public static string? GetJustificationText(this PostfixUnaryExpressionSyntax node)
         {
-            return node
-                .FindSuppressionCommentTarget()
-                ?.GetJustificationText(node);
-        }
+            var lines = node.GetJustificationLines();
 
-        private static IReadOnlyCollection<string>? GetReversJustificationLines(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
-        {
-            var lines = ancestor.DescendantNodesAndTokensAndSelf()
-                .TakeWhile(item => item != node)
-                .Where(item => item.Parent == ancestor)
-                .Select(GetReversJustificationLines)
-                .FirstOrDefault(item => item?.Count > 0);
-
-            return lines;
-        }
-
-        private static string? GetJustificationText(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
-        {
-            var lines = ancestor.GetJustificationLines(node);
             return lines == null ? null : string.Join("\r\n", lines);
         }
 
-        private static IEnumerable<string>? GetJustificationLines(this SyntaxNode ancestor, PostfixUnaryExpressionSyntax node)
+        /// <summary>
+        /// The justification is the block of suppression comment lines directly above the first part of the target
+        /// that has one. Only the parts that precede the node, or contain it, are considered.
+        /// </summary>
+        private static IReadOnlyList<string>? GetJustificationLines(this PostfixUnaryExpressionSyntax node)
         {
-            return ancestor
-                .GetReversJustificationLines(node)
-                ?.Reverse();
+            return node
+                .FindSuppressionCommentTarget()
+                ?.ChildNodesAndTokens()
+                .TakeWhile(child => child.FullSpan.Start <= node.FullSpan.Start)
+                .Select(GetLeadingJustificationLines)
+                .FirstOrDefault(lines => lines != null);
         }
 
-        private static IReadOnlyCollection<string>? GetReversJustificationLines(this SyntaxNodeOrToken node)
+        private static IReadOnlyList<string>? GetLeadingJustificationLines(SyntaxNodeOrToken nodeOrToken)
         {
-            if (!node.HasLeadingTrivia)
-                return null;
-
-            var lines = node.GetLeadingTrivia()
-                .Where(t => t.IsKind(SyntaxKind.SingleLineCommentTrivia))
-                .Select(t => t.ToString())
+            var lines = nodeOrToken.GetLeadingTrivia()
+                .Where(trivia => trivia.IsKind(SyntaxKind.SingleLineCommentTrivia))
+                .Select(trivia => trivia.ToString())
                 .Reverse()
-                .TakeWhile(value => value.StartsWith(SuppressionCommentPrefix))
-                .Select(s => s.Substring(SuppressionCommentPrefix.Length))
-                .ToList()
-                .AsReadOnly();
+                .TakeWhile(comment => comment.StartsWith(SuppressionCommentPrefix))
+                .Select(comment => comment.Substring(SuppressionCommentPrefix.Length))
+                .Reverse()
+                .ToList();
 
-            return !lines.Any() || lines.All(string.IsNullOrWhiteSpace) ? null : lines;
+            return lines.All(string.IsNullOrWhiteSpace) ? null : lines;
         }
 
         public static CSharpSyntaxNode? FindSuppressionCommentTarget(this PostfixUnaryExpressionSyntax node)

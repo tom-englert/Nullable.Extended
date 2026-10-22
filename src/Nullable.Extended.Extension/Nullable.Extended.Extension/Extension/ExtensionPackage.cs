@@ -32,7 +32,7 @@ namespace Nullable.Extended.Extension.Extension
 
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            _kernel.BindExports(GetType().Assembly, typeof(AnalyzerEngine).Assembly);
+            _kernel.BindExports(GetType().Assembly, typeof(IAnalyzerEngine).Assembly);
             _kernel.Bind<IExportProvider>().ToConstant(ExportProvider);
             _kernel.Bind<IServiceProvider>().ToConstant(this);
 

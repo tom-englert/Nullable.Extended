@@ -3,6 +3,8 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
+using Xunit;
+
 namespace Nullable.Extended.Analyzer.Test.Verifiers
 {
     public static partial class CSharpCodeFixVerifier<TAnalyzer, TCodeFix>
@@ -15,7 +17,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
             var test = new Test(source);
 
             test.ExpectedDiagnostics.AddRange(expected);
-            await test.RunAsync(CancellationToken.None);
+            await test.RunAsync(TestContext.Current.CancellationToken);
         }
 
         /// <inheritdoc cref="CodeFixVerifier{TAnalyzer, TCodeFix, TTest, TVerifier}.VerifyCodeFixAsync(string, string)"/>
@@ -36,7 +38,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
 
             test.ExpectedDiagnostics.AddRange(expected);
 
-            await test.RunAsync(CancellationToken.None);
+            await test.RunAsync(TestContext.Current.CancellationToken);
         }
     }
 }

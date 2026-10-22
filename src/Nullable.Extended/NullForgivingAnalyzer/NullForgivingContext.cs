@@ -2,7 +2,6 @@
 {
     public enum NullForgivingContext
     {
-        Invalid,
         General,
         NullOrDefault,
         Lambda,

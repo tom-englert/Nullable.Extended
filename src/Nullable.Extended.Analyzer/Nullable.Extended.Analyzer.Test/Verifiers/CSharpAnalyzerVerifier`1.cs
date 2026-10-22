@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Testing;
 
+using Xunit;
+
 namespace Nullable.Extended.Analyzer.Test.Verifiers
 {
     public static partial class CSharpAnalyzerVerifier<TAnalyzer>
@@ -15,7 +17,7 @@ namespace Nullable.Extended.Analyzer.Test.Verifiers
         {
             test.ExpectedDiagnostics.AddRange(diagnostics);
 
-            await test.RunAsync(CancellationToken.None);
+            await test.RunAsync(TestContext.Current.CancellationToken);
         }
     }
 

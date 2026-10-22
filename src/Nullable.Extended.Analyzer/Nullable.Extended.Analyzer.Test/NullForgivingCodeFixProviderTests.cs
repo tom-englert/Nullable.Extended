@@ -1,6 +1,8 @@
 ﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Testing;
 
+using Xunit;
+
 using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
     Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer,
     Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzerCodeFixProvider>;
@@ -8,11 +10,10 @@ using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
 
 namespace Nullable.Extended.Analyzer.Test
 {
-    [TestClass]
     public class NullForgivingCodeFixProviderTests
     {
-        [TestMethod]
-        [DataRow("\n"), DataRow("\r\n")]
+        [Theory]
+        [InlineData("\n"), InlineData("\r\n")]
         public async Task CommentIsAddedToBareItem(string lineEnding)
         {
             const string source = """
@@ -42,8 +43,8 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
         }
 
-        [TestMethod]
-        [DataRow("\n"), DataRow("\r\n")]
+        [Theory]
+        [InlineData("\n"), InlineData("\r\n")]
         public async Task CommentIsAddedToItemThatAlreadyHasAComment(string lineEnding)
         {
             const string source = """
@@ -75,8 +76,8 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
         }
 
-        [TestMethod]
-        [DataRow("\n"), DataRow("\r\n")]
+        [Theory]
+        [InlineData("\n"), InlineData("\r\n")]
         public async Task CommentIsAddedToInitOnlyProperty(string lineEnding)
         {
             const string source = """
@@ -102,7 +103,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyCodeFixAsync(source.ReplaceLineEndings(lineEnding), expected, fixedSource.ReplaceLineEndings(lineEnding));
         }
 
-        [TestMethod]
+        [Fact]
         public async Task CommentIsAddedToTopLevelStatement()
         {
             const string source = """

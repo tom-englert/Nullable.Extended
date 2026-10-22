@@ -4,7 +4,7 @@ using Microsoft.CodeAnalysis;
 
 namespace Nullable.Extended.AnalyzerFramework
 {
-    public abstract partial class AnalysisResult : IComparable, INotifyPropertyChanged
+    public abstract partial class AnalysisResult : INotifyPropertyChanged
     {
         internal AnalysisResult(DocumentContext documentContext, SyntaxNode node, Location location)
         {
@@ -16,7 +16,7 @@ namespace Nullable.Extended.AnalyzerFramework
 
         public DocumentContext DocumentContext { get; }
 
-        public bool HasCompilationErrors { get; set; }
+        public bool HasCompilationErrors { get; internal set; }
 
         // Project.Name may have target framework as suffix, Project.AssemblyName may contain full path and/or target framework
         // => use file name
@@ -51,8 +51,6 @@ namespace Nullable.Extended.AnalyzerFramework
 
         public Location Location { get; }
 
-        public abstract int CompareTo(object? obj);
-
         public override string ToString()
         {
             return Location + ": " + Node;
@@ -68,7 +66,5 @@ namespace Nullable.Extended.AnalyzerFramework
         }
 
         public new T Node => (T)base.Node;
-
-        public abstract override int CompareTo(object? obj);
     }
 }

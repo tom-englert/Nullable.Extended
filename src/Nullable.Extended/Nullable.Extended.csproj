@@ -13,6 +13,10 @@
     <PackageReference Include="TomsToolbox.Composition" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test" />
+  </ItemGroup>
+
   <Import Project="..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
 
 </Project>

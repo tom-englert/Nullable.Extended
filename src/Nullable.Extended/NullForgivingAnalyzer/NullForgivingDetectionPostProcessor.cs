@@ -1,8 +1,8 @@
-﻿using System.Collections.Immutable;
-using System.Composition;
+﻿using System.Composition;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 using Nullable.Extended.AnalyzerFramework;
 
@@ -14,53 +14,40 @@ namespace Nullable.Extended.NullForgivingAnalyzer
         private const string FirstNullableDiagnostic = "CS8600";
         private const string LastNullableDiagnostic = "CS8900";
 
-        public async Task PostProcessAsync(Project project, Document document, SyntaxNode syntaxRoot, 
-            ICollection<FileLinePositionSpan> diagnosticLocations,
-            Func<Compilation, Task<ImmutableArray<Diagnostic>>> getDiagnosticsAsync, 
-            IEnumerable<AnalysisResult> analysisResults, 
-            CancellationToken cancellationToken)
+        public async Task PostProcessAsync(DocumentContext documentContext, ProjectContext projectContext, CancellationToken cancellationToken)
         {
-            var nullForgivingAnalysisResults = analysisResults
-                .OfType<NullForgivingAnalysisResult>()
-                .ToList()
-                .AsReadOnly();
+            var document = documentContext.Document;
+            var syntaxRoot = documentContext.SyntaxRoot;
+            var diagnosticLocations = projectContext.DiagnosticLocations;
 
-            try
+            foreach (var analysisResult in documentContext.Results.OfType<NullForgivingAnalysisResult>())
             {
-                foreach (var analysisResult in nullForgivingAnalysisResults)
+                var node = analysisResult.Node;
+                var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
+                var compilation = await document.Project
+                    .RemoveDocument(document.Id)
+                    .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
+                    .Project
+                    .GetCompilationAsync(cancellationToken) ?? throw new InvalidOperationException("Error getting compilation of project");
+
+                var allDiagnostics = await projectContext.GetDiagnosticsAsync(compilation, cancellationToken);
+
+                bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
                 {
-                    var node = analysisResult.Node;
-                    var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
-                    // var sourceCode = rewrittenSyntaxRoot.GetText().ToString();
-                    var compilation = await project
-                        .RemoveDocument(document.Id)
-                        .AddDocument(document.Name, rewrittenSyntaxRoot, document.Folders, document.FilePath)
-                        .Project
-                        .GetCompilationAsync(cancellationToken) ?? throw new InvalidOperationException("Error getting compilation of project");
-
-                    var allDiagnostics = await getDiagnosticsAsync(compilation);
-
-                    bool IsNewDiagnosticInCurrentDocument(Diagnostic d)
-                    {
-                        var span = d.Location.GetLineSpan();
-                        return span.Path == document.FilePath && !diagnosticLocations.Contains(span);
-                    }
-
-                    var newNullableDiagnostics = allDiagnostics
-                        .Where(d => !d.IsSuppressed)
-                        .Where(IsNullableDiagnostic)
-                        .Where(IsNewDiagnosticInCurrentDocument);
-
-                    analysisResult.IsRequired = newNullableDiagnostics.Any();
+                    var span = d.Location.GetLineSpan();
+                    return span.Path == document.FilePath && !diagnosticLocations.Contains(span);
                 }
-            }
-            catch (InvalidOperationException)
-            {
-                SetAllInvalid(nullForgivingAnalysisResults);
+
+                var newNullableDiagnostics = allDiagnostics
+                    .Where(d => !d.IsSuppressed)
+                    .Where(IsNullableDiagnostic)
+                    .Where(IsNewDiagnosticInCurrentDocument);
+
+                analysisResult.IsRequired = newNullableDiagnostics.Any();
             }
         }
 
-        public bool IsSpecificDiagnostic(Diagnostic diagnostic, IReadOnlyCollection<AnalysisResult> results)
+        public bool IsSpecificDiagnostic(Diagnostic diagnostic)
         {
             return IsNullableDiagnostic(diagnostic);
         }
@@ -76,18 +63,17 @@ namespace Nullable.Extended.NullForgivingAnalyzer
                 && string.Compare(id, LastNullableDiagnostic, StringComparison.OrdinalIgnoreCase) <= 0;
         }
 
-        private static void SetAllInvalid(IEnumerable<NullForgivingAnalysisResult> items)
+        private static SyntaxNode RewriteNullForgivingNode(PostfixUnaryExpressionSyntax node)
         {
-            foreach (var item in items)
-            {
-                item.Context = NullForgivingContext.Invalid;
-            }
-        }
+            var operatorToken = node.OperatorToken;
 
-        private static SyntaxNode RewriteNullForgivingNode(SyntaxNode n)
-        {
-            var sourceCode = n.ToFullString().ReplaceNullForgivingToken();
-            return SyntaxFactory.ParseExpression(sourceCode);
+            // Replace the operator by a space instead of removing it, so the positions of all following tokens stay the same.
+            var trailingTrivia = node.Operand.GetTrailingTrivia()
+                .AddRange(operatorToken.LeadingTrivia)
+                .Add(SyntaxFactory.Space)
+                .AddRange(operatorToken.TrailingTrivia);
+
+            return node.Operand.WithTrailingTrivia(trailingTrivia);
         }
     }
 }

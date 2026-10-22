@@ -1,13 +1,14 @@
 ﻿using Microsoft.CodeAnalysis.Testing;
 
+using Xunit;
+
 using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
 
 namespace Nullable.Extended.Analyzer.Test
 {
-    [TestClass]
     public class NullForgivingDetectionTests
     {
-        [TestMethod]
+        [Fact]
         public async Task FindNullForgivingOperator()
         {
             const string source = """
@@ -26,7 +27,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task IgnoreJustifiedNullForgivingOperator()
         {
             const string source = """
@@ -48,7 +49,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task NullForgivingDetectOnNullOrDefault()
         {
             const string source = """
@@ -72,7 +73,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task NullForgivingDetectOnNullOrDefaultOnInitOnlyProperty()
         {
             const string source = """
@@ -89,7 +90,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task NullForgivingDetectInLambda()
         {
             const string source = """
@@ -119,7 +120,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task IgnoreJustifiedInWholeDeclaration()
         {
             const string source = """
@@ -147,7 +148,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task JustificationOnPropertyAfterAttribute()
         {
             const string source = """
@@ -167,7 +168,7 @@ namespace Nullable.Extended.Analyzer.Test
             await VerifyAnalyzerAsync(source, expected);
         }
 
-        [TestMethod]
+        [Fact]
         public async Task JustificationOnFieldAssignment()
         {
             const string source = """

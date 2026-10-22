@@ -1,5 +1,4 @@
 ﻿using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.Text;
 
 namespace Nullable.Extended.AnalyzerFramework
 {
@@ -9,12 +8,13 @@ namespace Nullable.Extended.AnalyzerFramework
     /// </summary>
     public sealed class DocumentContext
     {
-        public DocumentContext(Document document, SyntaxTree syntaxTree, SyntaxNode syntaxRoot)
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
+
+        internal DocumentContext(Document document, SyntaxTree syntaxTree, SyntaxNode syntaxRoot)
         {
             Document = document;
             SyntaxTree = syntaxTree;
             SyntaxRoot = syntaxRoot;
-            Text = syntaxRoot.GetText();
         }
 
         public Document Document { get; }
@@ -23,6 +23,26 @@ namespace Nullable.Extended.AnalyzerFramework
 
         public SyntaxNode SyntaxRoot { get; }
 
-        public SourceText Text { get; set; }
+        /// <summary>
+        /// The analysis results of this document.
+        /// </summary>
+        public IReadOnlyCollection<AnalysisResult> Results { get; internal set; } = [];
+
+        /// <summary>
+        /// Completes when the post processing of this document is done or has been cancelled.
+        /// </summary>
+        public Task Completion { get; internal set; } = Task.CompletedTask;
+
+        public bool IsCancellationRequested => _cancellationTokenSource.IsCancellationRequested;
+
+        /// <summary>
+        /// Cancels the pending post processing of this document, e.g. because the document needs to be re-evaluated.
+        /// </summary>
+        public void Cancel()
+        {
+            _cancellationTokenSource.Cancel();
+        }
+
+        internal CancellationToken CancellationToken => _cancellationTokenSource.Token;
     }
 }
