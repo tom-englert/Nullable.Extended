@@ -1,12 +1,12 @@
 ﻿using Microsoft.CodeAnalysis;
 
-using Ninject;
+using Microsoft.Extensions.DependencyInjection;
 
 using Nullable.Extended.AnalyzerFramework;
 using Nullable.Extended.NullForgivingAnalyzer;
 
 using TomsToolbox.Composition;
-using TomsToolbox.Composition.Ninject;
+using TomsToolbox.Composition.MicrosoftExtensions;
 
 using Xunit;
 
@@ -20,10 +20,12 @@ namespace Test
             var cancellationToken = TestContext.Current.CancellationToken;
 
             // Set up the container the same way as the extension package does.
-            using var kernel = new StandardKernel();
-            IExportProvider exportProvider = new ExportProvider(kernel);
-            kernel.BindExports(typeof(IAnalyzerEngine).Assembly);
-            kernel.Bind<IExportProvider>().ToConstant(exportProvider);
+            var serviceCollection = new ServiceCollection();
+            serviceCollection.BindExports(typeof(IAnalyzerEngine).Assembly);
+            serviceCollection.AddSingleton<IExportProvider>(sp => new ExportProviderAdapter(sp));
+
+            using var serviceProvider = serviceCollection.BuildServiceProvider();
+            var exportProvider = serviceProvider.GetRequiredService<IExportProvider>();
 
             var engine = exportProvider.GetExportedValue<IAnalyzerEngine>();
 

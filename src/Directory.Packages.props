@@ -1,6 +1,7 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
     <!-- The production projects are pinned to an old Roslyn for compatibility; the test projects run on the current SDK and need a newer one. -->
     <TestRoslynVersion>5.9.0</TestRoslynVersion>
   </PropertyGroup>
@@ -9,8 +10,9 @@
     <PackageVersion Include="ConfigureAwait.Fody" Version="3.4.1" />
     <PackageVersion Include="DataGridExtensions" Version="2.9.1" />
     <PackageVersion Include="Fody" Version="6.9.3" />
-    <PackageVersion Include="Microsoft.Build.Framework" Version="17.11.48" PinnedRange="[,18.0-alpha)" Justification="18.x requires Net11" />
+    <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.28" PinnedRange="[,18.0-alpha)" Justification="18.x requires Net11" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.12" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
@@ -27,7 +29,7 @@
     <PackageVersion Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageVersion Include="Throttle.Fody" Version="1.7.0" />
     <PackageVersion Include="TomsToolbox.Composition" Version="2.26.1" />
-    <PackageVersion Include="TomsToolbox.Composition.Ninject" Version="2.26.1" />
+    <PackageVersion Include="TomsToolbox.Composition.MicrosoftExtensions" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Wpf.Composition" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Wpf.Composition.AttributedModel" Version="2.26.1" />
     <PackageVersion Include="TomsToolbox.Wpf.Styles" Version="2.26.1" />
@@ -35,8 +37,15 @@
     <PackageVersion Include="xunit.v3" Version="4.0.2" />
   </ItemGroup>
 
+  <ItemGroup Label="Transitive fixes">
+    <PackageVersion Include="NuGet.Packaging" Version="7.9.0" />
+    <PackageVersion Include="NuGet.Protocol" Version="7.9.0" />
+    <PackageVersion Include="NuGet.Resolver" Version="7.9.0" />
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+  </ItemGroup>
+
   <ItemGroup>
-    <PackageMitigation Include="System.Security.Cryptography.Pkcs" Version="9.0.6" Justification="Transient dependency of the Analyzer Testing framework, only for local testing" />
     <PackageMitigation Include="MessagePack" Version="2.5.192" Justification="Transient dependency of Visual Studio SDK, managed by VSIX SDK" />
   </ItemGroup>
+
 </Project>

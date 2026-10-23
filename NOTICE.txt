@@ -22,6 +22,16 @@ License:   MIT
 
 --------------------------------------------------------------------------------
 
+Microsoft.Bcl.AsyncInterfaces
+
+Id:        Microsoft.Bcl.AsyncInterfaces
+Version:   10.0.12
+Project:   https://dot.net/
+Copyright: © Microsoft Corporation. All rights reserved.
+License:   MIT
+
+--------------------------------------------------------------------------------
+
 Microsoft.CodeAnalysis.CSharp
 
 Id:        Microsoft.CodeAnalysis.CSharp
@@ -82,9 +92,9 @@ License:   MIT
 
 --------------------------------------------------------------------------------
 
-Tom's Toolbox Composition - Ninject Module
+Tom's Toolbox Composition - Mef2 Module
 
-Id:        TomsToolbox.Composition.Ninject
+Id:        TomsToolbox.Composition.MicrosoftExtensions
 Version:   2.26.1
 Project:   https://github.com/tom-englert/TomsToolbox
 Copyright: © 2012-2026 tom-englert.de

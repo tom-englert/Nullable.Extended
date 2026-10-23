@@ -18,6 +18,8 @@
     <PackageReference Include="ConfigureAwait.Fody" PrivateAssets="all" />
     <PackageReference Include="DataGridExtensions" />
     <PackageReference Include="Fody" PrivateAssets="all" />
+    <!-- Required by Microsoft.Extensions.DependencyInjection; VS ships an older version and the VSSDK suppresses this assembly by default, so it must be forced into the VSIX. -->
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" ForceIncludeInVSIX="true" />
     <PackageReference Include="Microsoft.VisualStudio.LanguageServices" />
     <PackageReference Include="Microsoft.VisualStudio.SDK" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" PrivateAssets="all" />
@@ -26,7 +28,7 @@
     <PackageReference Include="Newtonsoft.Json" />
     <PackageReference Include="PropertyChanged.Fody" PrivateAssets="all" />
     <PackageReference Include="Throttle.Fody" PrivateAssets="all" />
-    <PackageReference Include="TomsToolbox.Composition.Ninject" />
+    <PackageReference Include="TomsToolbox.Composition.MicrosoftExtensions" />
     <PackageReference Include="TomsToolbox.Wpf.Composition" />
     <PackageReference Include="TomsToolbox.Wpf.Composition.AttributedModel" />
     <PackageReference Include="TomsToolbox.Wpf.Styles" />
