@@ -75,8 +75,10 @@ jobs:
           }
           if ($found) { $notes += $line }
         }
+        $text = ($notes -join "`n").Trim()
+        if (-not $text) { throw "Release notes for version '$tag' not found or empty in RelaseNotes.md" }
         New-Item -ItemType Directory -Force publish-assets | Out-Null
-        ($notes -join "`n").Trim() | Set-Content publish-assets/release-notes.txt
+        $text | Set-Content publish-assets/release-notes.txt
         Copy-Item vs-publish.json, README.md publish-assets/
 
     - name: Upload publish assets
@@ -121,7 +123,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          draft: true
+          draft: false
           body_path: artifacts/PublishAssets/release-notes.txt
           files: |
             artifacts/Package/**/*.nupkg
