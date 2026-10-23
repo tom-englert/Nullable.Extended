@@ -2,6 +2,8 @@
 {
     public class Class1
     {
+        object _field = null!;
+
         public void M1(string value1, object value2)
         {
         }
@@ -13,7 +15,7 @@
             if (text == null)
                 return;
 
-            M1(text, value1);
+            M1(text, value1!);
 
             // ! This is just to demo the feature
             var x = Enumerable.Range(0, 1)
@@ -21,6 +23,8 @@
                 .Where(item => item != null)
                 .Select(item => item!.ToString())
                 .FirstOrDefault()!;
+
+            _field = new();
         }
 
         public void M3(object? value1, object? value2)

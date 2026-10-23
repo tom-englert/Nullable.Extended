@@ -9,15 +9,15 @@ the automated tests are in `src\Test` and `src\Nullable.Extended.Analyzer\Nullab
 `IntegrationTest.sln` references the `Nullable.Extended.Analyzer` NuGet package. `NuGet.config` makes the package
 sources resolve to:
 
-1. `..\Nullable.Extended.Analyzer\Nullable.Extended.Analyzer.Package\bin\Debug`, the local build output of the analyzer package.
-2. nuget.org, as a fallback.
+1. `..\Nullable.Extended.Analyzer\Nullable.Extended.Analyzer\bin\Debug`, the local build output of the analyzer, which includes the package.
+2. nuget.org, as a fallback for all other packages.
 
-The package version is the floating `1.*`, and the global packages folder is redirected to `.\packages` in this folder, so the
+The package version is the floating `*`, and the global packages folder is redirected to `.\packages` in this folder, so the
 restore never touches the shared NuGet cache.
 
 ## Testing the analyzer
 
-1. Build the analyzer package (`Nullable.Extended.Analyzer.Package`) in `src\Nullable.Extended.sln`.
+1. Build the `Nullable.Extended.Analyzer` project in `src\Nullable.Extended.sln`; this also creates the NuGet package.
 2. Delete the `.\packages` folder next to this file. Otherwise a previously restored package is reused instead of the new build.
 3. Open `IntegrationTest.sln` in Visual Studio and rebuild it. The warnings of the analyzer
    appear in the Error List, e.g. for the samples in `ScreenShots.cs`.

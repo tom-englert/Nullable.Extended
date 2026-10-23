@@ -2,10 +2,6 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <IsPackable>false</IsPackable>
-
-    <!-- Avoid ID conflicts with the package project. -->
-    <PackageId>*$(MSBuildProjectFullPath)*</PackageId>
     <Nullable>enable</Nullable>
     <DebugType>embedded</DebugType>
     <DebugSymbols>true</DebugSymbols>
@@ -13,6 +9,25 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
     <EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
     <IsDeploymentTarget>true</IsDeploymentTarget>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
+
+    <PackageId>Nullable.Extended.Analyzer</PackageId>
+    <Authors>tom-englert.de</Authors>
+    <Description>A Roslyn analyzer to improve the experience when working with nullable reference types.</Description>
+    <Copyright>(c) 2020, tom-englert.de</Copyright>
+    <PackageTags>nullable, analyzers, roslyn</PackageTags>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>http://github.com/tom-englert/$(PackageId)</PackageProjectUrl>
+    <PackageIcon>package_icon.png</PackageIcon>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +41,16 @@
     <None Update="Nullable.Extended.Analyzer.targets">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="..\..\package_icon.png" Link="package_icon.png" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="..\..\..\LICENSE.txt" Link="LICENSE.txt" Pack="true" PackagePath="\" Visible="false" />
   </ItemGroup>
+
+  <Target Name="_AddAnalyzersToOutput">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="$(TargetDir)Nullable.Extended.Analyzer.targets" PackagePath="build" />
+    </ItemGroup>
+  </Target>
 
   <Import Project="..\..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
 
