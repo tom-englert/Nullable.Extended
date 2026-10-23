@@ -19,4 +19,36 @@
 
   <Import Project="..\Nullable.Shared\Nullable.Shared.projitems" Label="Shared" />
 
+  <!-- Exec waits for the redirected output handles to close, even for a detached child, so start the script via a task that does not redirect anything. -->
+  <UsingTask TaskName="StartDetached" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <FileName Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.Diagnostics" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        try
+        {
+            Process.Start(new ProcessStartInfo(FileName)
+            {
+                WorkingDirectory = System.IO.Path.GetDirectoryName(FileName),
+                UseShellExecute = true,
+                WindowStyle = ProcessWindowStyle.Minimized
+            });
+        }
+        catch (Exception ex)
+        {
+            Log.LogWarning("Failed to start {0}: {1}", FileName, ex.Message);
+        }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+  <Target Name="UpdateNotice" AfterTargets="Build">
+    <Message Text="Starting UpdateNotice script..." Importance="high" />
+    <StartDetached FileName="$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)', '..', '..', 'UpdateNotice.cmd'))" />
+  </Target>
+
 </Project>
