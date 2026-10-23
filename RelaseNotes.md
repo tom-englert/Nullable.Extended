@@ -1,5 +1,8 @@
 [Next]
 
+1.17.1
+- Performance improvements of the VS extension.
+
 1.17.0
 - Roll forward to 17.0 due to version conflicts with old versioning sheme.
 
