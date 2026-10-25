@@ -25,7 +25,7 @@ License:   MIT
 Microsoft.Bcl.AsyncInterfaces
 
 Id:        Microsoft.Bcl.AsyncInterfaces
-Version:   10.0.12
+Version:   10.0.13
 Project:   https://dot.net/
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
@@ -35,7 +35,7 @@ License:   MIT
 Microsoft.CodeAnalysis.CSharp
 
 Id:        Microsoft.CodeAnalysis.CSharp
-Version:   4.5.0
+Version:   5.9.0
 Project:   https://github.com/dotnet/roslyn
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
@@ -45,7 +45,7 @@ License:   MIT
 Microsoft.CodeAnalysis.CSharp.Workspaces
 
 Id:        Microsoft.CodeAnalysis.CSharp.Workspaces
-Version:   4.5.0
+Version:   5.9.0
 Project:   https://github.com/dotnet/roslyn
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
@@ -55,8 +55,18 @@ License:   MIT
 Microsoft.CodeAnalysis.Workspaces.Common
 
 Id:        Microsoft.CodeAnalysis.Workspaces.Common
-Version:   4.5.0
+Version:   5.9.0
 Project:   https://github.com/dotnet/roslyn
+Copyright: © Microsoft Corporation. All rights reserved.
+License:   MIT
+
+--------------------------------------------------------------------------------
+
+Microsoft.Extensions.Hosting
+
+Id:        Microsoft.Extensions.Hosting
+Version:   10.0.13
+Project:   https://dot.net/
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
 
@@ -69,6 +79,26 @@ Version:   4.5.0
 Project:   https://github.com/dotnet/roslyn
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
+
+--------------------------------------------------------------------------------
+
+Microsoft.VisualStudio.SolutionPersistence
+
+Id:        Microsoft.VisualStudio.SolutionPersistence
+Version:   1.0.52
+Project:   https://github.com/microsoft/vs-solutionpersistence
+Copyright: © Microsoft Corporation. All rights reserved.
+License:   MIT
+
+--------------------------------------------------------------------------------
+
+ModelContextProtocol
+
+Id:        ModelContextProtocol
+Version:   2.3.0
+Project:   https://csharp.sdk.modelcontextprotocol.io/
+Copyright: © Model Context Protocol a Series of LF Projects, LLC.
+License:   Apache-2.0
 
 --------------------------------------------------------------------------------
 
