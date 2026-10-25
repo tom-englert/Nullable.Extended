@@ -31,11 +31,20 @@ jobs:
       - name: Test
         run: dotnet test --solution "${{ env.SOLUTION }}" --no-build --configuration ${{ env.BUILD_CONFIGURATION }}
 
+      - name: Collect NuGet packages
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force package-assets | Out-Null
+          Get-ChildItem src -Filter *.nupkg -Recurse |
+            Where-Object { $_.Directory.Name -eq $env:BUILD_CONFIGURATION } |
+            Copy-Item -Destination package-assets -Force
+
       - name: Upload NuGet packages
         uses: actions/upload-artifact@v7
         with:
-          name: Package
-          path: src/**/${{ env.BUILD_CONFIGURATION }}/*.nupkg
+          name: NugetPackages
+          path: package-assets/*.nupkg
+          if-no-files-found: error
 
       - name: Upload VSIX
         uses: actions/upload-artifact@v7
@@ -116,7 +125,7 @@ jobs:
       - name: Download NuGet packages
         uses: actions/download-artifact@v8
         with:
-          name: Package
+          name: NugetPackages
           path: packages
 
       - name: NuGet login (OIDC)
@@ -140,12 +149,12 @@ jobs:
           path: artifacts
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: false
           body_path: artifacts/PublishAssets/release-notes.txt
           files: |
-            artifacts/Package/**/*.nupkg
+            artifacts/NugetPackages/*.nupkg
             artifacts/Vsix/**/*.vsix
 
   publish_vsixgallery:
