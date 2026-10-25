@@ -1,4 +1,6 @@
 [Next]
+- New: `Nullable.Extended.Mcp`, an MCP server that finds unjustified null-forgiving operators in large solutions, see [Documentation](Documentation/McpServer.md).
+- Fix: Results of multi-targeted projects are merged, an operator is required if it is required in any target framework.
 
 1.17.1
 - Performance improvements of the VS extension.

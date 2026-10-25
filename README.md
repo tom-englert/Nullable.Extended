@@ -12,6 +12,8 @@ This project helps to improve the experience when coding with them.
 - The [Roslyn Analyzer](#roslyn-analyzer) (NuGet package) warns about every unjustified usage of the null-forgiving operator, in the IDE and in your builds. Works with any IDE and on CI.
 - The [Visual Studio Extension](#visual-studio-extension) lists all usages of the null-forgiving operator in your solution and detects those that are no longer needed.
 
+For AI assistants, there is an [MCP server](#ai-assistants) that finds the unjustified usages in large solutions, so they can be fixed.
+
 ## Managing null-forgiving operators
 
 Sometimes it is necessary to use the
@@ -35,6 +37,29 @@ The first comment line must start with `// ! `, followed by the justification te
 // ! This is only needed to demo the feature
 var text = value1!.ToString();
 ```
+
+---
+## AI assistants
+
+The MCP server `Nullable.Extended.Mcp` lets AI assistants (GitHub Copilot, Claude and other MCP clients) find the unjustified null-forgiving operators
+in large solutions, project by project, without a build. The accompanying skill teaches the assistant to fix the code first,
+and to use a justification comment only as the last resort.
+
+1. Install the MCP server (.NET 10 or later) and register it in your MCP client, e.g. in `.vscode/mcp.json`:
+   ```
+   dotnet tool install -g Nullable.Extended.Mcp
+   ```
+   ```json
+   { "servers": { "nullable-extended": { "type": "stdio", "command": "nullable-extended-mcp", "args": ["--root", "${workspaceFolder}"] } } }
+   ```
+2. Install the [skill](skills/nullable-extended/SKILL.md) into your project or user profile, with the GitHub CLI or the `skills` CLI:
+   ```
+   gh skill install tom-englert/Nullable.Extended nullable-extended
+   npx skills add tom-englert/Nullable.Extended
+   ```
+   Without the skill, the server sends a short version of the workflow to the client when it connects.
+
+See the [documentation](Documentation/McpServer.md) for the tools and their parameters.
 
 ---
 ## Roslyn Analyzer

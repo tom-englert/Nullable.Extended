@@ -14,7 +14,7 @@ namespace Nullable.Extended.Analyzer
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NullForgivingDetectionAnalyzerCodeFixProvider)), Shared]
     public class NullForgivingDetectionAnalyzerCodeFixProvider : CodeFixProvider
     {
-        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + "TODO:";
+        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + Justification.PlaceholderText;
         private const string CodeFixTitle = "Suppress with comment";
 
         private static readonly SyntaxTrivia CodeFixPlaceholderTrivia = SyntaxFactory.Comment(CodeFixPlaceholderText);

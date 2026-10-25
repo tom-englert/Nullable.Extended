@@ -12,7 +12,12 @@ namespace Nullable.Extended.AnalyzerFramework
 
         public AnalysisSession CreateSession(IEnumerable<Document> documents, CancellationToken cancellationToken)
         {
-            return new AnalysisSession(documents.ToArray(), _syntaxTreeAnalyzers, _postProcessors, cancellationToken);
+            return CreateSession(documents, true, cancellationToken);
+        }
+
+        public AnalysisSession CreateSession(IEnumerable<Document> documents, bool postProcess, CancellationToken cancellationToken)
+        {
+            return new AnalysisSession(documents.ToArray(), _syntaxTreeAnalyzers, postProcess ? _postProcessors : [], cancellationToken);
         }
     }
 }

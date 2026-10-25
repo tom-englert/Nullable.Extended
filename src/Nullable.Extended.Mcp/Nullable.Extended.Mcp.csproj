@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Nullable.Extended.Mcp</RootNamespace>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>nullable-extended-mcp</ToolCommandName>
+    <PackageId>Nullable.Extended.Mcp</PackageId>
+    <PackageType>McpServer</PackageType>
+    <Description>MCP server to find, review and justify null-forgiving operators in large C# code bases.</Description>
+    <PackageTags>nullable;null-forgiving;mcp;roslyn</PackageTags>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Label="PackageReferences">
+    <!-- The server parses the latest C# syntax, so it needs a current Roslyn, not the old one the core library is compiled against. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="$(TestRoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="$(TestRoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" VersionOverride="$(TestRoslynVersion)" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" />
+    <PackageReference Include="ModelContextProtocol" />
+    <PackageReference Include="TomsToolbox.Composition.MicrosoftExtensions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Nullable.Extended\Nullable.Extended.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Test" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="/" />
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

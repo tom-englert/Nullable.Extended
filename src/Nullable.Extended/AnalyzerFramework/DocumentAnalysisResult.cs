@@ -52,7 +52,7 @@ namespace Nullable.Extended.AnalyzerFramework
 
         internal void NotifyChanged()
         {
-            Result?.OnVariantChanged();
+            Result?.NotifyVariantChanged();
         }
 
         /// <summary>

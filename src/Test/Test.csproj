@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Nullable.Extended\Nullable.Extended.csproj" />
+    <ProjectReference Include="..\Nullable.Extended.Mcp\Nullable.Extended.Mcp.csproj" />
   </ItemGroup>
 
 </Project>

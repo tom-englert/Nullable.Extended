@@ -44,9 +44,9 @@ namespace Nullable.Extended.NullForgivingAnalyzer
             }
         }
 
-        internal override void OnVariantChanged()
+        internal override void NotifyVariantChanged()
         {
-            base.OnVariantChanged();
+            base.NotifyVariantChanged();
 
             OnPropertyChanged(nameof(IsRequired));
         }

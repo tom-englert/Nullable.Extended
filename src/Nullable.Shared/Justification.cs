@@ -4,9 +4,19 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Nullable.Shared
 {
-    internal static class Justification
+    public static class Justification
     {
         public const string SuppressionCommentPrefix = "// ! ";
+
+        /// <summary>
+        /// The text the code fix inserts after the <see cref="SuppressionCommentPrefix"/>; it counts as a justification, but has to be replaced by a real one.
+        /// </summary>
+        public const string PlaceholderText = "TODO:";
+
+        public static bool IsPlaceholder(string? justificationText)
+        {
+            return justificationText != null && justificationText.TrimStart().StartsWith(PlaceholderText, StringComparison.OrdinalIgnoreCase);
+        }
 
         private static readonly HashSet<SyntaxKind> SuppressionCommentTargetKind =
             [.. Enum.GetValues(typeof(SyntaxKind)).Cast<SyntaxKind>().Where(IsSuppressionCommentTargetCandidate)];

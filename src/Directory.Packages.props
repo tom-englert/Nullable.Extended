@@ -21,10 +21,13 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(TestRoslynVersion)" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
     <PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
+    <PackageVersion Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
     <PackageVersion Include="Microsoft.VisualStudio.SDK" Version="17.14.40265" />
     <PackageVersion Include="Microsoft.VSSDK.BuildTools" Version="18.5.40034" />
+    <PackageVersion Include="ModelContextProtocol" Version="2.3.0" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="PropertyChanged.Fody" Version="4.1.0" />
     <PackageVersion Include="Throttle.Fody" Version="1.7.0" />

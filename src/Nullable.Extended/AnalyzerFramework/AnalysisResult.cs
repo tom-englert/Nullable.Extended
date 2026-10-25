@@ -64,7 +64,7 @@ namespace Nullable.Extended.AnalyzerFramework
         /// <summary>
         /// Called when the evaluation of one of the <see cref="Variants"/> has changed, so the properties that depend on it can be notified.
         /// </summary>
-        internal virtual void OnVariantChanged()
+        internal virtual void NotifyVariantChanged()
         {
             OnPropertyChanged(nameof(HasCompilationErrors));
         }
