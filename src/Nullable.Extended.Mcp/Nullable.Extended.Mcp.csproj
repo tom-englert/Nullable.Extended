@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <OutputType>Exe</OutputType>
     <RootNamespace>Nullable.Extended.Mcp</RootNamespace>
+    <IsDeploymentTarget>true</IsDeploymentTarget>
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>nullable-extended-mcp</ToolCommandName>
     <PackageId>Nullable.Extended.Mcp</PackageId>
@@ -12,6 +13,7 @@
     <PackageTags>nullable;null-forgiving;mcp;roslyn</PackageTags>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup Label="PackageReferences">

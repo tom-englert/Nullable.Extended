@@ -1,6 +1,6 @@
 # AI Integration for Nullable.Extended: MCP, Skill or Agent
 
-Oct 18, 2026 · @Tom · updated Oct 23, 2026 (framework extraction done, concept aligned with the code and the requirements below)
+Oct 18, 2026 · @Tom · updated Oct 25, 2026 (framework extraction done, concept aligned with the code and the requirements below)
 
 Build an **MCP server** as the core, and add a **Skill** on top. You don't need a custom Agent.
 

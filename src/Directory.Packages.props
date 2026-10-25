@@ -12,7 +12,7 @@
     <PackageVersion Include="Fody" Version="6.9.3" />
     <PackageVersion Include="Microsoft.Build.Framework" Version="17.14.28" PinnedRange="[,18.0-alpha)" Justification="18.x requires Net11" />
     <PackageVersion Include="Microsoft.Build.Locator" Version="1.11.2" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.13" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.9.0" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Analyzer.Testing" Version="1.1.4" />
@@ -21,7 +21,7 @@
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(TestRoslynVersion)" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.12" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.13" />
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.402" />
     <PackageVersion Include="Microsoft.VisualStudio.LanguageServices" Version="4.5.0" IsPinned="true" Justification="SDK 7.0.2xx, VS 17.5" />
     <PackageVersion Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />

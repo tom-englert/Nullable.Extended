@@ -8,11 +8,10 @@
 are a great feature introduced with C# 8.0 that helps in writing better code.
 This project helps to improve the experience when coding with them.
 
-**Two tools are available:**
+**Three tools are available:**
 - The [Roslyn Analyzer](#roslyn-analyzer) (NuGet package) warns about every unjustified usage of the null-forgiving operator, in the IDE and in your builds. Works with any IDE and on CI.
 - The [Visual Studio Extension](#visual-studio-extension) lists all usages of the null-forgiving operator in your solution and detects those that are no longer needed.
-
-For AI assistants, there is an [MCP server](#ai-assistants) that finds the unjustified usages in large solutions, so they can be fixed.
+- The [MCP server](#ai-assistants) supports AI assistants in finding the unjustified usages in large solutions, so they can be fixed.
 
 ## Managing null-forgiving operators
 
