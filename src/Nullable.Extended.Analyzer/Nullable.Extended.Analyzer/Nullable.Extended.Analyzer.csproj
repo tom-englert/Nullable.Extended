@@ -28,6 +28,7 @@
     <PackageProjectUrl>http://github.com/tom-englert/$(PackageId)</PackageProjectUrl>
     <PackageIcon>package_icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -43,6 +44,7 @@
     </None>
     <None Include="..\..\package_icon.png" Link="package_icon.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\..\LICENSE.txt" Link="LICENSE.txt" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <Target Name="_AddAnalyzersToOutput">
