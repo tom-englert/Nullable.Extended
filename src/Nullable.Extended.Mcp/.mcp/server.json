@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-10-17/server.schema.json",
   "name": "io.github.tom-englert/nullable-extended-mcp",
   "description": "Find, review and justify null-forgiving operators in large C# code bases.",
-  "version": "1.17.2",
+  "version": "$version$",
   "repository": {
     "url": "https://github.com/tom-englert/Nullable.Extended",
     "source": "github"
@@ -11,7 +11,7 @@
     {
       "registryType": "nuget",
       "identifier": "Nullable.Extended.Mcp",
-      "version": "1.17.2",
+      "version": "$version$",
       "transport": {
         "type": "stdio"
       },

@@ -41,10 +41,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
+    <None Include=".mcp\server.json" Pack="false" />
     <None Include="..\package_icon.png" Link="package_icon.png" Pack="true" PackagePath="\" Visible="false" />
     <None Include="..\..\LICENSE.txt" Link="LICENSE.txt" Pack="true" PackagePath="\" Visible="false" />
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
+
+  <!-- .mcp\server.json is a template; the packed copy gets the package version, which must match the package for the MCP clients. -->
+  <Target Name="GenerateMcpServerJson" BeforeTargets="_GetPackageFiles;GenerateNuspec">
+    <PropertyGroup>
+      <_McpServerJson>$(MSBuildProjectDirectory)\$(IntermediateOutputPath)mcp\server.json</_McpServerJson>
+      <_McpServerJsonContent>$([System.IO.File]::ReadAllText('$(MSBuildProjectDirectory)\.mcp\server.json').Replace('$version$', '$(PackageVersion)').TrimEnd())</_McpServerJsonContent>
+    </PropertyGroup>
+    <WriteLinesToFile File="$(_McpServerJson)" Lines="$([MSBuild]::Escape($(_McpServerJsonContent)))" Overwrite="true" WriteOnlyWhenDifferent="true" />
+    <ItemGroup>
+      <None Include="$(_McpServerJson)" Pack="true" PackagePath="/.mcp/" Visible="false" />
+    </ItemGroup>
+  </Target>
 
 </Project>
