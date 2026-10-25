@@ -126,7 +126,7 @@ namespace Test
 
             public void ReleaseGate() => _gate.TrySetResult(true);
 
-            public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
+            public async Task<IReadOnlyCollection<DocumentAnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
             {
                 if (documentContext.SyntaxRoot.ToFullString() == gatedText)
                 {
@@ -143,7 +143,7 @@ namespace Test
         /// </summary>
         private sealed class ReverseDelayAnalyzer(int count) : ISyntaxTreeAnalyzer
         {
-            public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
+            public async Task<IReadOnlyCollection<DocumentAnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
             {
                 var index = int.Parse(documentContext.SyntaxRoot.ToFullString().Substring("// ".Length));
 

@@ -11,7 +11,7 @@ namespace Nullable.Extended.NullForgivingAnalyzer
     [Export(typeof(ISyntaxTreeAnalyzer))]
     internal class NullForgivingDetectionAnalyzer : ISyntaxTreeAnalyzer
     {
-        public async Task<IReadOnlyCollection<AnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
+        public async Task<IReadOnlyCollection<DocumentAnalysisResult>> AnalyzeAsync(DocumentContext documentContext, CancellationToken cancellationToken)
         {
             var root = documentContext.SyntaxRoot;
 
@@ -25,9 +25,9 @@ namespace Nullable.Extended.NullForgivingAnalyzer
             return await Task.FromResult(items);
         }
 
-        private static AnalysisResult MapResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node)
+        private static DocumentAnalysisResult MapResult(DocumentContext documentContext, PostfixUnaryExpressionSyntax node)
         {
-            return new NullForgivingAnalysisResult(documentContext, node, node.GetContext());
+            return new NullForgivingDocumentResult(documentContext, node, node.GetContext());
         }
     }
 }

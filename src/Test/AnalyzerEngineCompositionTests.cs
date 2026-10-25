@@ -43,7 +43,7 @@ namespace Test
             await session.Completion;
 
             // The detection needs the analyzer, the verdict needs the post processor.
-            var result = Assert.IsType<NullForgivingAnalysisResult>(Assert.Single(Assert.Single(session.DocumentContexts).Results));
+            var result = Assert.IsType<NullForgivingAnalysisResult>(Assert.Single(session.Results));
             Assert.True(result.IsRequired);
         }
     }

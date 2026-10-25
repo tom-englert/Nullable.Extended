@@ -26,17 +26,17 @@ namespace Nullable.Extended.AnalyzerFramework
         /// <summary>
         /// The analysis results of this document.
         /// </summary>
-        public IReadOnlyCollection<AnalysisResult> Results { get; internal set; } = [];
+        public IReadOnlyCollection<DocumentAnalysisResult> Results { get; internal set; } = [];
 
         /// <summary>
-        /// Completes when the post processing of this document is done or has been cancelled.
+        /// Completes when the post-processing of this document is done or has been cancelled.
         /// </summary>
         public Task Completion { get; internal set; } = Task.CompletedTask;
 
         public bool IsCancellationRequested => _cancellationTokenSource.IsCancellationRequested;
 
         /// <summary>
-        /// Cancels the pending post processing of this document, e.g. because the document needs to be re-evaluated.
+        /// Cancels the pending post-processing of this document, e.g. because the document needs to be re-evaluated.
         /// </summary>
         public void Cancel()
         {

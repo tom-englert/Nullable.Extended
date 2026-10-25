@@ -21,7 +21,7 @@ namespace Nullable.Extended.NullForgivingAnalyzer
             var syntaxRoot = documentContext.SyntaxRoot;
             var diagnosticLocations = projectContext.DiagnosticLocations;
 
-            foreach (var analysisResult in documentContext.Results.OfType<NullForgivingAnalysisResult>())
+            foreach (var analysisResult in documentContext.Results.OfType<NullForgivingDocumentResult>())
             {
                 var node = analysisResult.Node;
                 var rewrittenSyntaxRoot = syntaxRoot.ReplaceNode(node, RewriteNullForgivingNode(node));
@@ -38,7 +38,7 @@ namespace Nullable.Extended.NullForgivingAnalyzer
                     .Where(IsNullableDiagnostic)
                     .Where(IsNewDiagnosticInCurrentDocument);
 
-                analysisResult.IsRequired = newNullableDiagnostics.Any();
+                analysisResult.SetIsRequired(newNullableDiagnostics.Any());
             }
         }
 

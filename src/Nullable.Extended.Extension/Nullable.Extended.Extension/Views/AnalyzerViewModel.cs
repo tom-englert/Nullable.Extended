@@ -153,9 +153,7 @@ namespace Nullable.Extended.Extension.Views
 
         private void UpdateResults(AnalysisSession session)
         {
-            AnalysisResults = session.DocumentContexts
-                .SelectMany(context => context.Results)
-                .ToImmutableList();
+            AnalysisResults = session.Results.ToImmutableList();
         }
 
         private void BeginAnalysis()

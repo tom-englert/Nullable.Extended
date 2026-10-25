@@ -13,7 +13,7 @@ namespace Test
         /// Runs a complete analysis session over a project made of the given sources.
         /// The results are ordered by document, then by position in the document.
         /// </summary>
-        public static async Task<IReadOnlyList<NullForgivingAnalysisResult>> AnalyzeAsync(
+        public static async Task<IReadOnlyList<NullForgivingDocumentResult>> AnalyzeAsync(
             IReadOnlyList<string> sources,
             Func<Project, Project>? configureProject = null,
             ISyntaxAnalysisPostProcessor? postProcessor = null)
@@ -31,7 +31,7 @@ namespace Test
 
             return session.DocumentContexts
                 .SelectMany(context => context.Results)
-                .Cast<NullForgivingAnalysisResult>()
+                .Cast<NullForgivingDocumentResult>()
                 .OrderBy(result => result.Node.SyntaxTree.FilePath, StringComparer.Ordinal)
                 .ThenBy(result => result.Node.SpanStart)
                 .ToList();
@@ -40,7 +40,7 @@ namespace Test
         /// <summary>
         /// Compact notation of the outcome: T = required, F = not required, ? = could not be determined.
         /// </summary>
-        public static string Format(IEnumerable<NullForgivingAnalysisResult> results)
+        public static string Format(IEnumerable<NullForgivingDocumentResult> results)
         {
             return new string(results.Select(result => result.IsRequired switch { true => 'T', false => 'F', null => '?' }).ToArray());
         }

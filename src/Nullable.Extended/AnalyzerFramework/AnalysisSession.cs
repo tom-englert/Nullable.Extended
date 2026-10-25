@@ -18,9 +18,11 @@ namespace Nullable.Extended.AnalyzerFramework
         private readonly IReadOnlyCollection<ISyntaxTreeAnalyzer> _syntaxTreeAnalyzers;
         private readonly IReadOnlyCollection<ISyntaxAnalysisPostProcessor> _postProcessors;
         private readonly object _startLock = new();
+        private readonly object _resultsLock = new();
 
         // The ticket and the context of a document are changed together by atomically swapping the whole map, so no lock is needed.
         private ImmutableDictionary<DocumentId, DocumentState> _documentStates = ImmutableDictionary<DocumentId, DocumentState>.Empty;
+        private volatile IReadOnlyCollection<AnalysisResult> _results = [];
         private Task? _startTask;
 
         internal AnalysisSession(IReadOnlyCollection<Document> documents, IReadOnlyCollection<ISyntaxTreeAnalyzer> syntaxTreeAnalyzers,
@@ -46,7 +48,7 @@ namespace Nullable.Extended.AnalyzerFramework
         }
 
         /// <summary>
-        /// The contexts of all analyzed documents; use <see cref="DocumentContext.Cancel"/> to cancel the post processing of a single document.
+        /// The contexts of all analyzed documents; use <see cref="DocumentContext.Cancel"/> to cancel the post-processing of a single document.
         /// This is a snapshot, it does not reflect later calls to <see cref="UpdateAsync"/>, and it is empty until <see cref="StartAsync"/> has completed.
         /// </summary>
         public IReadOnlyCollection<DocumentContext> DocumentContexts => CurrentStates.Values
@@ -59,6 +61,56 @@ namespace Nullable.Extended.AnalyzerFramework
         /// This only covers the documents at the time of the call, not later updates.
         /// </summary>
         public Task Completion => Task.WhenAll(DocumentContexts.Select(context => context.Completion));
+
+        /// <summary>
+        /// The analysis results of all documents, with only one result for every position in a file.
+        /// A file can be part of several documents, e.g. when a project is built for several target frameworks, and the document results may differ between them.
+        /// The document results at the same position are composed to a single result, which evaluates them as a whole;
+        /// e.g. a null-forgiving operator is required if it is required in at least one of them.
+        /// This is a snapshot, it does not reflect later calls to <see cref="UpdateAsync"/>, but the properties of the results are always up to date;
+        /// results of unchanged positions are reused by later snapshots.
+        /// </summary>
+        public IReadOnlyCollection<AnalysisResult> Results => _results;
+
+        private static IEnumerable<IReadOnlyList<DocumentAnalysisResult>> GroupDocumentResults(IEnumerable<DocumentContext> contexts)
+        {
+            // The order only determines which document result represents the group; make it independent of the order in which the documents have been analyzed.
+            return contexts
+                .SelectMany(context => context.Results)
+                .GroupBy(result => (result.Position, ResultType: result.GetType()))
+                .Select(group => (IReadOnlyList<DocumentAnalysisResult>)group
+                    .OrderBy(result => result.DocumentContext.Document.Project.Name, StringComparer.Ordinal)
+                    .ThenBy(result => result.DocumentContext.Document.Project.Id.Id)
+                    .ToArray());
+        }
+
+        private void ComposeResults()
+        {
+            // The results must be composed of the current states, so the last one to get the lock wins.
+            lock (_resultsLock)
+            {
+                var results = new List<AnalysisResult>();
+
+                foreach (var documentResults in GroupDocumentResults(DocumentContexts))
+                {
+                    var result = documentResults[0].Result;
+
+                    if (result == null || !result.Variants.SequenceEqual(documentResults))
+                    {
+                        result = documentResults[0].CreateResult(documentResults);
+
+                        foreach (var documentResult in documentResults)
+                        {
+                            documentResult.Result = result;
+                        }
+                    }
+
+                    results.Add(result);
+                }
+
+                _results = results.ToArray();
+            }
+        }
 
         /// <summary>
         /// Analyzes the updated document again. The existing context of the document is cancelled and replaced by a new one,
@@ -105,6 +157,7 @@ namespace Nullable.Extended.AnalyzerFramework
             }
 
             RemoveUnusedProjectContexts();
+            ComposeResults();
 
             return newContext;
         }
@@ -151,7 +204,7 @@ namespace Nullable.Extended.AnalyzerFramework
         private CancellationToken CancellationToken { get; }
 
         /// <summary>
-        /// Limits the number of documents that are post processed concurrently, since post processing is compilation heavy.
+        /// Limits the number of documents that are post processed concurrently, since post-processing is compilation heavy.
         /// </summary>
         private SemaphoreSlim PostProcessingSlots { get; } = new(Environment.ProcessorCount);
 
@@ -169,6 +222,8 @@ namespace Nullable.Extended.AnalyzerFramework
             }
 
             ImmutableInterlocked.Update(ref _documentStates, AddAnalyzedContexts, contexts);
+
+            ComposeResults();
         }
 
         // Updates that have been requested while the initial analysis was running have already taken their tickets; keep them.
@@ -271,7 +326,7 @@ namespace Nullable.Extended.AnalyzerFramework
         {
             foreach (var result in context.Results)
             {
-                result.HasCompilationErrors = true;
+                result.MarkAsHavingCompilationErrors();
             }
         }
 

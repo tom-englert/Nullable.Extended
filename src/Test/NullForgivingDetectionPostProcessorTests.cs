@@ -84,7 +84,7 @@ namespace Test
             Assert.True(Assert.Single(results).IsRequired);
         }
 
-        private static Task<IReadOnlyList<NullForgivingAnalysisResult>> Analyze(string source, ISyntaxAnalysisPostProcessor? postProcessor = null)
+        private static Task<IReadOnlyList<NullForgivingDocumentResult>> Analyze(string source, ISyntaxAnalysisPostProcessor? postProcessor = null)
         {
             return NullForgivingAnalysis.AnalyzeAsync([source], postProcessor: postProcessor);
         }
