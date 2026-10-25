@@ -11,6 +11,11 @@
     <PackageType>McpServer</PackageType>
     <Description>MCP server to find, review and justify null-forgiving operators in large C# code bases.</Description>
     <PackageTags>nullable;null-forgiving;mcp;roslyn</PackageTags>
+    <Authors>tom-englert.de</Authors>
+    <Copyright>(c) 2020, tom-englert.de</Copyright>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>http://github.com/tom-englert/Nullable.Extended</PackageProjectUrl>
+    <PackageIcon>package_icon.png</PackageIcon>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -37,7 +42,8 @@
 
   <ItemGroup>
     <None Include=".mcp\server.json" Pack="true" PackagePath="/.mcp/" />
-    <None Include="..\..\LICENSE.txt" Pack="true" PackagePath="/" />
+    <None Include="..\package_icon.png" Link="package_icon.png" Pack="true" PackagePath="\" Visible="false" />
+    <None Include="..\..\LICENSE.txt" Link="LICENSE.txt" Pack="true" PackagePath="\" Visible="false" />
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
