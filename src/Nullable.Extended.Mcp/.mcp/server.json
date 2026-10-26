@@ -14,21 +14,7 @@
       "version": "$version$",
       "transport": {
         "type": "stdio"
-      },
-      "packageArguments": [
-        {
-          "type": "named",
-          "name": "--root",
-          "description": "The folder to scan; default is the working directory.",
-          "isRequired": false
-        },
-        {
-          "type": "named",
-          "name": "--solution",
-          "description": "Optional solution file (.sln, .slnx) to restrict the scan to its projects.",
-          "isRequired": false
-        }
-      ]
+      }
     }
   ]
 }

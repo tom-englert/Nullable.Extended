@@ -1,4 +1,5 @@
 [Next]
+- Fix: MCP server: The configuration suggested by nuget.org no longer asks for the optional `--root` and `--solution` arguments.
 
 1.18.2
 - Fix: MCP server: Workspace folders reported by VS Code (`file:///d%3A/...`) were not converted to a valid local path.
