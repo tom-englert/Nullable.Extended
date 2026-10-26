@@ -3,32 +3,27 @@
 namespace Nullable.Extended.Mcp;
 
 /// <summary>
-/// The command line options of the server.
+/// The command line options of the server. Both are optional; without a root the server uses the workspace folder of the client.
 /// </summary>
 /// <param name="Root">The folder below which the sources are scanned.</param>
-/// <param name="SolutionPath">Optional, restricts the scan to the projects of this solution.</param>
-internal sealed record ServerOptions(string Root, string? SolutionPath)
+/// <param name="Solution">Restricts the scan to the projects of this solution; relative to the root, or absolute.</param>
+internal sealed record ServerOptions(string? Root, string? Solution)
 {
     /// <summary>
-    /// Reads <c>--root &lt;folder&gt;</c> (default: the working directory) and <c>--solution &lt;file&gt;</c> (relative to the root, or absolute).
+    /// Reads <c>--root &lt;folder&gt;</c> and <c>--solution &lt;file&gt;</c>.
     /// </summary>
     public static ServerOptions Create(IConfiguration configuration)
     {
-        var root = Path.GetFullPath(configuration["root"] is { Length: > 0 } rootValue ? rootValue : Directory.GetCurrentDirectory());
+        string? root = null;
 
-        if (!Directory.Exists(root))
-            throw new ArgumentException($"The root folder '{root}' does not exist.");
-
-        string? solutionPath = null;
-
-        if (configuration["solution"] is { Length: > 0 } solutionValue)
+        if (configuration["root"] is { Length: > 0 } rootValue)
         {
-            solutionPath = Path.GetFullPath(solutionValue, root);
+            root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(rootValue));
 
-            if (!File.Exists(solutionPath))
-                throw new ArgumentException($"The solution file '{solutionPath}' does not exist.");
+            if (!Directory.Exists(root))
+                throw new ArgumentException($"The root folder '{root}' does not exist.");
         }
 
-        return new ServerOptions(root.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar), solutionPath);
+        return new ServerOptions(root, configuration["solution"] is { Length: > 0 } solution ? solution : null);
     }
 }

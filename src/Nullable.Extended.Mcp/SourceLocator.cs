@@ -22,16 +22,16 @@ internal sealed record SourceInventory(IReadOnlyList<SourceFile> Files, int File
 /// Finds the source files below the root and the projects they belong to, without loading any project.
 /// The project of a file is the nearest project file in the folder of the file or above; this is exact for SDK style projects with the default globbing.
 /// </summary>
-internal sealed class SourceLocator(ServerOptions options)
+internal sealed class SourceLocator(string root, string? solutionPath)
 {
     private static readonly StringComparison PathComparison = OperatingSystem.IsWindows() || OperatingSystem.IsMacOS() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
     private static readonly StringComparer PathComparer = OperatingSystem.IsWindows() || OperatingSystem.IsMacOS() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
 
-    public string Root => options.Root;
+    public string Root => root;
 
     public async Task<SourceInventory> GetInventoryAsync(ScopeFilter scope, CancellationToken cancellationToken)
     {
-        var solutionProjects = options.SolutionPath != null ? await ReadSolutionProjectsAsync(options.SolutionPath, cancellationToken) : null;
+        var solutionProjects = solutionPath != null ? await ReadSolutionProjectsAsync(solutionPath, cancellationToken) : null;
         var changedFiles = scope.ChangedSince != null ? await GetChangedFilesAsync(scope.ChangedSince, cancellationToken) : null;
         var pathMatcher = CreatePathMatcher(scope.Path);
 
@@ -87,9 +87,9 @@ internal sealed class SourceLocator(ServerOptions options)
     /// </summary>
     public string ResolveFile(string file)
     {
-        var fullPath = Path.GetFullPath(file, options.Root);
+        var fullPath = Path.GetFullPath(file, root);
 
-        if (!fullPath.StartsWith(options.Root + Path.DirectorySeparatorChar, PathComparison))
+        if (!fullPath.StartsWith(Path.TrimEndingDirectorySeparator(root) + Path.DirectorySeparatorChar, PathComparison))
             throw new McpException($"The file '{file}' is not located below the root folder.");
 
         return fullPath;
@@ -97,7 +97,7 @@ internal sealed class SourceLocator(ServerOptions options)
 
     public string GetRelativePath(string fullPath)
     {
-        var relativePath = Path.GetRelativePath(options.Root, fullPath);
+        var relativePath = Path.GetRelativePath(root, fullPath);
 
         return Path.DirectorySeparatorChar == '/' ? relativePath : relativePath.Replace(Path.DirectorySeparatorChar, '/');
     }
@@ -111,7 +111,7 @@ internal sealed class SourceLocator(ServerOptions options)
             AttributesToSkip = FileAttributes.Hidden | FileAttributes.System | FileAttributes.ReparsePoint
         };
 
-        return new FileSystemEnumerable<(string, long, DateTime)>(options.Root, Transform, enumerationOptions)
+        return new FileSystemEnumerable<(string, long, DateTime)>(root, Transform, enumerationOptions)
         {
             ShouldIncludePredicate = static (ref entry) => !entry.IsDirectory && entry.FileName.EndsWith(".cs", StringComparison.OrdinalIgnoreCase),
             ShouldRecursePredicate = static (ref entry) => !IsExcludedDirectory(entry.FileName)
@@ -199,7 +199,7 @@ internal sealed class SourceLocator(ServerOptions options)
             throw new McpException($"'{gitRef}' is not a valid git ref.");
 
         if (await RunGitAsync(["rev-parse", "--is-inside-work-tree"], cancellationToken) is not "true")
-            throw new McpException($"The root folder '{options.Root}' is not inside a git repository, 'changedSince' cannot be used.");
+            throw new McpException($"The root folder '{root}' is not inside a git repository, 'changedSince' cannot be used.");
 
         // Paths are relative to the root folder, which is the working directory of git.
         var changed = await RunGitAsync(["diff", "--name-only", "--relative", "--diff-filter=ACMR", "-z", gitRef, "--"], cancellationToken);
@@ -208,7 +208,7 @@ internal sealed class SourceLocator(ServerOptions options)
         return (changed + "\0" + untracked)
             .Split('\0', StringSplitOptions.RemoveEmptyEntries)
             .Where(path => path.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
-            .Select(path => Path.GetFullPath(path, options.Root))
+            .Select(path => Path.GetFullPath(path, root))
             .ToHashSet(PathComparer);
     }
 
@@ -216,7 +216,7 @@ internal sealed class SourceLocator(ServerOptions options)
     {
         var startInfo = new ProcessStartInfo("git")
         {
-            WorkingDirectory = options.Root,
+            WorkingDirectory = root,
             RedirectStandardOutput = true,
             RedirectStandardError = true,
             RedirectStandardInput = true,

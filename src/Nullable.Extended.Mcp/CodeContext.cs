@@ -26,11 +26,11 @@ internal sealed record CodeContext(string File, int TotalLines, string LineEndin
 /// <summary>
 /// Reads the source around a position, so the user of the server can see what a null-forgiving operator is used for and where its justification belongs.
 /// </summary>
-internal sealed class CodeContextReader(SourceLocator locator, NullForgivingScanner scanner)
+internal sealed class CodeContextReader(NullForgivingScanner scanner)
 {
     private const int MaxRadius = 100;
 
-    public async Task<CodeContext> ReadAsync(string file, int line, int radius, CancellationToken cancellationToken)
+    public async Task<CodeContext> ReadAsync(SourceLocator locator, string file, int line, int radius, CancellationToken cancellationToken)
     {
         var fullPath = locator.ResolveFile(file);
 
@@ -43,7 +43,7 @@ internal sealed class CodeContextReader(SourceLocator locator, NullForgivingScan
         var relativePath = locator.GetRelativePath(fullPath);
 
         // The operators are classified by the engine, like in every other tool.
-        var scan = await scanner.ScanAsync(new ScopeFilter(Path: relativePath), cancellationToken);
+        var scan = await scanner.ScanAsync(locator, new ScopeFilter(Path: relativePath), cancellationToken);
 
         SourceText text;
 

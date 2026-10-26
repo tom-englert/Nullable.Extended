@@ -17,7 +17,7 @@ namespace Nullable.Extended.Mcp;
 /// The results are cached per file and only recalculated if the file has changed (by write time and length),
 /// so a call after a file has been edited always sees the current content.
 /// </summary>
-internal sealed class NullForgivingScanner(SourceLocator locator, IAnalyzerEngine analyzerEngine, ILogger<NullForgivingScanner> logger)
+internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogger<NullForgivingScanner> logger)
 {
     private const int MaxFilesPerWorkspace = 500;
     private const int MaxSourceLineLength = 240;
@@ -27,7 +27,7 @@ internal sealed class NullForgivingScanner(SourceLocator locator, IAnalyzerEngin
 
     private sealed record CacheEntry(long Length, DateTime LastWriteTimeUtc, string? ProjectPath, IReadOnlyList<Occurrence> Occurrences);
 
-    public async Task<ScanResult> ScanAsync(ScopeFilter scope, CancellationToken cancellationToken)
+    public async Task<ScanResult> ScanAsync(SourceLocator locator, ScopeFilter scope, CancellationToken cancellationToken)
     {
         var inventory = await locator.GetInventoryAsync(scope, cancellationToken);
 

@@ -86,6 +86,37 @@ namespace Test
         }
 
         [Fact]
+        public async Task ExplicitRootIsUsedWithoutAskingTheClient()
+        {
+            var provider = new WorkspaceProvider(new ServerOptions(_root + Path.DirectorySeparatorChar, null), NullLogger<WorkspaceProvider>.Instance);
+
+            var locator = await provider.GetLocatorAsync(null!, TestContext.Current.CancellationToken);
+
+            Assert.Equal(_root, locator.Root);
+            Assert.Same(locator, await provider.GetLocatorAsync(null!, TestContext.Current.CancellationToken));
+        }
+
+        [Fact]
+        public async Task MissingSolutionIsReported()
+        {
+            var provider = new WorkspaceProvider(new ServerOptions(_root, "Missing.sln"), NullLogger<WorkspaceProvider>.Instance);
+
+            await Assert.ThrowsAsync<McpException>(() => provider.GetLocatorAsync(null!, TestContext.Current.CancellationToken));
+        }
+
+        [Fact]
+        public void ClientRootsAreConvertedToLocalFolders()
+        {
+            var first = Path.Combine(_root, "A");
+            var second = Path.Combine(_root, "B");
+            var uris = new[] { "https://example.com/x", new Uri(first).AbsoluteUri, new Uri(second).AbsoluteUri };
+
+            Assert.Equal(first, WorkspaceProvider.SelectRoot(uris, _root));
+            Assert.Equal(second, WorkspaceProvider.SelectRoot(uris, Path.Combine(second, "Sub")));
+            Assert.Null(WorkspaceProvider.SelectRoot(["https://example.com/x"], _root));
+        }
+
+        [Fact]
         public async Task ScanFindsTheOperatorsWithProjectStatusAndContext()
         {
             var scanner = CreateScanner();
@@ -241,11 +272,11 @@ namespace Test
         [Fact]
         public async Task CodeContextShowsTheLinesAndWhereTheCommentBelongs()
         {
-            var locator = new SourceLocator(new ServerOptions(_root, null));
-            var scanner = new NullForgivingScanner(locator, Engine.Value, NullLogger<NullForgivingScanner>.Instance);
-            var reader = new CodeContextReader(locator, scanner);
+            var locator = new SourceLocator(_root, null);
+            var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
+            var reader = new CodeContextReader(scanner);
 
-            var context = await reader.ReadAsync("B/Sub/Bar.cs", 6, 1, TestContext.Current.CancellationToken);
+            var context = await reader.ReadAsync(locator, "B/Sub/Bar.cs", 6, 1, TestContext.Current.CancellationToken);
 
             Assert.Equal("B/Sub/Bar.cs", context.File);
             Assert.Equal([5, 6, 7], context.Lines.Select(line => line.Number));
@@ -266,23 +297,24 @@ namespace Test
         [Fact]
         public async Task CodeContextRejectsFilesOutsideOfTheRoot()
         {
-            var locator = new SourceLocator(new ServerOptions(_root, null));
-            var scanner = new NullForgivingScanner(locator, Engine.Value, NullLogger<NullForgivingScanner>.Instance);
-            var reader = new CodeContextReader(locator, scanner);
+            var locator = new SourceLocator(_root, null);
+            var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
+            var reader = new CodeContextReader(scanner);
 
-            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync("../outside.cs", 1, 1, TestContext.Current.CancellationToken));
-            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync(Path.Combine(Path.GetTempPath(), "outside.cs"), 1, 1, TestContext.Current.CancellationToken));
-            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync("A/A.csproj", 1, 1, TestContext.Current.CancellationToken));
-            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync("A/Foo.cs", 1000, 1, TestContext.Current.CancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync(locator, "../outside.cs", 1, 1, TestContext.Current.CancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync(locator, Path.Combine(Path.GetTempPath(), "outside.cs"), 1, 1, TestContext.Current.CancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync(locator, "A/A.csproj", 1, 1, TestContext.Current.CancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => reader.ReadAsync(locator, "A/Foo.cs", 1000, 1, TestContext.Current.CancellationToken));
         }
 
         [Fact]
         public async Task ToolsFilterAndPageTheOccurrences()
         {
             var tools = CreateTools();
+            var locator = new SourceLocator(_root, null);
             var cancellationToken = TestContext.Current.CancellationToken;
 
-            var summary = await tools.GetSummary(cancellationToken: cancellationToken);
+            var summary = await tools.SummarizeAsync(locator, new ScopeFilter(), cancellationToken);
 
             Assert.Equal(6, summary.Counts.Total);
             Assert.Equal(4, summary.Counts.Unjustified);
@@ -291,38 +323,43 @@ namespace Test
             Assert.Equal(["A", "(no project)", "B"], summary.Projects.Select(project => project.Name).ToArray());
             Assert.Equal(["A", "B/Sub"], summary.Projects.Where(project => project.ProjectFile != null).SelectMany(project => project.Folders.Select(folder => folder.Path)).ToArray());
 
-            var unjustified = await tools.ListNullForgiving(status: "unjustified", limit: 3, cancellationToken: cancellationToken);
+            var unjustified = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", 3, 0, cancellationToken);
 
             Assert.Equal(4, unjustified.Total);
             Assert.Equal(3, unjustified.Returned);
             Assert.Equal(3, unjustified.NextOffset);
 
-            var rest = await tools.ListNullForgiving(status: "unjustified", limit: 3, offset: unjustified.NextOffset!.Value, cancellationToken: cancellationToken);
+            var rest = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", 3, unjustified.NextOffset!.Value, cancellationToken);
 
             Assert.Equal(1, rest.Returned);
             Assert.Null(rest.NextOffset);
 
-            var lambdas = await tools.ListNullForgiving(context: "NX0003", cancellationToken: cancellationToken);
+            var lambdas = await tools.ListAsync(locator, new ScopeFilter(), "NX0003", null, 100, 0, cancellationToken);
 
             Assert.Equal(1, lambdas.Total);
 
-            await Assert.ThrowsAsync<McpException>(() => tools.ListNullForgiving(status: "bogus", cancellationToken: cancellationToken));
-            await Assert.ThrowsAsync<McpException>(() => tools.ListNullForgiving(context: "bogus", cancellationToken: cancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), null, "bogus", 100, 0, cancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), "bogus", null, 100, 0, cancellationToken));
         }
 
         private NullForgivingTools CreateTools()
         {
-            var locator = new SourceLocator(new ServerOptions(_root, null));
-            var scanner = new NullForgivingScanner(locator, Engine.Value, NullLogger<NullForgivingScanner>.Instance);
+            var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
+            var workspaceProvider = new WorkspaceProvider(new ServerOptions(_root, null), NullLogger<WorkspaceProvider>.Instance);
 
-            return new NullForgivingTools(scanner, new CodeContextReader(locator, scanner), locator);
+            return new NullForgivingTools(scanner, new CodeContextReader(scanner), workspaceProvider);
         }
 
-        private NullForgivingScanner CreateScanner(string? solutionPath = null)
+        private ScopedScanner CreateScanner(string? solutionPath = null)
         {
-            var locator = new SourceLocator(new ServerOptions(_root, solutionPath));
+            var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
 
-            return new NullForgivingScanner(locator, Engine.Value, NullLogger<NullForgivingScanner>.Instance);
+            return new ScopedScanner(scanner, new SourceLocator(_root, solutionPath));
+        }
+
+        private sealed class ScopedScanner(NullForgivingScanner scanner, SourceLocator locator)
+        {
+            public Task<ScanResult> ScanAsync(ScopeFilter scope, CancellationToken cancellationToken) => scanner.ScanAsync(locator, scope, cancellationToken);
         }
 
         private void WriteFile(string relativePath, string content)

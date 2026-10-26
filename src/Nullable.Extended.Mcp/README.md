@@ -12,7 +12,9 @@ See the [documentation](https://github.com/tom-englert/Nullable.Extended/tree/ma
 nullable-extended-mcp [--root <folder>] [--solution <file>]
 ```
 
-- `--root`: the folder to scan; default is the working directory.
+Both arguments are optional. Normally the server asks the client for the open workspace folder (MCP roots), and falls back to its working directory.
+
+- `--root`: overrides the folder to scan.
 - `--solution`: restricts the scan to the projects of a `.sln` or `.slnx` file.
 
 ## Tools

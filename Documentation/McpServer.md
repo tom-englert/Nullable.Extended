@@ -22,18 +22,19 @@ Register it in your MCP client, e.g. in `.vscode/mcp.json` or `.mcp.json`:
   "servers": {
 	"nullable-extended": {
 	  "type": "stdio",
-	  "command": "nullable-extended-mcp",
-	  "args": ["--root", "${workspaceFolder}"]
+	  "command": "nullable-extended-mcp"
 	}
   }
 }
 ```
 
-Arguments:
+No arguments are needed: the server asks the client for the folder that is open (MCP roots) whenever a tool is called, so it works on whatever workspace the session has open. If the client does not provide roots, the working directory of the server is used.
+
+Optional arguments:
 
 | Argument | Meaning |
 | --- | --- |
-| `--root <folder>` | The folder that is scanned; default is the working directory. Only files below this folder are read. |
+| `--root <folder>` | Overrides the folder that is scanned; by default the workspace folder of the client, else the working directory. Only files below this folder are read. |
 | `--solution <file>` | Optional `.sln` or `.slnx`; restricts the scan to the projects of this solution, e.g. to ignore other projects in a mono repo. |
 
 ## Tools

@@ -49,7 +49,7 @@ and to use a justification comment only as the last resort.
    dotnet tool install -g Nullable.Extended.Mcp
    ```
    ```json
-   { "servers": { "nullable-extended": { "type": "stdio", "command": "nullable-extended-mcp", "args": ["--root", "${workspaceFolder}"] } } }
+   { "servers": { "nullable-extended": { "type": "stdio", "command": "nullable-extended-mcp" } } }
    ```
 2. Install the [skill](skills/nullable-extended/SKILL.md) into your project or user profile, with the GitHub CLI or the `skills` CLI:
    ```

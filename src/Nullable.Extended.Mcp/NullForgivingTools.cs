@@ -26,7 +26,7 @@ internal sealed record OccurrenceItem(string Id, string Project, string File, in
 internal sealed record ListResult(int Total, int Offset, int Returned, int? NextOffset, ScanInfo Scan, IReadOnlyList<OccurrenceItem> Items);
 
 [McpServerToolType]
-internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, SourceLocator locator)
+internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, WorkspaceProvider workspaceProvider)
 {
     private const int DefaultLimit = 100;
     private const int MaxLimit = 500;
@@ -36,12 +36,20 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
                  "Start here to plan the work project by project. This is a purely syntactic scan, it does not check whether an operator is required. " +
                  "Only the files that match the scope are scanned; without a scope, everything below the server's root is.")]
     public async Task<SummaryResult> GetSummary(
+        McpServer server,
         [Description("Only files below this folder, or this file, relative to the root; or a glob pattern like 'src/**/Services/*.cs'.")] string? path = null,
         [Description("Only the files of this project: the project name, or the path of the project file relative to the root.")] string? project = null,
         [Description("Only files changed relative to this git ref (e.g. 'main' or 'origin/main'), including uncommitted and untracked files.")] string? changedSince = null,
         CancellationToken cancellationToken = default)
     {
-        var scan = await scanner.ScanAsync(new ScopeFilter(project, path, changedSince), cancellationToken);
+        var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
+
+        return await SummarizeAsync(locator, new ScopeFilter(project, path, changedSince), cancellationToken);
+    }
+
+    internal async Task<SummaryResult> SummarizeAsync(SourceLocator locator, ScopeFilter scope, CancellationToken cancellationToken)
+    {
+        var scan = await scanner.ScanAsync(locator, scope, cancellationToken);
         var filesByPath = scan.Files.ToDictionary(file => file.RelativePath, StringComparer.Ordinal);
 
         var projects = scan.Occurrences
@@ -77,6 +85,7 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
                  "The result is paged; narrow it down with the scope and filters instead of paging through everything, and use get_summary to plan. " +
                  "The id (file:line:column) changes when the file is edited, so list again after changing code. This is a purely syntactic scan, it does not check whether an operator is required.")]
     public async Task<ListResult> ListNullForgiving(
+        McpServer server,
         [Description("Only the files of this project: the project name, or the path of the project file relative to the root.")] string? project = null,
         [Description("Only files below this folder, or this file, relative to the root; or a glob pattern like 'src/**/Services/*.cs'.")] string? path = null,
         [Description("Only files changed relative to this git ref (e.g. 'main' or 'origin/main'), including uncommitted and untracked files.")] string? changedSince = null,
@@ -85,6 +94,13 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         [Description("The maximum number of items to return (default 100, maximum 500).")] int limit = DefaultLimit,
         [Description("The number of items to skip, for paging; use 'nextOffset' of the previous result.")] int offset = 0,
         CancellationToken cancellationToken = default)
+    {
+        var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
+
+        return await ListAsync(locator, new ScopeFilter(project, path, changedSince), context, status, limit, offset, cancellationToken);
+    }
+
+    internal async Task<ListResult> ListAsync(SourceLocator locator, ScopeFilter scope, string? context, string? status, int limit, int offset, CancellationToken cancellationToken)
     {
         NullForgivingContext? contextFilter = null;
 
@@ -102,7 +118,7 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         limit = Math.Clamp(limit, 1, MaxLimit);
         offset = Math.Max(0, offset);
 
-        var scan = await scanner.ScanAsync(new ScopeFilter(project, path, changedSince), cancellationToken);
+        var scan = await scanner.ScanAsync(locator, scope, cancellationToken);
 
         var matches = scan.Occurrences
             .Where(occurrence => contextFilter == null || occurrence.Context == contextFilter)
@@ -134,13 +150,16 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
     [Description("Returns the source lines around a position, and for every null-forgiving operator in these lines its status and justification, " +
                  "and where a justification comment would have to be inserted (the line above which, and its indentation). " +
                  "Use it to understand why an operator is there, before fixing the code or writing a justification. Only files below the root can be read.")]
-    public Task<CodeContext> GetCodeContext(
+    public async Task<CodeContext> GetCodeContext(
+        McpServer server,
         [Description("The file, relative to the root (as returned by list_null_forgiving).")] string file,
         [Description("The 1-based line number.")] int line,
         [Description("The number of lines to return before and after the line (default 10, maximum 100).")] int radius = 10,
         CancellationToken cancellationToken = default)
     {
-        return codeContextReader.ReadAsync(file, line, radius, cancellationToken);
+        var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
+
+        return await codeContextReader.ReadAsync(locator, file, line, radius, cancellationToken);
     }
 
     private static StatusCounts Count(IEnumerable<Occurrence> occurrences)

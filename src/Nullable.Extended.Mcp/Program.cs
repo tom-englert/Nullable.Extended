@@ -27,12 +27,12 @@ catch (ArgumentException ex)
 }
 
 builder.Services.AddSingleton(options);
+builder.Services.AddSingleton<WorkspaceProvider>();
 
 // Compose the analyzer engine the same way as the Visual Studio extension does; the exports are registered with their contract types.
 builder.Services.BindExports(typeof(IAnalyzerEngine).Assembly);
 builder.Services.AddSingleton<IExportProvider>(sp => new ExportProviderAdapter(sp));
 
-builder.Services.AddSingleton<SourceLocator>();
 builder.Services.AddSingleton<NullForgivingScanner>();
 builder.Services.AddSingleton<CodeContextReader>();
 
