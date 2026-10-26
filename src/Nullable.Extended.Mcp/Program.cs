@@ -41,6 +41,16 @@ builder.Services
     .WithStdioServerTransport()
     .WithTools<NullForgivingTools>();
 
-await builder.Build().RunAsync();
+var app = builder.Build();
+
+app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("Nullable.Extended.Mcp").LogInformation(
+    "Starting {Version}; working directory '{WorkingDirectory}'; arguments [{Arguments}]; root {Root}; solution {Solution}",
+    typeof(ServerOptions).Assembly.GetName().Version,
+    Directory.GetCurrentDirectory(),
+    string.Join(" ", args),
+    options.Root ?? "(from client)",
+    options.Solution ?? "(none)");
+
+await app.RunAsync();
 
 return 0;

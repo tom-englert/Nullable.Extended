@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 
+using Microsoft.Extensions.Logging;
+
 using ModelContextProtocol;
 using ModelContextProtocol.Server;
 
@@ -26,7 +28,7 @@ internal sealed record OccurrenceItem(string Id, string Project, string File, in
 internal sealed record ListResult(int Total, int Offset, int Returned, int? NextOffset, ScanInfo Scan, IReadOnlyList<OccurrenceItem> Items);
 
 [McpServerToolType]
-internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, WorkspaceProvider workspaceProvider)
+internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, WorkspaceProvider workspaceProvider, ILogger<NullForgivingTools> logger)
 {
     private const int DefaultLimit = 100;
     private const int MaxLimit = 500;
@@ -42,6 +44,8 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         [Description("Only files changed relative to this git ref (e.g. 'main' or 'origin/main'), including uncommitted and untracked files.")] string? changedSince = null,
         CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("get_summary: path={Path}, project={Project}, changedSince={ChangedSince}", path, project, changedSince);
+
         var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
 
         return await SummarizeAsync(locator, new ScopeFilter(project, path, changedSince), cancellationToken);
@@ -95,6 +99,8 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         [Description("The number of items to skip, for paging; use 'nextOffset' of the previous result.")] int offset = 0,
         CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("list_null_forgiving: project={Project}, path={Path}, changedSince={ChangedSince}, context={Context}, status={Status}, limit={Limit}, offset={Offset}", project, path, changedSince, context, status, limit, offset);
+
         var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
 
         return await ListAsync(locator, new ScopeFilter(project, path, changedSince), context, status, limit, offset, cancellationToken);
@@ -157,6 +163,8 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         [Description("The number of lines to return before and after the line (default 10, maximum 100).")] int radius = 10,
         CancellationToken cancellationToken = default)
     {
+        logger.LogInformation("get_code_context: file={File}, line={Line}, radius={Radius}", file, line, radius);
+
         var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
 
         return await codeContextReader.ReadAsync(locator, file, line, radius, cancellationToken);

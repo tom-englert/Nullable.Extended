@@ -347,7 +347,7 @@ namespace Test
             var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
             var workspaceProvider = new WorkspaceProvider(new ServerOptions(_root, null), NullLogger<WorkspaceProvider>.Instance);
 
-            return new NullForgivingTools(scanner, new CodeContextReader(scanner), workspaceProvider);
+            return new NullForgivingTools(scanner, new CodeContextReader(scanner), workspaceProvider, NullLogger<NullForgivingTools>.Instance);
         }
 
         private ScopedScanner CreateScanner(string? solutionPath = null)

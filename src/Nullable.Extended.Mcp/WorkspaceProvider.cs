@@ -21,11 +21,28 @@ internal sealed class WorkspaceProvider(ServerOptions options, ILogger<Workspace
 
     public async Task<SourceLocator> GetLocatorAsync(McpServer server, CancellationToken cancellationToken)
     {
-        var root = options.Root
-                   ?? await GetClientRootAsync(server, cancellationToken)
-                   ?? Directory.GetCurrentDirectory();
+        string root;
+        string source;
+
+        if (options.Root != null)
+        {
+            root = options.Root;
+            source = "--root argument";
+        }
+        else if (await GetClientRootAsync(server, cancellationToken) is { } clientRoot)
+        {
+            root = clientRoot;
+            source = "client roots";
+        }
+        else
+        {
+            root = Directory.GetCurrentDirectory();
+            source = "working directory";
+        }
 
         root = Path.TrimEndingDirectorySeparator(Path.GetFullPath(root));
+
+        logger.LogInformation("Using root '{Root}' ({Source})", root, source);
 
         if (!Directory.Exists(root))
             throw new McpException($"The root folder '{root}' does not exist.");
@@ -58,7 +75,11 @@ internal sealed class WorkspaceProvider(ServerOptions options, ILogger<Workspace
         // Roots are deprecated in the latest MCP spec revision, but still the only way to learn the open folder from current clients.
 #pragma warning disable MCP9005
         if (server.ClientCapabilities?.Roots == null)
+        {
+            logger.LogInformation("The client does not support roots");
+
             return null;
+        }
 
         try
         {
@@ -67,8 +88,7 @@ internal sealed class WorkspaceProvider(ServerOptions options, ILogger<Workspace
 
             var roots = result.Roots.Select(root => root.Uri).ToArray();
 
-            if (roots.Length > 1)
-                logger.LogInformation("The client reports several roots: {Roots}", string.Join(", ", roots));
+            logger.LogInformation("The client reports {Count} root(s): {Roots}", roots.Length, string.Join(", ", roots));
 
             return SelectRoot(roots, Directory.GetCurrentDirectory());
         }
