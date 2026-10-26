@@ -107,7 +107,8 @@ jobs:
         if (-not $text) { throw "Release notes for version '$tag' not found or empty in RelaseNotes.md" }
         New-Item -ItemType Directory -Force publish-assets | Out-Null
         $text | Set-Content publish-assets/release-notes.txt
-        Copy-Item vs-publish.json, README.md publish-assets/
+        Copy-Item vs-publish.json publish-assets/
+        Copy-Item src/Nullable.Extended.Extension/README.md publish-assets/
 
     - name: Upload publish assets
       uses: actions/upload-artifact@v7
@@ -175,7 +176,8 @@ jobs:
         run: |
           $vsix = Get-ChildItem vsix -Filter *.vsix -Recurse | Select-Object -First 1
           if (-not $vsix) { throw 'No vsix found' }
-          $uri = "https://www.vsixgallery.com/api/upload?repo=$env:repoUrl&issuetracker=$env:repoUrl/issues"
+          $readmeUrl = "https://raw.githubusercontent.com/$env:GITHUB_REPOSITORY/refs/heads/master/src/Nullable.Extended.Extension/README.md"
+          $uri = "https://www.vsixgallery.com/api/upload?repo=$env:repoUrl&issuetracker=$env:repoUrl/issues&readmeUrl=$([uri]::EscapeDataString($readmeUrl))"
           Invoke-WebRequest -Uri $uri -Method Post -Form @{ file = $vsix } | Out-Null
 
   publish_marketplace:
