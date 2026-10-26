@@ -1,5 +1,8 @@
 [Next]
 
+1.18.2
+- Fix: MCP server: Workspace folders reported by VS Code (`file:///d%3A/...`) were not converted to a valid local path.
+
 1.18.1
 - MCP server: No command line arguments are required any more, the server uses the workspace folder of the client. `--root` and `--solution` are optional overrides.
 - MCP server: Log the working directory, arguments, and the root used for every call to stderr, to simplify troubleshooting.

@@ -106,11 +106,38 @@ internal sealed class WorkspaceProvider(ServerOptions options, ILogger<Workspace
     internal static string? SelectRoot(IEnumerable<string> rootUris, string workingDirectory)
     {
         var roots = rootUris
-            .Select(root => Uri.TryCreate(root, UriKind.Absolute, out var uri) && uri.IsFile ? Path.TrimEndingDirectorySeparator(uri.LocalPath) : null)
+            .Select(ToLocalPath)
             .OfType<string>()
             .ToArray();
 
         return roots.FirstOrDefault(root => workingDirectory.StartsWith(root, PathComparison)) ?? roots.FirstOrDefault();
+    }
+
+    /// <summary>
+    /// Converts a <c>file:</c> URI to a local path. Uri.LocalPath can't be used, clients like VS Code percent-encode the colon of the drive, e.g. <c>file:///d%3A/dev/repo</c>.
+    /// </summary>
+    internal static string? ToLocalPath(string uriString)
+    {
+        if (!Uri.TryCreate(uriString, UriKind.Absolute, out var uri) || !uri.IsFile)
+            return null;
+
+        var path = Uri.UnescapeDataString(uri.AbsolutePath);
+
+        if (OperatingSystem.IsWindows())
+        {
+            if (path.Length >= 3 && path[0] == '/' && char.IsAsciiLetter(path[1]) && path[2] == ':')
+            {
+                path = path.Substring(1);
+            }
+            else if (!string.IsNullOrEmpty(uri.Host))
+            {
+                path = "//" + uri.Host + path;
+            }
+
+            path = path.Replace('/', Path.DirectorySeparatorChar);
+        }
+
+        return Path.TrimEndingDirectorySeparator(path);
     }
 
     private static StringComparison PathComparison => OperatingSystem.IsWindows() || OperatingSystem.IsMacOS() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;

@@ -116,6 +116,18 @@ namespace Test
             Assert.Null(WorkspaceProvider.SelectRoot(["https://example.com/x"], _root));
         }
 
+        [Theory]
+        [InlineData("file:///d%3A/dev/Git/ChargeMonitor", @"d:\dev\Git\ChargeMonitor")]
+        [InlineData("file:///c:/Users/Some%20One/repo/", @"c:\Users\Some One\repo")]
+        [InlineData("file:///C%3A/dev", @"C:\dev")]
+        [InlineData("file://server/share/repo", @"\\server\share\repo")]
+        public void WindowsFileUrisAreConvertedToLocalPaths(string uri, string expected)
+        {
+            Assert.SkipUnless(OperatingSystem.IsWindows(), "Windows paths");
+
+            Assert.Equal(expected, WorkspaceProvider.ToLocalPath(uri));
+        }
+
         [Fact]
         public async Task ScanFindsTheOperatorsWithProjectStatusAndContext()
         {
