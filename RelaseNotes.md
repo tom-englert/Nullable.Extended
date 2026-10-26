@@ -1,5 +1,10 @@
 [Next]
 
+1.18.1
+- MCP server: No command line arguments are required any more, the server uses the workspace folder of the client. `--root` and `--solution` are optional overrides.
+- MCP server: Log the working directory, arguments, and the root used for every call to stderr, to simplify troubleshooting.
+- Fix: Add the missing icon, license and readme to the NuGet packages of the MCP server and the analyzer, and add a readme for the Visual Studio extension.
+
 1.18.0
 - New: `Nullable.Extended.Mcp`, an MCP server that finds unjustified null-forgiving operators in large solutions, see [Documentation](Documentation/McpServer.md).
 - Fix: Results of multi-targeted projects are merged again, a null-forgiving operator is required if it is required in any target framework.
