@@ -37,7 +37,7 @@ builder.Services.AddSingleton<NullForgivingScanner>();
 builder.Services.AddSingleton<CodeContextReader>();
 
 builder.Services
-    .AddMcpServer(options => options.ServerInstructions = ServerInstructions.Text)
+    .AddMcpServer(opt => opt.ServerInstructions = ServerInstructions.Text)
     .WithStdioServerTransport()
     .WithTools<NullForgivingTools>();
 
