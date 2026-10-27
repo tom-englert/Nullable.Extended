@@ -14,10 +14,7 @@ namespace Nullable.Extended.Analyzer
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NullForgivingDetectionAnalyzerCodeFixProvider)), Shared]
     public class NullForgivingDetectionAnalyzerCodeFixProvider : CodeFixProvider
     {
-        private const string CodeFixPlaceholderText = Justification.SuppressionCommentPrefix + Justification.PlaceholderText;
         private const string CodeFixTitle = "Suppress with comment";
-
-        private static readonly SyntaxTrivia CodeFixPlaceholderTrivia = SyntaxFactory.Comment(CodeFixPlaceholderText);
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds => NullForgivingDetectionAnalyzer.SupportedDiagnosticIds.ToImmutableArray();
 
@@ -48,27 +45,7 @@ namespace Nullable.Extended.Analyzer
 
         private static Document AddPlaceholderComment(Document document, SyntaxNode root, CSharpSyntaxNode target)
         {
-            var leadingTrivia = target.GetLeadingTrivia();
-            var indent = leadingTrivia.LastOrDefault(item => item.IsKind(SyntaxKind.WhitespaceTrivia));
-
-            // reuse the line ending of the document; only fall back to CRLF if the target has no line ending at all
-            var newline = leadingTrivia
-                .Concat(target.GetTrailingTrivia())
-                .FirstOrDefault(item => item.IsKind(SyntaxKind.EndOfLineTrivia));
-
-            if (newline == default)
-            {
-                newline = SyntaxFactory.CarriageReturnLineFeed;
-            }
-
-            leadingTrivia = leadingTrivia.Add(CodeFixPlaceholderTrivia).Add(newline);
-
-            if (indent != default)
-            {
-                leadingTrivia = leadingTrivia.Add(indent);
-            }
-
-            return document.WithSyntaxRoot(root.ReplaceNode(target, target.WithLeadingTrivia(leadingTrivia)));
+            return document.WithSyntaxRoot(root.ReplaceNode(target, target.SetJustification([Justification.PlaceholderText])));
         }
     }
 }

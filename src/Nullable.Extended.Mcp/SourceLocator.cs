@@ -102,6 +102,50 @@ internal sealed class SourceLocator(string root, string? solutionPath)
         return Path.DirectorySeparatorChar == '/' ? relativePath : relativePath.Replace(Path.DirectorySeparatorChar, '/');
     }
 
+    /// <summary>
+    /// Checks if the files (full paths) would be part of a scan, with the same rules as <see cref="GetInventoryAsync"/>.
+    /// Returns the reason for every file that is not; files that are fine are not contained.
+    /// </summary>
+    public async Task<IReadOnlyDictionary<string, string>> FindRejectedFilesAsync(IEnumerable<string> fullPaths, CancellationToken cancellationToken)
+    {
+        var solutionProjects = solutionPath != null ? await ReadSolutionProjectsAsync(solutionPath, cancellationToken) : null;
+        var projectCache = new Dictionary<string, string?>(PathComparer);
+        var rejected = new Dictionary<string, string>(PathComparer);
+
+        foreach (var fullPath in fullPaths)
+        {
+            var reason = GetRejectionReason(fullPath, solutionProjects, projectCache);
+
+            if (reason != null)
+            {
+                rejected[fullPath] = reason;
+            }
+        }
+
+        return rejected;
+    }
+
+    private string? GetRejectionReason(string fullPath, HashSet<string>? solutionProjects, Dictionary<string, string?> projectCache)
+    {
+        if (!fullPath.EndsWith(".cs", StringComparison.OrdinalIgnoreCase))
+            return "is not a C# source file";
+
+        if (!File.Exists(fullPath))
+            return "does not exist";
+
+        if (GetRelativePath(fullPath).Split('/').SkipLast(1).Any(segment => IsExcludedDirectory(segment)))
+            return "is located in a hidden folder, or in the build output";
+
+        var projectPath = FindProject(Path.GetDirectoryName(fullPath)!, projectCache);
+
+        if (solutionProjects != null && (projectPath == null || !solutionProjects.Contains(projectPath)))
+            return "does not belong to a project of the solution";
+
+        var projectName = projectPath != null ? Path.GetFileNameWithoutExtension(projectPath) : SourceFile.NoProjectName;
+
+        return AnalyzerFramework.ExtensionMethods.ShouldBeAnalyzed(fullPath, projectName) ? null : "is generated code";
+    }
+
     private IEnumerable<(string FullPath, long Length, DateTime LastWriteTimeUtc)> EnumerateSourceFiles()
     {
         var enumerationOptions = new EnumerationOptions

@@ -48,7 +48,7 @@ namespace Test
             }
             """;
 
-        private static readonly Lazy<IAnalyzerEngine> Engine = new(CreateEngine);
+        internal static readonly Lazy<IAnalyzerEngine> Engine = new(CreateEngine);
 
         private readonly string _root = Path.Combine(Path.GetTempPath(), "NullableExtendedMcpTests_" + Guid.NewGuid().ToString("N"));
 

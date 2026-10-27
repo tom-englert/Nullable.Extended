@@ -5,8 +5,8 @@ description: Find and fix unjustified null-forgiving operators (the '!' suffix) 
 
 # Cleaning up null-forgiving operators
 
-Uses the tools of the `nullable-extended` MCP server: `get_summary`, `list_null_forgiving`, `get_code_context`.
-The server scans the source files syntactically; it needs no build and no restore. It never changes code.
+Uses the tools of the `nullable-extended` MCP server: `get_summary`, `list_null_forgiving`, `get_code_context`, `annotate`.
+The server scans the source files syntactically; it needs no build and no restore. Only `annotate` writes files, and only justification comments.
 
 **Fix the code. Annotating is the last resort.**
 A justification comment hides the problem; a real fix removes it.
@@ -30,13 +30,17 @@ Never add generic comments just to make the list shorter.
 5. **Justify, only if none of this is practical** (a framework or serializer guarantees the value, an API without annotations,
    a lifecycle the compiler can't follow). Write a **specific** reason why the value can't be null, or why the warning is a false positive.
    Not "needed", "suppress warning" or `TODO:`.
-   `get_code_context` returns where the comment goes (`insertion`: the line, its indentation, and the line ending of the file):
-   put one or more `//` lines, the first starting with `// ! `, directly above that line, e.g.
+   Don't edit the comment into the file yourself, call `annotate(items=[{file, line, column, text, sourceLine}])` with the `file`, `line` and `column` from the list;
+   pass the `sourceLine` of the list as well, so a stale position is rejected instead of annotating the wrong operator.
+   `annotate` writes the `// ! ` comment above the statement or declaration, keeps the file's line endings and encoding, and replaces a `// ! TODO:` placeholder:
    ```csharp
    // ! The serializer always sets this property, the setter is only used for deserialization
    public string Name { get; set; } = null!;
    ```
-6. **Verify.** Build the project. The change must not introduce new warnings. Call `list_null_forgiving` again for the same scope and check that the numbers went down as expected.
+   Annotate a batch per project or folder (at most 500 items per call), and review each outcome: rejected items are not written and tell the reason.
+   Several operators in the same statement share one comment, so write a text that is true for all of them.
+   An operator that already has a justification is not overwritten.
+6. **Verify.**
 
 ## Notes
 

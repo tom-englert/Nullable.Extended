@@ -39,7 +39,7 @@ Optional arguments:
 
 ## Tools
 
-All tools are read-only and run on demand. Nothing is scanned until a tool is called.
+All tools run on demand; nothing is scanned until a tool is called. Only `annotate` writes files, and it only inserts or replaces justification comments.
 
 ### Scope
 
@@ -71,6 +71,23 @@ The `id` is `file:line:column` and changes when the file is edited, so list agai
 
 The source lines around a position and, for each operator in them, its status and justification, and where a justification comment
 has to be inserted (line, indentation, and the line ending of the file).
+
+### `annotate`
+
+Writes justification comments for null-forgiving operators; the last resort, when the code can't reasonably be fixed.
+The parameter is a list of `items` (at most 500 per call), each with `file`, `line` and `column` (as returned by `list_null_forgiving`),
+the justification `text`, and optionally the `sourceLine` the AI has seen.
+
+- The comment `// ! <text>` is placed above the statement or declaration, with the same indentation and line ending logic as the analyzer's code fix;
+  a multi-line text becomes one comment line per line. A `// ! TODO:` placeholder is replaced.
+- Several operators in the same statement share one comment block.
+- Every item is validated before anything is written, and rejected items are reported with the reason, without changing the file:
+  the operator must still be at the position (and the line must match `sourceLine`), it must not be justified already,
+  the text must be specific (not empty, not the `TODO:` placeholder, no control characters, no leading `//`),
+  and the file must be a non-generated `.cs` file of the scope (below the root, in the solution if `--solution` is given, not in `bin`/`obj`).
+- A file is changed all-or-nothing: the result is parsed again and checked, and the file is not written if it changed meanwhile.
+  The BOM and the line endings are kept. Files that are not UTF-8 are rejected.
+- The result lists the outcome (`inserted`, `replaced`, `rejected`) and the new status of every item. Positions in the edited files have changed, so list again afterwards.
 
 ## How it works and what to keep in mind
 

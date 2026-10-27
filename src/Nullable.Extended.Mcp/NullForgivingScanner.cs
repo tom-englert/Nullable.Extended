@@ -138,12 +138,7 @@ internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogg
     {
         var line = result.Line;
         var column = result.Column;
-        var sourceLine = result.Variants[0].Node.SyntaxTree.GetText().Lines[line - 1].ToString().Trim();
-
-        if (sourceLine.Length > MaxSourceLineLength)
-        {
-            sourceLine = sourceLine.Substring(0, MaxSourceLineLength) + "…";
-        }
+        var sourceLine = FormatSourceLine(result.Variants[0].Node.SyntaxTree.GetText().Lines[line - 1].ToString());
 
         return new Occurrence(
             $"{file.RelativePath}:{line}:{column}",
@@ -155,6 +150,16 @@ internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogg
             GetStatus(result.Justification),
             result.Justification,
             sourceLine);
+    }
+
+    /// <summary>
+    /// The source line as returned to the client: trimmed, and shortened if it is very long.
+    /// </summary>
+    internal static string FormatSourceLine(string line)
+    {
+        line = line.Trim();
+
+        return line.Length > MaxSourceLineLength ? line.Substring(0, MaxSourceLineLength) + "…" : line;
     }
 
     private static string GetStatus(string? justification)

@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -218,6 +218,94 @@ namespace Test
             var node = FindOperator($"class C {{ {member} }}");
 
             Assert.Equal(expectedKind, node.FindSuppressionCommentTarget()?.Kind());
+        }
+
+        [Theory]
+        [InlineData("\n"), InlineData("\r\n")]
+        public void SetJustificationInsertsTheLinesWithIndentationAndLineEnding(string lineEnding)
+        {
+            const string source = """
+                class C
+                {
+                    int M(string? s)
+                    {
+                        return s!.Length;
+                    }
+                }
+                """;
+
+            const string expected = """
+                class C
+                {
+                    int M(string? s)
+                    {
+                        // ! first
+                        // ! second
+                        return s!.Length;
+                    }
+                }
+                """;
+
+            Assert.Equal(expected.ReplaceLineEndings(lineEnding), SetJustification(source.ReplaceLineEndings(lineEnding), "first", "second"));
+        }
+
+        [Fact]
+        public void SetJustificationReplacesAnExistingBlock()
+        {
+            const string source = """
+                class C
+                {
+                    int M(string? s)
+                    {
+                        // other
+                        // ! TODO:
+                        // ! more
+                        return s!.Length;
+                    }
+                }
+                """;
+
+            const string expected = """
+                class C
+                {
+                    int M(string? s)
+                    {
+                        // other
+                        // ! the reason
+                        return s!.Length;
+                    }
+                }
+                """;
+
+            Assert.Equal(expected, SetJustification(source, "the reason"));
+        }
+
+        [Fact]
+        public void SetJustificationHandlesTabsAndTheFirstLineOfTheFile()
+        {
+            Assert.Equal("class C\r\n{\r\n\t// ! reason\r\n\tint M(string? s) => s!.Length;\r\n}", SetJustification("class C\r\n{\r\n\tint M(string? s) => s!.Length;\r\n}", "reason"));
+            Assert.Equal("// ! reason\nvar x = y!;", SetJustification("var x = y!;", "reason").Replace("\r\n", "\n"));
+        }
+
+        [Fact]
+        public void SetJustificationMakesTheOperatorJustified()
+        {
+            var node = FindOperator("class C { int M(string? s)\r\n{\r\nif (s == null) return 0;\r\n    else return s!.Length;\r\n} }");
+
+            var target = node.FindSuppressionCommentTarget()!;
+            var newRoot = node.SyntaxTree.GetRoot().ReplaceNode(target, target.SetJustification(["the reason", "and more"]));
+            var newNode = newRoot.DescendantNodes().OfType<PostfixUnaryExpressionSyntax>().Single(n => n.IsKind(SyntaxKind.SuppressNullableWarningExpression));
+
+            Assert.Equal("the reason\r\nand more", newNode.GetJustificationText());
+            Assert.True(newNode.FindSuppressionCommentTarget()!.HasLeadingJustification());
+        }
+
+        private static string SetJustification(string source, params string[] lines)
+        {
+            var node = FindOperator(source);
+            var target = node.FindSuppressionCommentTarget()!;
+
+            return node.SyntaxTree.GetRoot().ReplaceNode(target, target.SetJustification(lines)).ToFullString();
         }
 
         private static PostfixUnaryExpressionSyntax FindOperator(string source)
