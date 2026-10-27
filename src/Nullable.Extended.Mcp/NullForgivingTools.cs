@@ -21,14 +21,15 @@ internal sealed record SummaryResult(
     StatusCounts Counts,
     IReadOnlyDictionary<string, int> ByContext,
     int ProjectsWithOccurrences,
-    IReadOnlyList<ProjectSummary> Projects);
+    IReadOnlyList<ProjectSummary> Projects,
+    RequiredCounts? Required);
 
-internal sealed record OccurrenceItem(string Id, string Project, string File, int Line, int Column, string Context, string DiagnosticId, string Status, string? Justification, string SourceLine);
+internal sealed record OccurrenceItem(string Id, string Project, string File, int Line, int Column, string Context, string DiagnosticId, string Status, string? Justification, string Required, string SourceLine);
 
 internal sealed record ListResult(int Total, int Offset, int Returned, int? NextOffset, ScanInfo Scan, IReadOnlyList<OccurrenceItem> Items);
 
 [McpServerToolType]
-internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, WorkspaceProvider workspaceProvider, ILogger<NullForgivingTools> logger)
+internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeContextReader codeContextReader, RequiredChecker requiredChecker, WorkspaceProvider workspaceProvider, ILogger<NullForgivingTools> logger)
 {
     private const int DefaultLimit = 100;
     private const int MaxLimit = 500;
@@ -81,7 +82,27 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
             .OrderBy(group => group.Key)
             .ToDictionary(group => $"{ContextNames.GetDiagnosticId(group.Key)} {group.Key}", group => group.Count());
 
-        return new SummaryResult(locator.Root, scan.Info, Count(scan.Occurrences), byContext, projects.Length, projects);
+        return new SummaryResult(locator.Root, scan.Info, Count(scan.Occurrences), byContext, projects.Length, projects, CountRequired(scan));
+    }
+
+    // Only if a required check has been made for files in scope.
+    private RequiredCounts? CountRequired(ScanResult scan)
+    {
+        var states = requiredChecker.GetKnownStates(scan.Files);
+
+        if (states.Count == 0)
+            return null;
+
+        var counts = scan.Occurrences
+            .GroupBy(occurrence => states.GetValueOrDefault(occurrence.Id, RequiredStates.NotChecked))
+            .ToDictionary(group => group.Key, group => group.Count());
+
+        return new RequiredCounts(
+            counts.GetValueOrDefault(RequiredStates.Yes),
+            counts.GetValueOrDefault(RequiredStates.No),
+            counts.GetValueOrDefault(RequiredStates.Unknown),
+            counts.GetValueOrDefault(RequiredStates.Pending),
+            counts.GetValueOrDefault(RequiredStates.NotChecked));
     }
 
     [McpServerTool(Name = "list_null_forgiving", ReadOnly = true)]
@@ -95,18 +116,19 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         [Description("Only files changed relative to this git ref (e.g. 'main' or 'origin/main'), including uncommitted and untracked files.")] string? changedSince = null,
         [Description("Only this context: general (NX0001), nullOrDefault (NX0002), lambda (NX0003) or init (NX0004).")] string? context = null,
         [Description("Only this status: unjustified, placeholder or justified.")] string? status = null,
+        [Description("Only operators with this result of a previous check_required: yes (required), no (not required), unknown, pending or notChecked.")] string? required = null,
         [Description("The maximum number of items to return (default 100, maximum 500).")] int limit = DefaultLimit,
         [Description("The number of items to skip, for paging; use 'nextOffset' of the previous result.")] int offset = 0,
         CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("list_null_forgiving: project={Project}, path={Path}, changedSince={ChangedSince}, context={Context}, status={Status}, limit={Limit}, offset={Offset}", project, path, changedSince, context, status, limit, offset);
+        logger.LogInformation("list_null_forgiving: project={Project}, path={Path}, changedSince={ChangedSince}, context={Context}, status={Status}, required={Required}, limit={Limit}, offset={Offset}", project, path, changedSince, context, status, required, limit, offset);
 
         var locator = await workspaceProvider.GetLocatorAsync(server, cancellationToken);
 
-        return await ListAsync(locator, new ScopeFilter(project, path, changedSince), context, status, limit, offset, cancellationToken);
+        return await ListAsync(locator, new ScopeFilter(project, path, changedSince), context, status, required, limit, offset, cancellationToken);
     }
 
-    internal async Task<ListResult> ListAsync(SourceLocator locator, ScopeFilter scope, string? context, string? status, int limit, int offset, CancellationToken cancellationToken)
+    internal async Task<ListResult> ListAsync(SourceLocator locator, ScopeFilter scope, string? context, string? status, string? required, int limit, int offset, CancellationToken cancellationToken)
     {
         NullForgivingContext? contextFilter = null;
 
@@ -121,14 +143,21 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
         if (!string.IsNullOrWhiteSpace(status) && !Status.All.Contains(status, StringComparer.OrdinalIgnoreCase))
             throw new McpException($"'{status}' is not a valid status; use {string.Join(", ", Status.All)}.");
 
+        if (!string.IsNullOrWhiteSpace(required) && !RequiredStates.All.Contains(required, StringComparer.OrdinalIgnoreCase))
+            throw new McpException($"'{required}' is not a valid value for required; use {string.Join(", ", RequiredStates.All)}.");
+
         limit = Math.Clamp(limit, 1, MaxLimit);
         offset = Math.Max(0, offset);
 
         var scan = await scanner.ScanAsync(locator, scope, cancellationToken);
+        var requiredStates = requiredChecker.GetKnownStates(scan.Files);
+
+        string GetRequired(Occurrence occurrence) => requiredStates.GetValueOrDefault(occurrence.Id, RequiredStates.NotChecked);
 
         var matches = scan.Occurrences
             .Where(occurrence => contextFilter == null || occurrence.Context == contextFilter)
             .Where(occurrence => string.IsNullOrWhiteSpace(status) || string.Equals(occurrence.Status, status, StringComparison.OrdinalIgnoreCase))
+            .Where(occurrence => string.IsNullOrWhiteSpace(required) || string.Equals(GetRequired(occurrence), required, StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
         var items = matches
@@ -144,6 +173,7 @@ internal sealed class NullForgivingTools(NullForgivingScanner scanner, CodeConte
                 ContextNames.GetDiagnosticId(occurrence.Context),
                 occurrence.Status,
                 occurrence.Justification,
+                GetRequired(occurrence),
                 occurrence.SourceLine))
             .ToArray();
 

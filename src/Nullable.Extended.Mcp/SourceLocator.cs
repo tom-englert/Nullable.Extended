@@ -19,6 +19,11 @@ internal sealed record ScopeFilter(string? Project = null, string? Path = null, 
 internal sealed record SourceInventory(IReadOnlyList<SourceFile> Files, int FilesSkippedAsGenerated, int FilesOutsideSolution);
 
 /// <summary>
+/// A file as passed by a client: either resolved to a source file, or with the reason why it can't be used.
+/// </summary>
+internal sealed record FileResolution(string Input, SourceFile? File, string? Problem);
+
+/// <summary>
 /// Finds the source files below the root and the projects they belong to, without loading any project.
 /// The project of a file is the nearest project file in the folder of the file or above; this is exact for SDK style projects with the default globbing.
 /// </summary>
@@ -123,6 +128,57 @@ internal sealed class SourceLocator(string root, string? solutionPath)
         }
 
         return rejected;
+    }
+
+    /// <summary>
+    /// Resolves the files passed by a client, with the same rules as <see cref="GetInventoryAsync"/>; every file is either resolved or comes with a problem description.
+    /// </summary>
+    public async Task<IReadOnlyList<FileResolution>> ResolveFilesAsync(IEnumerable<string> files, CancellationToken cancellationToken)
+    {
+        var solutionProjects = solutionPath != null ? await ReadSolutionProjectsAsync(solutionPath, cancellationToken) : null;
+        var projectCache = new Dictionary<string, string?>(PathComparer);
+        var resolved = new List<FileResolution>();
+        var seen = new HashSet<string>(PathComparer);
+
+        foreach (var file in files)
+        {
+            string fullPath;
+
+            try
+            {
+                fullPath = ResolveFile(file);
+            }
+            catch (McpException ex)
+            {
+                resolved.Add(new FileResolution(file, null, ex.Message));
+                continue;
+            }
+
+            if (!seen.Add(fullPath))
+                continue;
+
+            var reason = GetRejectionReason(fullPath, solutionProjects, projectCache);
+
+            if (reason != null)
+            {
+                resolved.Add(new FileResolution(file, null, $"The file '{file}' {reason}."));
+                continue;
+            }
+
+            var projectPath = FindProject(Path.GetDirectoryName(fullPath)!, projectCache);
+
+            if (projectPath == null)
+            {
+                resolved.Add(new FileResolution(file, null, $"The file '{file}' does not belong to a project."));
+                continue;
+            }
+
+            var info = new FileInfo(fullPath);
+
+            resolved.Add(new FileResolution(file, new SourceFile(fullPath, GetRelativePath(fullPath), projectPath, Path.GetFileNameWithoutExtension(projectPath), GetRelativePath(projectPath), info.Length, info.LastWriteTimeUtc), null));
+        }
+
+        return resolved;
     }
 
     private string? GetRejectionReason(string fullPath, HashSet<string>? solutionProjects, Dictionary<string, string?> projectCache)

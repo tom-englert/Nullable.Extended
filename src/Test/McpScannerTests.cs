@@ -335,23 +335,33 @@ namespace Test
             Assert.Equal(["A", "(no project)", "B"], summary.Projects.Select(project => project.Name).ToArray());
             Assert.Equal(["A", "B/Sub"], summary.Projects.Where(project => project.ProjectFile != null).SelectMany(project => project.Folders.Select(folder => folder.Path)).ToArray());
 
-            var unjustified = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", 3, 0, cancellationToken);
+            var unjustified = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", null, 3, 0, cancellationToken);
 
             Assert.Equal(4, unjustified.Total);
             Assert.Equal(3, unjustified.Returned);
             Assert.Equal(3, unjustified.NextOffset);
 
-            var rest = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", 3, unjustified.NextOffset!.Value, cancellationToken);
+            var rest = await tools.ListAsync(locator, new ScopeFilter(), null, "unjustified", null, 3, unjustified.NextOffset!.Value, cancellationToken);
 
             Assert.Equal(1, rest.Returned);
             Assert.Null(rest.NextOffset);
 
-            var lambdas = await tools.ListAsync(locator, new ScopeFilter(), "NX0003", null, 100, 0, cancellationToken);
+            var lambdas = await tools.ListAsync(locator, new ScopeFilter(), "NX0003", null, null, 100, 0, cancellationToken);
 
             Assert.Equal(1, lambdas.Total);
 
-            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), null, "bogus", 100, 0, cancellationToken));
-            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), "bogus", null, 100, 0, cancellationToken));
+            var notChecked = await tools.ListAsync(locator, new ScopeFilter(), null, null, "notChecked", 100, 0, cancellationToken);
+
+            Assert.Equal(6, notChecked.Total);
+            Assert.All(notChecked.Items, item => Assert.Equal("notChecked", item.Required));
+
+            var checkedYes = await tools.ListAsync(locator, new ScopeFilter(), null, null, "yes", 100, 0, cancellationToken);
+
+            Assert.Equal(0, checkedYes.Total);
+
+            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), null, "bogus", null, 100, 0, cancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), "bogus", null, null, 100, 0, cancellationToken));
+            await Assert.ThrowsAsync<McpException>(() => tools.ListAsync(locator, new ScopeFilter(), null, null, "bogus", 100, 0, cancellationToken));
         }
 
         private NullForgivingTools CreateTools()
@@ -359,7 +369,7 @@ namespace Test
             var scanner = new NullForgivingScanner(Engine.Value, NullLogger<NullForgivingScanner>.Instance);
             var workspaceProvider = new WorkspaceProvider(new ServerOptions(_root, null), NullLogger<WorkspaceProvider>.Instance);
 
-            return new NullForgivingTools(scanner, new CodeContextReader(scanner), workspaceProvider, NullLogger<NullForgivingTools>.Instance);
+            return new NullForgivingTools(scanner, new CodeContextReader(scanner), new RequiredChecker(Engine.Value, new ServerOptions(_root, null), NullLogger<RequiredChecker>.Instance), workspaceProvider, NullLogger<NullForgivingTools>.Instance);
         }
 
         private ScopedScanner CreateScanner(string? solutionPath = null)

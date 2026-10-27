@@ -1,6 +1,5 @@
 ﻿using System.Runtime.CompilerServices;
 
-using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 
@@ -34,7 +33,6 @@ namespace Test
 
         async Task<Project> OpenProject([CallerFilePath] string? thisFile = null)
         {
-            MSBuildLocator.RegisterDefaults();
             var workspace = MSBuildWorkspace.Create(new Dictionary<string, string> { ["AnalyzeSample"] = "true" });
             workspace.LoadMetadataForReferencedProjects = true;
 

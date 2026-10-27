@@ -36,10 +36,11 @@ Optional arguments:
 | --- | --- |
 | `--root <folder>` | Overrides the folder that is scanned; by default the workspace folder of the client, else the working directory. Only files below this folder are read. |
 | `--solution <file>` | Optional `.sln` or `.slnx`; restricts the scan to the projects of this solution, e.g. to ignore other projects in a mono repo. |
+| `--max-check-files <n>` | The maximum number of files a single `check_required` call may cover; default 25. |
 
 ## Tools
 
-All tools run on demand; nothing is scanned until a tool is called. Only `annotate` writes files, and it only inserts or replaces justification comments.
+All tools run on demand; nothing is scanned until a tool is called. Only `annotate` writes source files, and it only inserts or replaces justification comments. `check_required` loads projects with MSBuild, which can write generated files into their `obj` folders.
 
 ### Scope
 
@@ -59,11 +60,13 @@ Counts of the operators by project and folder, by status and by context. Start h
 
 - **Status:** `unjustified` (no justification comment), `placeholder` (only the `// ! TODO:` scaffold that the analyzer's code fix inserts), `justified`.
 - **Context:** `NX0001` general, `NX0002` null/default, `NX0003` lambda, `NX0004` init-only property (see [Diagnostics](../README.md#diagnostics)).
+- **Required:** if operators in scope have been checked with `check_required`, the counts of the states (see below).
 
 ### `list_null_forgiving`
 
 The occurrences with `id`, `project`, `file` (relative to the root, forward slashes), `line`, `column` (1-based), context, status,
-justification and the source line. Additional filters are `context` and `status`.
+justification and the source line. Additional filters are `context`, `status` and `required`.
+The `required` field shows the result of a previous `check_required` (`yes`, `no`, `unknown`, `pending`), or `notChecked`; it never triggers a check.
 The result is paged (`limit`, default 100, maximum 500; use `nextOffset` for the next page).
 The `id` is `file:line:column` and changes when the file is edited, so list again after changing code.
 
@@ -89,10 +92,31 @@ the justification `text`, and optionally the `sourceLine` the AI has seen.
   The BOM and the line endings are kept. Files that are not UTF-8 are rejected.
 - The result lists the outcome (`inserted`, `replaced`, `rejected`) and the new status of every item. Positions in the edited files have changed, so list again afterwards.
 
+### `check_required`
+
+Tells whether the operators are still *required*, i.e. whether removing the operator causes a new nullable warning (CS8600 to CS8900).
+This is the only tool that compiles: the projects are loaded with MSBuild (in a separate build host process, using the installed .NET SDK),
+and every file needs a semantic analysis. It is much slower than the other tools, so use it deliberately.
+
+- Specify either `files` (relative to the root, or absolute), or a `project` (name or project file) with an optional `path` to restrict it to a folder.
+  A call is limited to `--max-check-files` files (default 25); narrow the scope or check in several calls.
+- The result per operator is `yes` (required), `no` (not required, a candidate for removal), `unknown` (e.g. the file has compile errors; the `reason` tells which) or `pending`.
+  For multi-targeted projects an operator is `yes` if it is required in at least one target framework.
+- The call waits at most `waitSeconds` (default 20, maximum 60). Loading and compiling can take longer, then the remaining operators are `pending` and `complete` is `false`;
+  call again with the same arguments, the work continues in the background.
+- The results stay valid while the source files of the project don't change; any change of a file in the project discards the results of the whole project, as they depend on the whole compilation.
+  If the project file or its references change, e.g. after a build, the project is loaded again automatically. New files are not detected; call `reload`.
+- Projects that reference other projects are loaded together with them, so they can be checked without a build. Packages must have been restored; a build is recommended (`buildRecommended`) if references are missing.
+- A `no` is a strong hint, not a proof; verify a removal with a build of all target frameworks.
+
+### `reload`
+
+Discards everything that is cached: the scan results and the loaded projects. Use it after files were added or removed, or after switching branches.
+
 ## How it works and what to keep in mind
 
 - The scan is **syntactic**: it finds every `!` operator in the active code of a file, without building the project.
-  It does **not** tell whether an operator is still *required*.
+  It does **not** tell whether an operator is still *required*; use `check_required` for a small scope to find out.
   Code in inactive `#if` regions is not seen; generated files (`.g.cs`, `.Designer.cs`, `<auto-generated>`, `AssemblyInfo`) and `bin`/`obj` folders are skipped.
 - Results are cached per file (path, size, modification time) and files are re-read when they change, so there is no stale data and no refresh needed.
 - Linked files and files of shared projects are attributed to the nearest `.csproj` above the file, or to *(no project)*.

@@ -22,7 +22,9 @@ Both arguments are optional. Normally the server asks the client for the open wo
 - `get_summary`: counts by project, folder, status and context.
 - `list_null_forgiving`: the occurrences, paged and filtered.
 - `get_code_context`: the source around an occurrence, and where a justification comment belongs.
-- `annotate`: writes justification comments in batches (the only tool that changes files), and replaces `// ! TODO:` placeholders.
+- `annotate`: writes justification comments in batches (the only tool that changes source files), and replaces `// ! TODO:` placeholders.
+- `check_required`: compiles a few files or one project and tells whether the operators are still required (`yes`/`no`/`unknown`); slow, so use it for a small scope. `list_null_forgiving` can filter by the result.
+- `reload`: discards the cached scan results and loaded projects.
 
 All tools accept a scope (`project`, `path`, `changedSince`), so only a part of the solution is scanned.
 

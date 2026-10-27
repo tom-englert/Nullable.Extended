@@ -36,12 +36,14 @@ builder.Services.AddSingleton<IExportProvider>(sp => new ExportProviderAdapter(s
 builder.Services.AddSingleton<NullForgivingScanner>();
 builder.Services.AddSingleton<CodeContextReader>();
 builder.Services.AddSingleton<Annotator>();
+builder.Services.AddSingleton<RequiredChecker>();
 
 builder.Services
     .AddMcpServer(opt => opt.ServerInstructions = ServerInstructions.Text)
     .WithStdioServerTransport()
     .WithTools<NullForgivingTools>()
-    .WithTools<AnnotationTools>();
+    .WithTools<AnnotationTools>()
+    .WithTools<RequiredTools>();
 
 var app = builder.Build();
 

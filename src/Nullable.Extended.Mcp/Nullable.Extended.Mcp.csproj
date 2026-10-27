@@ -28,6 +28,8 @@
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="$(TestRoslynVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="$(TestRoslynVersion)" />
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" VersionOverride="$(TestRoslynVersion)" />
+    <!-- Projects are loaded by the out-of-process build host of this package, which uses the installed .NET SDK; no MSBuild assemblies are referenced or needed. -->
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" />
     <PackageReference Include="ModelContextProtocol" />

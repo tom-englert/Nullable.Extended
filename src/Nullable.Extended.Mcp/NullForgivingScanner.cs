@@ -15,7 +15,7 @@ namespace Nullable.Extended.Mcp;
 /// <summary>
 /// Finds the null-forgiving operators by a purely syntactic analysis; no compilation, project loading or restore is needed.
 /// The results are cached per file and only recalculated if the file has changed (by write time and length),
-/// so a call after a file has been edited always sees the current content.
+/// so a call after a file that has been edited sees the current content always.
 /// </summary>
 internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogger<NullForgivingScanner> logger)
 {
@@ -26,6 +26,8 @@ internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogg
     private readonly SemaphoreSlim _scanLock = new(1, 1);
 
     private sealed record CacheEntry(long Length, DateTime LastWriteTimeUtc, string? ProjectPath, IReadOnlyList<Occurrence> Occurrences);
+
+    public void Reset() => _cache.Clear();
 
     public async Task<ScanResult> ScanAsync(SourceLocator locator, ScopeFilter scope, CancellationToken cancellationToken)
     {
@@ -162,7 +164,7 @@ internal sealed class NullForgivingScanner(IAnalyzerEngine analyzerEngine, ILogg
         return line.Length > MaxSourceLineLength ? line.Substring(0, MaxSourceLineLength) + "…" : line;
     }
 
-    private static string GetStatus(string? justification)
+    internal static string GetStatus(string? justification)
     {
         if (string.IsNullOrWhiteSpace(justification))
             return Status.Unjustified;
