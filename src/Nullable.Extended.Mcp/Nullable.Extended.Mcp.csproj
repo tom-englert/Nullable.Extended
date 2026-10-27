@@ -51,6 +51,15 @@
     <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
+  <!-- The .NET Framework build host is only needed for legacy non-SDK projects; it contains a non-reproducible third-party binary and bloats the package. -->
+  <Target Name="RemoveNetFrameworkBuildHost" AfterTargets="ResolvePackageAssets;ResolveLockFileCopyLocalFiles">
+    <ItemGroup>
+      <Content Remove="@(Content)" Condition="$([System.String]::Copy('%(Content.Identity)').Contains('BuildHost-net472'))" />
+      <None Remove="@(None)" Condition="$([System.String]::Copy('%(None.Identity)').Contains('BuildHost-net472'))" />
+      <ContentWithTargetPath Remove="@(ContentWithTargetPath)" Condition="$([System.String]::Copy('%(ContentWithTargetPath.Identity)').Contains('BuildHost-net472'))" />
+    </ItemGroup>
+  </Target>
+
   <!-- .mcp\server.json is a template; the packed copy gets the package version, which must match the package for the MCP clients. -->
   <Target Name="GenerateMcpServerJson" BeforeTargets="_GetPackageFiles;GenerateNuspec">
     <PropertyGroup>

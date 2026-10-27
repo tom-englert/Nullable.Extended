@@ -107,6 +107,7 @@ and every file needs a semantic analysis. It is much slower than the other tools
 - The results stay valid while the source files of the project don't change; any change of a file in the project discards the results of the whole project, as they depend on the whole compilation.
   If the project file or its references change, e.g. after a build, the project is loaded again automatically. New files are not detected; call `reload`.
 - Projects that reference other projects are loaded together with them, so they can be checked without a build. Packages must have been restored; a build is recommended (`buildRecommended`) if references are missing.
+- Only SDK-style projects (including those targeting .NET Framework) can be loaded; old-style non-SDK project files are not supported and result in a load error. The other tools are not affected.
 - A `no` is a strong hint, not a proof; verify a removal with a build of all target frameworks.
 
 ### `reload`
