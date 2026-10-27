@@ -1,5 +1,7 @@
 [Next]
-- New: MCP server: The `check_required` tool compiles a few files or one project and tells whether null-forgiving operators are still required; `list_null_forgiving` can filter by the result, and `reload` discards the cached data.
+
+1.19.0
+- New: MCP server: The `check_required` tool
 - New: MCP server: The `annotate` tool writes justification comments for null-forgiving operators, and replaces `TODO:` placeholders.
 - Fix: MCP server: The configuration suggested by nuget.org no longer asks for the optional `--root` and `--solution` arguments.
 

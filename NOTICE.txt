@@ -25,7 +25,7 @@ License:   MIT
 Microsoft.Bcl.AsyncInterfaces
 
 Id:        Microsoft.Bcl.AsyncInterfaces
-Version:   10.0.13
+Version:   10.0.14
 Project:   https://dot.net/
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
@@ -62,10 +62,20 @@ License:   MIT
 
 --------------------------------------------------------------------------------
 
+Microsoft.CodeAnalysis.Workspaces.MSBuild
+
+Id:        Microsoft.CodeAnalysis.Workspaces.MSBuild
+Version:   5.9.0
+Project:   https://github.com/dotnet/roslyn
+Copyright: © Microsoft Corporation. All rights reserved.
+License:   MIT
+
+--------------------------------------------------------------------------------
+
 Microsoft.Extensions.Hosting
 
 Id:        Microsoft.Extensions.Hosting
-Version:   10.0.13
+Version:   10.0.14
 Project:   https://dot.net/
 Copyright: © Microsoft Corporation. All rights reserved.
 License:   MIT
