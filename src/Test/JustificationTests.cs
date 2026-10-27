@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -293,7 +293,7 @@ namespace Test
             var node = FindOperator("class C { int M(string? s)\r\n{\r\nif (s == null) return 0;\r\n    else return s!.Length;\r\n} }");
 
             var target = node.FindSuppressionCommentTarget()!;
-            var newRoot = node.SyntaxTree.GetRoot().ReplaceNode(target, target.SetJustification(["the reason", "and more"]));
+            var newRoot = node.SyntaxTree.GetRoot(TestContext.Current.CancellationToken).ReplaceNode(target, target.SetJustification(["the reason", "and more"]));
             var newNode = newRoot.DescendantNodes().OfType<PostfixUnaryExpressionSyntax>().Single(n => n.IsKind(SyntaxKind.SuppressNullableWarningExpression));
 
             Assert.Equal("the reason\r\nand more", newNode.GetJustificationText());

@@ -9,13 +9,27 @@ and it only looks at the part of the code you ask for.
 
 ## Installation
 
-The server is a .NET tool (.NET 10 or later, runs on Windows, Linux and macOS):
+The server is a .NET tool (.NET 10 SDK or later, runs on Windows, Linux and macOS). Register it in your MCP client, e.g. in `.vscode/mcp.json` or `.mcp.json`, in one of two ways.
+
+**Without installation:** `dnx` downloads the package on first use and starts it. Add the version (`Nullable.Extended.Mcp@1.18.2`) to pin it; without a version the latest is used.
+
+```json
+{
+  "servers": {
+	"nullable-extended": {
+	  "type": "stdio",
+	  "command": "dnx",
+	  "args": ["Nullable.Extended.Mcp", "--yes"]
+	}
+  }
+}
+```
+
+**As a global tool:** install it once, and update it with `dotnet tool update -g Nullable.Extended.Mcp`.
 
 ```
 dotnet tool install -g Nullable.Extended.Mcp
 ```
-
-Register it in your MCP client, e.g. in `.vscode/mcp.json` or `.mcp.json`:
 
 ```json
 {

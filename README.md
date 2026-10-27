@@ -44,19 +44,17 @@ The MCP server `Nullable.Extended.Mcp` lets AI assistants (GitHub Copilot, Claud
 in large solutions, project by project, without a build. The accompanying skill teaches the assistant to fix the code first,
 and to use a justification comment only as the last resort.
 
-1. Install the MCP server (.NET 10 or later) and register it in your MCP client, e.g. in `.vscode/mcp.json`:
-   ```
-   dotnet tool install -g Nullable.Extended.Mcp
-   ```
+1. Register the MCP server (.NET 10 SDK or later) in your MCP client, e.g. in `.vscode/mcp.json`; `dnx` downloads and starts it on demand, no installation is needed:
    ```json
    "servers": {
      "Nullable.Extended.Mcp": {
        "type": "stdio",
        "command": "dnx",
-       "args": ["Nullable.Extended.Mcp@1.18.2", "--yes"]
+       "args": ["Nullable.Extended.Mcp", "--yes"]
      }
    }
    ```
+   Alternatively install it as a global tool (`dotnet tool install -g Nullable.Extended.Mcp`) and use `"command": "nullable-extended-mcp"`, see the [documentation](Documentation/McpServer.md).
 2. Install the [skill](skills/nullable-extended/SKILL.md) into your project or user profile, with the GitHub CLI or the `skills` CLI:
    ```
    gh skill install tom-englert/Nullable.Extended nullable-extended
