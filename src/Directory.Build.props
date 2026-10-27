@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <SatelliteResourceLanguages>en;de</SatelliteResourceLanguages>
   </PropertyGroup>
+
+  <ItemGroup>
+    <GlobalPackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.403" />
+  </ItemGroup>
 </Project>

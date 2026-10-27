@@ -38,7 +38,7 @@ var text = value1!.ToString();
 ```
 
 ---
-## AI assistants
+## AI Assistants
 
 The MCP server `Nullable.Extended.Mcp` lets AI assistants (GitHub Copilot, Claude and other MCP clients) find the unjustified null-forgiving operators
 in large solutions, project by project, without a build. The accompanying skill teaches the assistant to fix the code first,
@@ -49,7 +49,13 @@ and to use a justification comment only as the last resort.
    dotnet tool install -g Nullable.Extended.Mcp
    ```
    ```json
-   { "servers": { "nullable-extended": { "type": "stdio", "command": "nullable-extended-mcp" } } }
+   "servers": {
+     "Nullable.Extended.Mcp": {
+       "type": "stdio",
+       "command": "dnx",
+       "args": ["Nullable.Extended.Mcp@1.18.2", "--yes"]
+     }
+   }
    ```
 2. Install the [skill](skills/nullable-extended/SKILL.md) into your project or user profile, with the GitHub CLI or the `skills` CLI:
    ```
