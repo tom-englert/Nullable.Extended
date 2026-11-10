@@ -1,6 +1,6 @@
 # Security Policy
 
-We take the security of ResX Resource Manager seriously. If you discover a vulnerability, please report it responsibly and privately.
+We take the security of the Nullable.Extended suite seriously. If you discover a vulnerability, please report it responsibly and privately.
 
 ## Reporting a Vulnerability
 
@@ -8,7 +8,7 @@ Please do not open a public issue for security vulnerabilities.
 
 Instead, use GitHub's private vulnerability reporting feature:
 
-1. Go to the [GitHub Security Advisories](https://github.com/dotnet/ResXResourceManager/security/advisories) page for this repository.
+1. Go to the [GitHub Security Advisories](https://github.com/tom-englert/Nullable.Extended/security/advisories) page for this repository.
 2. Click "Report a vulnerability".
 3. Provide a clear description of the issue, including reproduction steps, impact, and any suggested fix.
 
@@ -66,4 +66,4 @@ This repository is expected to use GitHub's built-in security features, includin
 
 If you have questions about this security policy, please use the repository's discussion or contact the maintainers through the project channels.
 
-Thank you for helping keep ResX Resource Manager secure.
+Thank you for helping keep Nullable.Extended secure.
