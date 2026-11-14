@@ -1,12 +1,9 @@
 ﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 
 using Xunit;
-
-using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpCodeFixVerifier<
-    Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer,
-    Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzerCodeFixProvider>;
-
 
 namespace Nullable.Extended.Analyzer.Test
 {
@@ -121,6 +118,24 @@ namespace Nullable.Extended.Analyzer.Test
             };
 
             await VerifyCodeFixAsync(source, expected, fixedSource, outputKind: OutputKind.ConsoleApplication);
+        }
+
+        private static async Task VerifyCodeFixAsync(string source, IEnumerable<DiagnosticResult> expected, string fixedSource, OutputKind? outputKind = null)
+        {
+            var test = new CSharpCodeFixTest<NullForgivingDetectionAnalyzer, NullForgivingDetectionAnalyzerCodeFixProvider, DefaultVerifier>()
+                .AddSources(source)
+                .AddFixedSources(fixedSource)
+                .WithProjectCompilationOptions(options => options
+                    .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
+                    .WithNullableContextOptions(NullableContextOptions.Enable))
+                .AddExpectedDiagnostics([.. expected]);
+
+            if (outputKind.HasValue)
+            {
+                test.TestState.OutputKind = outputKind.Value;
+            }
+
+            await test.RunAsync(TestContext.Current.CancellationToken);
         }
     }
 }

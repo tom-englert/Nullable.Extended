@@ -1,8 +1,9 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Testing;
+using Microsoft.CodeAnalysis.Testing;
 
 using Xunit;
-
-using static Nullable.Extended.Analyzer.Test.Verifiers.CSharpAnalyzerVerifier<Nullable.Extended.Analyzer.NullForgivingDetectionAnalyzer>;
 
 namespace Nullable.Extended.Analyzer.Test
 {
@@ -185,6 +186,18 @@ namespace Nullable.Extended.Analyzer.Test
             var expected = DiagnosticResult.EmptyDiagnosticResults;
 
             await VerifyAnalyzerAsync(source, expected);
+        }
+
+        private static async Task VerifyAnalyzerAsync(string source, IEnumerable<DiagnosticResult> expected)
+        {
+            var test = new CSharpAnalyzerTest<NullForgivingDetectionAnalyzer, DefaultVerifier>()
+                .AddSources(source)
+                .WithProjectCompilationOptions(options => options
+                    .WithGeneralDiagnosticOption(ReportDiagnostic.Error)
+                    .WithNullableContextOptions(NullableContextOptions.Enable))
+                .AddExpectedDiagnostics([.. expected]);
+
+            await test.RunAsync(TestContext.Current.CancellationToken);
         }
     }
 

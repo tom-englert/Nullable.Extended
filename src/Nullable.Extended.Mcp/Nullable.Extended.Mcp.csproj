@@ -25,9 +25,9 @@
 
   <ItemGroup Label="PackageReferences">
     <!-- The server parses the latest C# syntax, so it needs a current Roslyn, not the old one the core library is compiled against. -->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="$(TestRoslynVersion)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="$(TestRoslynVersion)" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" VersionOverride="$(TestRoslynVersion)" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" VersionOverride="5.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" VersionOverride="5.12.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" VersionOverride="5.12.0" />
     <!-- Projects are loaded by the out-of-process build host of this package, which uses the installed .NET SDK; no MSBuild assemblies are referenced or needed. -->
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" />
     <PackageReference Include="Microsoft.Extensions.Hosting" />
